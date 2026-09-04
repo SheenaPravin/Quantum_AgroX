@@ -1,257 +1,809 @@
 {
-  "meta": {
-    "title": "Quantum_AgroX",
-    "subtitle": "Quantum Machine Learning Platform for Botanical Acaricide Discovery",
-    "project": "Commiphora swynnertonii benchmark",
-    "data_note": "Paper-derived benchmark: aggregate means, not raw replicates"
-  },
-  "statcards": [
-    {
-      "label": "Bioassay Records",
-      "value": 240,
-      "icon": "bi-capsule",
-      "unit": "measurements"
-    },
-    {
-      "label": "Phytochemicals",
-      "value": 40,
-      "icon": "bi-flask",
-      "unit": "GC-MS hits"
-    },
-    {
-      "label": "Docking Candidates",
-      "value": 10,
-      "icon": "bi-bounding-box",
-      "unit": "AChE poses"
-    },
-    {
-      "label": "LC50 / LC90 Entries",
-      "value": 16,
-      "icon": "bi-graph-up",
-      "unit": "probit fits"
-    },
-    {
-      "label": "Docking Validation",
-      "value": 6,
-      "icon": "bi-check2-circle",
-      "unit": "PDB complexes"
-    },
-    {
-      "label": "QML Models",
-      "value": 3,
-      "icon": "bi-cpu",
-      "unit": "quantum algorithms"
-    }
-  ],
-  "mortality_by_extract": [
-    {
-      "extract": "Stem bark-DCM",
-      "records": 60
-    },
-    {
-      "extract": "Stem bark-MeOH",
-      "records": 60
-    },
-    {
-      "extract": "Exudate-MeOH",
-      "records": 60
-    },
-    {
-      "extract": "Exudate-DCM",
-      "records": 60
-    }
-  ],
-  "mortality_by_species": [
-    {
-      "species": "R. decoloratus",
-      "records": 120
-    },
-    {
-      "species": "R. microplus",
-      "records": 120
-    }
-  ],
-  "mortality_by_assay": [
-    {
-      "assay": "Larval",
-      "records": 120
-    },
-    {
-      "assay": "Adult",
-      "records": 120
-    }
-  ],
-  "lc50_best": [
-    {
-      "extract": "Stem bark DCM",
-      "lc50": 2.78,
-      "assay": "Larval",
-      "species": "R. decoloratus"
-    },
-    {
-      "extract": "Stem bark MeOH",
-      "lc50": 6.91,
-      "assay": "Larval",
-      "species": "R. decoloratus"
-    },
-    {
-      "extract": "Exudate DCM",
-      "lc50": 5.54,
-      "assay": "Larval",
-      "species": "R. decoloratus"
-    },
-    {
-      "extract": "Exudate MeOH",
-      "lc50": 8.42,
-      "assay": "Larval",
-      "species": "R. decoloratus"
-    }
-  ],
-  "docking_dock": [
-    {
-      "species": "R. decoloratus",
-      "avg_affinity": 8.82
-    },
-    {
-      "species": "R. microplus",
-      "avg_affinity": 9.9
-    }
-  ],
-  "validation": [
-    {
-      "pdb": "2ZC9",
-      "calc": -37.7,
-      "exp": -35.4,
-      "rmsd": 1.99
-    },
-    {
-      "pdb": "2ZF0",
-      "calc": -37.0,
-      "exp": -34.8,
-      "rmsd": 1.68
-    },
-    {
-      "pdb": "2ZHQ",
-      "calc": -40.6,
-      "exp": -37.8,
-      "rmsd": 2.02
-    },
-    {
-      "pdb": "2ZIQ",
-      "calc": -38.1,
-      "exp": -37.4,
-      "rmsd": 1.77
-    },
-    {
-      "pdb": "2ZI2",
-      "calc": -34.7,
-      "exp": -32.8,
-      "rmsd": 1.93
-    },
-    {
-      "pdb": "2ZFF",
-      "calc": -33.9,
-      "exp": -31.7,
-      "rmsd": 1.61
-    }
-  ],
-  "phytochemical_classes": [
-    {
-      "cls": "Sesquiterpenoid",
-      "count": 9
-    },
-    {
-      "cls": "Sesquiterpene",
-      "count": 7
-    },
-    {
-      "cls": "Steroid",
-      "count": 5
-    },
-    {
-      "cls": "Diterpenoid",
-      "count": 4
-    },
-    {
-      "cls": "Sterol",
-      "count": 4
-    },
-    {
-      "cls": "Monoterpenoid",
-      "count": 2
-    },
-    {
-      "cls": "Sesquiterpenoids",
-      "count": 1
-    },
-    {
-      "cls": "Aromatic compound",
-      "count": 1
-    }
-  ],
-  "ach_models": [
-    {
-      "species": "R. decoloratus",
-      "generator": "MODELLER",
-      "ramachandran": 88.5,
-      "verify3d": 84.41,
-      "errrat": 82.76,
-      "prosa": -5.98
-    },
-    {
-      "species": "R. microplus",
-      "generator": "MODELLER",
-      "ramachandran": 86.9,
-      "verify3d": 82.02,
-      "errrat": 73.04,
-      "prosa": -8.36
-    },
-    {
-      "species": "R. decoloratus",
-      "generator": "SWISS-MODEL",
-      "ramachandran": 90.6,
-      "verify3d": 91.78,
-      "errrat": 87.91,
-      "prosa": -9.59
-    },
-    {
-      "species": "R. microplus",
-      "generator": "SWISS-MODEL",
-      "ramachandran": 93.2,
-      "verify3d": 94.21,
-      "errrat": 92.69,
-      "prosa": -9.79
-    }
-  ],
-  "qml_modules": {
-    "Quantum Kernel Regression": "Quantum fidelity kernel + Kernel Ridge Regression for mortality fraction / LC50 prediction",
-    "Quantum Kernel SVM (QSVM)": "Fidelity kernel and quantum feature-map approaches for high vs lower acaricidal efficacy",
-    "Variational Quantum Classifier (VQC)": "Parameterized quantum circuits with angle embedding for efficacy classification and mortality regression"
-  },
-  "pipeline": [
-    {
-      "step": "Ingest",
-      "detail": "GC-MS, bioassay, LC50/90, docking, AChE model datasets"
-    },
-    {
-      "step": "Encode",
-      "detail": "Feature engineering, normalization, angle encoding"
-    },
-    {
-      "step": "Classical baselines",
-      "detail": "RF, XGBoost, SVM regression + classification"
-    },
-    {
-      "step": "Quantum models",
-      "detail": "Fidelity kernel KRR, QSVM, VQC"
-    },
-    {
-      "step": "Evaluate",
-      "detail": "5-fold CV, MAE/RMSE/R2, Acc/F1/ROC-AUC"
-    },
-    {
-      "step": "AgroX score",
-      "detail": "Multi-objective efficacy + safety ranking"
-    }
+ "meta": {
+  "title": "Quantum_AgroX",
+  "heading": "Quantum Machine Learning based Agro-Chemical Discovery",
+  "subtitle": "Interactive QML platform for botanical acaricide discovery built on the Commiphora swynnertonii benchmark.",
+  "source_note": "All data are paper-derived benchmark values (aggregate means). Full raw replicate data pending from the study."
+ },
+ "stats": {
+  "records": 240,
+  "phytochemicals": 40,
+  "docking_hits": 10,
+  "lc50_entries": 16,
+  "validation_complexes": 6,
+  "ach_models": 4
+ },
+ "baseline_ridge": {
+  "model": "Ridge linear regression (paper-derived benchmark, shuffle CV)",
+  "n_samples": 240,
+  "MAE_mean": 0.0692,
+  "MAE_std": 0.0063,
+  "RMSE_mean": 0.0864,
+  "RMSE_std": 0.0098,
+  "R2_mean": 0.8822,
+  "R2_std": 0.038,
+  "fold_MAE": [
+   0.0584,
+   0.0761,
+   0.0745,
+   0.0674,
+   0.0695
   ]
+ },
+ "extracts": [
+  {
+   "extract": "Stem bark-DCM",
+   "records": 60,
+   "mean_mortality": 55.0,
+   "max_mortality": 100.0
+  },
+  {
+   "extract": "Exudate-DCM",
+   "records": 60,
+   "mean_mortality": 49.2,
+   "max_mortality": 100.0
+  },
+  {
+   "extract": "Stem bark-MeOH",
+   "records": 60,
+   "mean_mortality": 41.8,
+   "max_mortality": 100.0
+  },
+  {
+   "extract": "Exudate-MeOH",
+   "records": 60,
+   "mean_mortality": 35.2,
+   "max_mortality": 100.0
+  }
+ ],
+ "species": [
+  {
+   "species": "R. microplus",
+   "count": 120
+  },
+  {
+   "species": "R. decoloratus",
+   "count": 120
+  }
+ ],
+ "phytochemical_classes": [
+  {
+   "cls": "Sesquiterpenoid",
+   "count": 9
+  },
+  {
+   "cls": "Sesquiterpene",
+   "count": 7
+  },
+  {
+   "cls": "Steroid",
+   "count": 5
+  },
+  {
+   "cls": "Diterpenoid",
+   "count": 4
+  },
+  {
+   "cls": "Sterol",
+   "count": 4
+  },
+  {
+   "cls": "Monoterpenoid",
+   "count": 2
+  },
+  {
+   "cls": "Sesquiterpenoids",
+   "count": 1
+  },
+  {
+   "cls": "Aromatic compound",
+   "count": 1
+  }
+ ],
+ "docking": [
+  {
+   "species": "Rhipicephalus decoloratus",
+   "extract": "DCM - stem bark",
+   "compound": "6-Hydroxy-10a-methyl-4,7-dimethylidene-2,8-dioxododecahydrooxireno[8,9]cyclodeca[1,2-b]furan-5-yl(2Z)-2-methylbut-2-enoate",
+   "affinity": -8.5,
+   "interactions": "H-bond Arg580; C-H bond Asp409; pi-alkyl Tyr447/His448"
+  },
+  {
+   "species": "Rhipicephalus decoloratus",
+   "extract": "DCM - exudate",
+   "compound": "4,6-Androstadien-3beta-ol-17-one acetate",
+   "affinity": -8.5,
+   "interactions": "pi-alkyl/alkyl Leu122, Val118, Tyr383; van der Waals"
+  },
+  {
+   "species": "Rhipicephalus decoloratus",
+   "extract": "MeOH - stem bark",
+   "compound": "Spirost-8-en-11-one,3-hydroxy-",
+   "affinity": -8.6,
+   "interactions": "H-bond Thr121; pi-alkyl/alkyl; van der Waals"
+  },
+  {
+   "species": "Rhipicephalus decoloratus",
+   "extract": "MeOH - exudate",
+   "compound": "2-Furanmethanol, tetrahydro-alpha,alpha,5-trimethyl-5-(4-methyl-3-cyclohexen-1-yl)",
+   "affinity": -9.7,
+   "interactions": "H-bond Val118; pi-pi T-shaped/pi-alkyl Tyr173/Tyr383; van der Waals"
+  },
+  {
+   "species": "Rhipicephalus decoloratus",
+   "extract": "Control",
+   "compound": "Chlorfenvinphos",
+   "affinity": -6.0,
+   "interactions": "pi-alkyl Phe384/Tyr173/Tyr383; van der Waals"
+  },
+  {
+   "species": "Rhipicephalus microplus",
+   "extract": "MeOH - stem bark",
+   "compound": "3,17-Dioxo-11-alpha-hydroxyandrostane-1,4-diene",
+   "affinity": -10.1,
+   "interactions": "H-bonds Trp512/Trp486; pi-alkyl/alkyl Tyr512/Pro485/Pro599; van der Waals"
+  },
+  {
+   "species": "Rhipicephalus microplus",
+   "extract": "MeOH - exudate",
+   "compound": "Ergost-25-ene-3,5,6-triol (3alpha,5alpha,6alpha)",
+   "affinity": -10.0,
+   "interactions": "pi-alkyl Pro485/Met136/Pro499/Val186; van der Waals"
+  },
+  {
+   "species": "Rhipicephalus microplus",
+   "extract": "DCM - stem bark",
+   "compound": "14-Hydroxy-5,9,12,13,16-pentamethyl-4-oxatricyclo...hexadecadien-2-one",
+   "affinity": -9.7,
+   "interactions": "H-bonds Ser377/Leu375/Gln474; pi-alkyl; van der Waals; reported covalent contact Gln474"
+  },
+  {
+   "species": "Rhipicephalus microplus",
+   "extract": "DCM - exudate",
+   "compound": "4,6-Androstadien-3beta-ol-17-one acetate",
+   "affinity": -9.8,
+   "interactions": "H-bond Trp137; alkyl Met136/Pro485; van der Waals"
+  },
+  {
+   "species": "Rhipicephalus microplus",
+   "extract": "Control",
+   "compound": "Chlorfenvinphos",
+   "affinity": -6.5,
+   "interactions": "H-bond Gly495; pi-alkyl/alkyl Trp137/Val186/Val498; van der Waals"
+  }
+ ],
+ "validation": [
+  {
+   "pdb": "2ZC9",
+   "calc": -37.7,
+   "exp": -35.4,
+   "rmsd": 1.99,
+   "abs_err": 2.3000000000000043,
+   "rmsd_pass": 1
+  },
+  {
+   "pdb": "2ZF0",
+   "calc": -37.0,
+   "exp": -34.8,
+   "rmsd": 1.68,
+   "abs_err": 2.200000000000003,
+   "rmsd_pass": 1
+  },
+  {
+   "pdb": "2ZHQ",
+   "calc": -40.6,
+   "exp": -37.8,
+   "rmsd": 2.02,
+   "abs_err": 2.8000000000000043,
+   "rmsd_pass": 0
+  },
+  {
+   "pdb": "2ZIQ",
+   "calc": -38.1,
+   "exp": -37.4,
+   "rmsd": 1.77,
+   "abs_err": 0.7000000000000028,
+   "rmsd_pass": 1
+  },
+  {
+   "pdb": "2ZI2",
+   "calc": -34.7,
+   "exp": -32.8,
+   "rmsd": 1.93,
+   "abs_err": 1.9000000000000057,
+   "rmsd_pass": 1
+  },
+  {
+   "pdb": "2ZFF",
+   "calc": -33.9,
+   "exp": -31.7,
+   "rmsd": 1.61,
+   "abs_err": 2.1999999999999993,
+   "rmsd_pass": 1
+  }
+ ],
+ "ach_models": [
+  {
+   "species": "Rhipicephalus decoloratus",
+   "generator": "MODELLER",
+   "verify3d": 84.41,
+   "errrat": 82.76,
+   "prosa": -5.98,
+   "rama": 88.5,
+   "additional": 9.1,
+   "generous": 1.2,
+   "disallowed": 1.2
+  },
+  {
+   "species": "Rhipicephalus microplus",
+   "generator": "MODELLER",
+   "verify3d": 82.02,
+   "errrat": 73.04,
+   "prosa": -8.36,
+   "rama": 86.9,
+   "additional": 10.7,
+   "generous": 1.6,
+   "disallowed": 0.8
+  },
+  {
+   "species": "Rhipicephalus decoloratus",
+   "generator": "SWISS-MODEL",
+   "verify3d": 91.78,
+   "errrat": 87.91,
+   "prosa": -9.59,
+   "rama": 90.6,
+   "additional": 7.7,
+   "generous": 1.3,
+   "disallowed": 0.4
+  },
+  {
+   "species": "Rhipicephalus microplus",
+   "generator": "SWISS-MODEL",
+   "verify3d": 94.21,
+   "errrat": 92.69,
+   "prosa": -9.79,
+   "rama": 93.2,
+   "additional": 5.5,
+   "generous": 0.6,
+   "disallowed": 0.7
+  }
+ ],
+ "ach_params": [
+  {
+   "species": "Rhipicephalus decoloratus",
+   "accession": "CAA06980",
+   "template": "5YDH",
+   "identity": 49.25,
+   "coverage": 89.0,
+   "evalue": "3e-170",
+   "center": "56.1947, -51.4858, 9.448",
+   "box": "41.6521 x 32.5402 x 39.7683 A"
+  },
+  {
+   "species": "Rhipicephalus microplus",
+   "accession": "CAA11702",
+   "template": "6ARX",
+   "identity": 49.06,
+   "coverage": 88.0,
+   "evalue": "1e-167",
+   "center": "-62.2842, 57.6277, 13.2699",
+   "box": "35.3615 x 37.3287 x 38.8187 A"
+  }
+ ],
+ "lc50": [
+  {
+   "assay": "Larval",
+   "species": "Rhipicephalus decoloratus",
+   "extract": "Stem bark DCM",
+   "lc50": 2.78,
+   "lc50_ci": "5.72\u20137.66",
+   "lc90": 20.21,
+   "lc90_ci": "9.03\u201345.23",
+   "slope": 1.49,
+   "df": "8",
+   "chi2": 61.9
+  },
+  {
+   "assay": "Larval",
+   "species": "Rhipicephalus decoloratus",
+   "extract": "Stem bark MeOH",
+   "lc50": 6.91,
+   "lc50_ci": "8.89\u201311.62",
+   "lc90": 34.63,
+   "lc90_ci": "18.16\u201366.03",
+   "slope": 1.83,
+   "df": "8",
+   "chi2": 40.5
+  },
+  {
+   "assay": "Larval",
+   "species": "Rhipicephalus decoloratus",
+   "extract": "Exudate DCM",
+   "lc50": 5.54,
+   "lc50_ci": "7.04\u20139.08",
+   "lc90": 26.46,
+   "lc90_ci": "13.86\u201350.52",
+   "slope": 1.89,
+   "df": "8",
+   "chi2": 84.47
+  },
+  {
+   "assay": "Larval",
+   "species": "Rhipicephalus decoloratus",
+   "extract": "Exudate MeOH",
+   "lc50": 8.42,
+   "lc50_ci": "13.26\u201316.65",
+   "lc90": 40.95,
+   "lc90_ci": "21.78\u201376.99",
+   "slope": 1.87,
+   "df": "8",
+   "chi2": 65.23
+  },
+  {
+   "assay": "Larval",
+   "species": "Rhipicephalus microplus",
+   "extract": "Stem bark DCM",
+   "lc50": 5.54,
+   "lc50_ci": "7.90\u20139.81",
+   "lc90": 38.6,
+   "lc90_ci": "18.21\u201381.84",
+   "slope": 1.52,
+   "df": "8",
+   "chi2": 43.56
+  },
+  {
+   "assay": "Larval",
+   "species": "Rhipicephalus microplus",
+   "extract": "Stem bark MeOH",
+   "lc50": 8.49,
+   "lc50_ci": "11.95\u201315.35",
+   "lc90": 97.62,
+   "lc90_ci": "37.69\u2013252.84",
+   "slope": 1.21,
+   "df": "8",
+   "chi2": 59.11
+  },
+  {
+   "assay": "Larval",
+   "species": "Rhipicephalus microplus",
+   "extract": "Exudate DCM",
+   "lc50": 5.85,
+   "lc50_ci": "10.09\u201312.70",
+   "lc90": 72.67,
+   "lc90_ci": "27.63\u2013191.12",
+   "slope": 1.17,
+   "df": "8",
+   "chi2": 48.6
+  },
+  {
+   "assay": "Larval",
+   "species": "Rhipicephalus microplus",
+   "extract": "Exudate MeOH",
+   "lc50": 12.75,
+   "lc50_ci": "20.30\u201325.28",
+   "lc90": 168.0,
+   "lc90_ci": "58.99\u2013478.50",
+   "slope": 1.14,
+   "df": "8",
+   "chi2": 21.28
+  },
+  {
+   "assay": "Adult",
+   "species": "Rhipicephalus decoloratus",
+   "extract": "Stem bark DCM",
+   "lc50": 6.62,
+   "lc50_ci": "5.72\u20137.66",
+   "lc90": 44.31,
+   "lc90_ci": "37.16\u201352.83",
+   "slope": 1.55,
+   "df": "13",
+   "chi2": 46.05
+  },
+  {
+   "assay": "Adult",
+   "species": "Rhipicephalus decoloratus",
+   "extract": "Stem bark MeOH",
+   "lc50": 10.16,
+   "lc50_ci": "8.89\u201311.62",
+   "lc90": 89.6,
+   "lc90_ci": "70.57\u2013113.76",
+   "slope": 1.36,
+   "df": "13",
+   "chi2": 33.31
+  },
+  {
+   "assay": "Adult",
+   "species": "Rhipicephalus decoloratus",
+   "extract": "Exudate DCM",
+   "lc50": 7.99,
+   "lc50_ci": "7.04\u20139.08",
+   "lc90": 49.78,
+   "lc90_ci": "41.83\u201359.22",
+   "slope": 1.61,
+   "df": "13",
+   "chi2": 59.14
+  },
+  {
+   "assay": "Adult",
+   "species": "Rhipicephalus decoloratus",
+   "extract": "Exudate MeOH",
+   "lc50": 14.86,
+   "lc50_ci": "13.26\u201316.65",
+   "lc90": 119.7,
+   "lc90_ci": "93.55\u2013153.39",
+   "slope": 1.41,
+   "df": "13",
+   "chi2": 16.18
+  },
+  {
+   "assay": "Adult",
+   "species": "Rhipicephalus microplus",
+   "extract": "Stem bark DCM",
+   "lc50": 8.8,
+   "lc50_ci": "7.90\u20139.81",
+   "lc90": 45.47,
+   "lc90_ci": "22.03\u201390.14",
+   "slope": 1.82,
+   "df": "13",
+   "chi2": 39.49
+  },
+  {
+   "assay": "Adult",
+   "species": "Rhipicephalus microplus",
+   "extract": "Stem bark MeOH",
+   "lc50": 13.54,
+   "lc50_ci": "11.95\u201315.35",
+   "lc90": 130.2,
+   "lc90_ci": "48.15\u2013352.58",
+   "slope": 1.3,
+   "df": "13",
+   "chi2": 23.14
+  },
+  {
+   "assay": "Adult",
+   "species": "Rhipicephalus microplus",
+   "extract": "Exudate DCM",
+   "lc50": 11.32,
+   "lc50_ci": "10.09\u201312.70",
+   "lc90": 78.23,
+   "lc90_ci": "34.08\u2013179.56",
+   "slope": 1.53,
+   "df": "13",
+   "chi2": 14.23
+  },
+  {
+   "assay": "Adult",
+   "species": "Rhipicephalus microplus",
+   "extract": "Exudate MeOH",
+   "lc50": 22.66,
+   "lc50_ci": "20.30\u201325.28",
+   "lc90": 178.7,
+   "lc90_ci": "67.90\u2013470.41",
+   "slope": 1.43,
+   "df": "13",
+   "chi2": 15.84
+  }
+ ],
+ "phytochemicals": [
+  {
+   "plant_part": "Exudate",
+   "solvent": "DCM",
+   "compound": "3-(6,6-Dimethyl-5-oxohept-2-enyl)-cyclohexanone",
+   "rt": 17.87,
+   "area": 3.71,
+   "cls": "Sesquiterpenoid"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "DCM",
+   "compound": "4,4,7a-Trimethyl-3a,5,6,7-tetrahydro-3H-indene-1-carboxylic acid",
+   "rt": 17.87,
+   "area": 3.71,
+   "cls": "Diterpenoid"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "DCM",
+   "compound": "alpha-Caryophyllene",
+   "rt": 6.98,
+   "area": 2.79,
+   "cls": "Sesquiterpene"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "DCM",
+   "compound": "alpha-Cedrol",
+   "rt": 7.78,
+   "area": 2.79,
+   "cls": "Sesquiterpene"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "DCM",
+   "compound": "cis-Farnesol",
+   "rt": 7.39,
+   "area": 3.05,
+   "cls": "Sesquiterpenoid"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "DCM",
+   "compound": "Uvidin C",
+   "rt": 17.16,
+   "area": 8.19,
+   "cls": "Sesquiterpenoids"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "DCM",
+   "compound": "3-(Hexyloxy)-5-(2-(trimethylsilyl)ethynyl) iodobenzene",
+   "rt": 36.57,
+   "area": 5.39,
+   "cls": "Aromatic compound"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "DCM",
+   "compound": "Valencene",
+   "rt": 33.92,
+   "area": 2.51,
+   "cls": "Sesquiterpene"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "DCM",
+   "compound": "Ethyl pentadecanoate",
+   "rt": 35.24,
+   "area": 4.97,
+   "cls": "Fatty acid esters"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "DCM",
+   "compound": "Lathosterol",
+   "rt": 35.24,
+   "area": 4.97,
+   "cls": "Sterol"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "DCM",
+   "compound": "4,6-Androstadien-3beta-ol-17-one acetate",
+   "rt": 18.08,
+   "area": 2.95,
+   "cls": "Steroid"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "MeOH",
+   "compound": "Phytol",
+   "rt": 13.61,
+   "area": 3.71,
+   "cls": "Diterpenoid"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "MeOH",
+   "compound": "Copaene",
+   "rt": 6.69,
+   "area": 2.55,
+   "cls": "Sesquiterpene"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "MeOH",
+   "compound": "Dendrolasin",
+   "rt": 7.92,
+   "area": 2.51,
+   "cls": "Monoterpenoid"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "MeOH",
+   "compound": "Naphthalene, decahydro-2,6-dimethyl-3-octyl-",
+   "rt": 12.91,
+   "area": 6.12,
+   "cls": "Sesquiterpenoid hydrocarbon"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "MeOH",
+   "compound": "2-Furanmethanol, tetrahydro-alpha,alpha,5-trimethyl-5-(4-methyl-3-cyclohexen-1-yl)",
+   "rt": 16.42,
+   "area": 2.62,
+   "cls": "Sesquiterpenoid"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "MeOH",
+   "compound": "Pentadeca-2,3,6,9,12,13-hexaen-8-one,2,5,5,11,11,14-hexamethyl-",
+   "rt": 13.83,
+   "area": 10.14,
+   "cls": "Sesquiterpenoid"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "MeOH",
+   "compound": "Curzerene",
+   "rt": 12.91,
+   "area": 2.51,
+   "cls": "Sesquiterpene"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "MeOH",
+   "compound": "7alpha-Methylcholesterol",
+   "rt": 36.76,
+   "area": 9.94,
+   "cls": "Sterol"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "MeOH",
+   "compound": "Cholest-7-en-3-ol (3alpha)",
+   "rt": 35.31,
+   "area": 2.62,
+   "cls": "Steroid"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "MeOH",
+   "compound": "Ergost-25-ene-3,5,6-triol (3beta,5alpha,6alpha)",
+   "rt": 35.4,
+   "area": 2.63,
+   "cls": "Steroid"
+  },
+  {
+   "plant_part": "Exudate",
+   "solvent": "MeOH",
+   "compound": "9-(3-furanyl)-2,6-dimethyl-2,5-nonadien-4-one",
+   "rt": 10.02,
+   "area": 4.02,
+   "cls": "Monoterpenoid"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "DCM",
+   "compound": "14-Hydroxy-5,9,12,13,16-pentamethyl-4-oxatricyclo[10.3.1.0]hexadeca-1(15),8-dien-2-one",
+   "rt": 10.04,
+   "area": 3.38,
+   "cls": "Sesquiterpenoid"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "DCM",
+   "compound": "7alpha-Methylcholesterol",
+   "rt": 36.91,
+   "area": 6.55,
+   "cls": "Sterol"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "DCM",
+   "compound": "Hexadecanoic acid",
+   "rt": 11.6,
+   "area": 2.58,
+   "cls": "Fatty acid"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "DCM",
+   "compound": "alpha-Copaene",
+   "rt": 7.68,
+   "area": 3.36,
+   "cls": "Sesquiterpenoid"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "DCM",
+   "compound": "Lathosterol",
+   "rt": 35.52,
+   "area": 8.78,
+   "cls": "Sterol"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "DCM",
+   "compound": "6-Hydroxy-10a-methyl-4,7-dimethylidene-2,8-dioxododecahydrooxireno[8,9]cyclodeca[1,2-b]furan-5-yl (2Z)-2-methylbut-2-enoate",
+   "rt": 38.43,
+   "area": 2.52,
+   "cls": "Sesquiterpenoid"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "DCM",
+   "compound": "4,8,13-Cyclotetradecatriene-1,3-diol,1,5,9-trimethyl-12-(1-methylethyl)-",
+   "rt": 32.78,
+   "area": 2.52,
+   "cls": "Diterpenoid"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "DCM",
+   "compound": "Phthalic acid, di(2-propylpentyl) ester",
+   "rt": 22.21,
+   "area": 2.52,
+   "cls": "Phthalate ester"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "DCM",
+   "compound": "Curzerene",
+   "rt": 12.55,
+   "area": 2.51,
+   "cls": "Sesquiterpene"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "DCM",
+   "compound": "Cumanin",
+   "rt": 20.64,
+   "area": 3.34,
+   "cls": "Sesquiterpenoid"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "MeOH",
+   "compound": "2-Phenylaniline",
+   "rt": 8.46,
+   "area": 3.18,
+   "cls": "Aromatic amine"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "MeOH",
+   "compound": "Cholest-8(14)-en-3-ol (3alpha,5alpha)",
+   "rt": 35.46,
+   "area": 9.23,
+   "cls": "Steroid"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "MeOH",
+   "compound": "Dodecane,1-cyclopentyl-4-(3-cyclopentylpropyl)-",
+   "rt": 16.72,
+   "area": 4.21,
+   "cls": "Aliphatic hydrocarbon"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "MeOH",
+   "compound": "Torreyol",
+   "rt": 20.75,
+   "area": 3.13,
+   "cls": "Sesquiterpene"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "MeOH",
+   "compound": "Spirost-8-en-11-one,3-hydroxy-",
+   "rt": 43.68,
+   "area": 2.66,
+   "cls": "Steroid"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "MeOH",
+   "compound": "16-Hentriacontanol",
+   "rt": 14.14,
+   "area": 3.59,
+   "cls": "Fatty alcohol"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "MeOH",
+   "compound": "Phytol",
+   "rt": 36.86,
+   "area": 8.36,
+   "cls": "Diterpenoid"
+  },
+  {
+   "plant_part": "Stem bark",
+   "solvent": "MeOH",
+   "compound": "Spiro[4.5]decan-2-one",
+   "rt": 32.78,
+   "area": 3.46,
+   "cls": "Sesquiterpenoid"
+  }
+ ]
 }
