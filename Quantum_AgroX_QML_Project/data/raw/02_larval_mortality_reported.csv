@@ -1,0 +1,121 @@
+Species,Assay,Extract,Concentration_mg_mL,Exposure_h,Mean_mortality_percent
+R. decoloratus,Larval immersion test,Stem bark-DCM,5,24,16.65
+R. decoloratus,Larval immersion test,Stem bark-DCM,5,48,49.49
+R. decoloratus,Larval immersion test,Stem bark-DCM,5,72,68.98
+R. decoloratus,Larval immersion test,Stem bark-MeOH,5,24,3.73
+R. decoloratus,Larval immersion test,Stem bark-MeOH,5,48,25.59
+R. decoloratus,Larval immersion test,Stem bark-MeOH,5,72,40.99
+R. decoloratus,Larval immersion test,Exudate-MeOH,5,24,3.04
+R. decoloratus,Larval immersion test,Exudate-MeOH,5,48,24.9
+R. decoloratus,Larval immersion test,Exudate-MeOH,5,72,38.19
+R. decoloratus,Larval immersion test,Exudate-DCM,5,24,14.69
+R. decoloratus,Larval immersion test,Exudate-DCM,5,48,35.95
+R. decoloratus,Larval immersion test,Exudate-DCM,5,72,50.17
+R. decoloratus,Larval immersion test,Stem bark-DCM,10,24,26.7
+R. decoloratus,Larval immersion test,Stem bark-DCM,10,48,65.46
+R. decoloratus,Larval immersion test,Stem bark-DCM,10,72,76.84
+R. decoloratus,Larval immersion test,Stem bark-MeOH,10,24,15.31
+R. decoloratus,Larval immersion test,Stem bark-MeOH,10,48,35.13
+R. decoloratus,Larval immersion test,Stem bark-MeOH,10,72,63.89
+R. decoloratus,Larval immersion test,Exudate-MeOH,10,24,8.45
+R. decoloratus,Larval immersion test,Exudate-MeOH,10,48,33.83
+R. decoloratus,Larval immersion test,Exudate-MeOH,10,72,51.73
+R. decoloratus,Larval immersion test,Exudate-DCM,10,24,22.05
+R. decoloratus,Larval immersion test,Exudate-DCM,10,48,61.5
+R. decoloratus,Larval immersion test,Exudate-DCM,10,72,65.08
+R. decoloratus,Larval immersion test,Stem bark-DCM,20,24,33.45
+R. decoloratus,Larval immersion test,Stem bark-DCM,20,48,75.61
+R. decoloratus,Larval immersion test,Stem bark-DCM,20,72,85.56
+R. decoloratus,Larval immersion test,Stem bark-MeOH,20,24,17.72
+R. decoloratus,Larval immersion test,Stem bark-MeOH,20,48,51.17
+R. decoloratus,Larval immersion test,Stem bark-MeOH,20,72,76.48
+R. decoloratus,Larval immersion test,Exudate-MeOH,20,24,10.42
+R. decoloratus,Larval immersion test,Exudate-MeOH,20,48,39.74
+R. decoloratus,Larval immersion test,Exudate-MeOH,20,72,75.07
+R. decoloratus,Larval immersion test,Exudate-DCM,20,24,30.91
+R. decoloratus,Larval immersion test,Exudate-DCM,20,48,71.44
+R. decoloratus,Larval immersion test,Exudate-DCM,20,72,84.48
+R. decoloratus,Larval immersion test,Stem bark-DCM,40,24,49.47
+R. decoloratus,Larval immersion test,Stem bark-DCM,40,48,83.49
+R. decoloratus,Larval immersion test,Stem bark-DCM,40,72,96.67
+R. decoloratus,Larval immersion test,Stem bark-MeOH,40,24,21.64
+R. decoloratus,Larval immersion test,Stem bark-MeOH,40,48,65.62
+R. decoloratus,Larval immersion test,Stem bark-MeOH,40,72,89.37
+R. decoloratus,Larval immersion test,Exudate-MeOH,40,24,14.68
+R. decoloratus,Larval immersion test,Exudate-MeOH,40,48,57.54
+R. decoloratus,Larval immersion test,Exudate-MeOH,40,72,85.71
+R. decoloratus,Larval immersion test,Exudate-DCM,40,24,40.56
+R. decoloratus,Larval immersion test,Exudate-DCM,40,48,78.95
+R. decoloratus,Larval immersion test,Exudate-DCM,40,72,93.75
+R. decoloratus,Larval immersion test,Stem bark-DCM,80,24,62.88
+R. decoloratus,Larval immersion test,Stem bark-DCM,80,48,88.53
+R. decoloratus,Larval immersion test,Stem bark-DCM,80,72,100.0
+R. decoloratus,Larval immersion test,Stem bark-MeOH,80,24,27.28
+R. decoloratus,Larval immersion test,Stem bark-MeOH,80,48,81.32
+R. decoloratus,Larval immersion test,Stem bark-MeOH,80,72,100.0
+R. decoloratus,Larval immersion test,Exudate-MeOH,80,24,20.33
+R. decoloratus,Larval immersion test,Exudate-MeOH,80,48,71.32
+R. decoloratus,Larval immersion test,Exudate-MeOH,80,72,100.0
+R. decoloratus,Larval immersion test,Exudate-DCM,80,24,58.34
+R. decoloratus,Larval immersion test,Exudate-DCM,80,48,82.69
+R. decoloratus,Larval immersion test,Exudate-DCM,80,72,100.0
+R. microplus,Larval immersion test,Stem bark-DCM,5,24,12.58
+R. microplus,Larval immersion test,Stem bark-DCM,5,48,32.18
+R. microplus,Larval immersion test,Stem bark-DCM,5,72,48.22
+R. microplus,Larval immersion test,Stem bark-MeOH,5,24,3.54
+R. microplus,Larval immersion test,Stem bark-MeOH,5,48,20.0
+R. microplus,Larval immersion test,Stem bark-MeOH,5,72,38.95
+R. microplus,Larval immersion test,Exudate-MeOH,5,24,2.22
+R. microplus,Larval immersion test,Exudate-MeOH,5,48,15.55
+R. microplus,Larval immersion test,Exudate-MeOH,5,72,35.54
+R. microplus,Larval immersion test,Exudate-DCM,5,24,11.33
+R. microplus,Larval immersion test,Exudate-DCM,5,48,24.69
+R. microplus,Larval immersion test,Exudate-DCM,5,72,46.31
+R. microplus,Larval immersion test,Stem bark-DCM,10,24,19.88
+R. microplus,Larval immersion test,Stem bark-DCM,10,48,44.18
+R. microplus,Larval immersion test,Stem bark-DCM,10,72,68.19
+R. microplus,Larval immersion test,Stem bark-MeOH,10,24,13.92
+R. microplus,Larval immersion test,Stem bark-MeOH,10,48,30.45
+R. microplus,Larval immersion test,Stem bark-MeOH,10,72,56.16
+R. microplus,Larval immersion test,Exudate-MeOH,10,24,6.56
+R. microplus,Larval immersion test,Exudate-MeOH,10,48,21.21
+R. microplus,Larval immersion test,Exudate-MeOH,10,72,43.87
+R. microplus,Larval immersion test,Exudate-DCM,10,24,18.08
+R. microplus,Larval immersion test,Exudate-DCM,10,48,40.4
+R. microplus,Larval immersion test,Exudate-DCM,10,72,63.67
+R. microplus,Larval immersion test,Stem bark-DCM,20,24,29.32
+R. microplus,Larval immersion test,Stem bark-DCM,20,48,55.86
+R. microplus,Larval immersion test,Stem bark-DCM,20,72,77.17
+R. microplus,Larval immersion test,Stem bark-MeOH,20,24,16.14
+R. microplus,Larval immersion test,Stem bark-MeOH,20,48,44.84
+R. microplus,Larval immersion test,Stem bark-MeOH,20,72,67.42
+R. microplus,Larval immersion test,Exudate-MeOH,20,24,9.67
+R. microplus,Larval immersion test,Exudate-MeOH,20,48,33.04
+R. microplus,Larval immersion test,Exudate-MeOH,20,72,56.35
+R. microplus,Larval immersion test,Exudate-DCM,20,24,24.39
+R. microplus,Larval immersion test,Exudate-DCM,20,48,48.69
+R. microplus,Larval immersion test,Exudate-DCM,20,72,73.42
+R. microplus,Larval immersion test,Stem bark-DCM,40,24,45.4
+R. microplus,Larval immersion test,Stem bark-DCM,40,48,65.83
+R. microplus,Larval immersion test,Stem bark-DCM,40,72,85.71
+R. microplus,Larval immersion test,Stem bark-MeOH,40,24,21.16
+R. microplus,Larval immersion test,Stem bark-MeOH,40,48,51.95
+R. microplus,Larval immersion test,Stem bark-MeOH,40,72,72.08
+R. microplus,Larval immersion test,Exudate-MeOH,40,24,14.33
+R. microplus,Larval immersion test,Exudate-MeOH,40,48,43.88
+R. microplus,Larval immersion test,Exudate-MeOH,40,72,66.48
+R. microplus,Larval immersion test,Exudate-DCM,40,24,38.27
+R. microplus,Larval immersion test,Exudate-DCM,40,48,53.39
+R. microplus,Larval immersion test,Exudate-DCM,40,72,77.5
+R. microplus,Larval immersion test,Stem bark-DCM,80,24,51.26
+R. microplus,Larval immersion test,Stem bark-DCM,80,48,83.0
+R. microplus,Larval immersion test,Stem bark-DCM,80,72,100.0
+R. microplus,Larval immersion test,Stem bark-MeOH,80,24,25.46
+R. microplus,Larval immersion test,Stem bark-MeOH,80,48,69.27
+R. microplus,Larval immersion test,Stem bark-MeOH,80,72,92.11
+R. microplus,Larval immersion test,Exudate-MeOH,80,24,18.24
+R. microplus,Larval immersion test,Exudate-MeOH,80,48,59.04
+R. microplus,Larval immersion test,Exudate-MeOH,80,72,86.75
+R. microplus,Larval immersion test,Exudate-DCM,80,24,40.59
+R. microplus,Larval immersion test,Exudate-DCM,80,48,81.28
+R. microplus,Larval immersion test,Exudate-DCM,80,72,94.44

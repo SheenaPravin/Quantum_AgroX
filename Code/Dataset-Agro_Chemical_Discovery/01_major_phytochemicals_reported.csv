@@ -1,0 +1,41 @@
+Plant_part,Solvent,Retention_time_min,Compound,Relative_area_percent,Compound_class
+Exudate,DCM,17.87,"3-(6,6-Dimethyl-5-oxohept-2-enyl)-cyclohexanone",3.71,Sesquiterpenoid
+Exudate,DCM,17.87,"4,4,7a-Trimethyl-3a,5,6,7-tetrahydro-3H-indene-1-carboxylic acid",3.71,Diterpenoid
+Exudate,DCM,6.98,alpha-Caryophyllene,2.79,Sesquiterpene
+Exudate,DCM,7.78,alpha-Cedrol,2.79,Sesquiterpene
+Exudate,DCM,7.39,cis-Farnesol,3.05,Sesquiterpenoid
+Exudate,DCM,17.16,Uvidin C,8.19,Sesquiterpenoids
+Exudate,DCM,36.57,3-(Hexyloxy)-5-(2-(trimethylsilyl)ethynyl) iodobenzene,5.39,Aromatic compound
+Exudate,DCM,33.92,Valencene,2.51,Sesquiterpene
+Exudate,DCM,35.24,Ethyl pentadecanoate,4.97,Fatty acid esters
+Exudate,DCM,35.24,Lathosterol,4.97,Sterol
+Exudate,DCM,18.08,"4,6-Androstadien-3beta-ol-17-one acetate",2.95,Steroid
+Exudate,MeOH,13.61,Phytol,3.71,Diterpenoid
+Exudate,MeOH,6.69,Copaene,2.55,Sesquiterpene
+Exudate,MeOH,7.92,Dendrolasin,2.51,Monoterpenoid
+Exudate,MeOH,12.91,"Naphthalene, decahydro-2,6-dimethyl-3-octyl-",6.12,Sesquiterpenoid hydrocarbon
+Exudate,MeOH,16.42,"2-Furanmethanol, tetrahydro-alpha,alpha,5-trimethyl-5-(4-methyl-3-cyclohexen-1-yl)",2.62,Sesquiterpenoid
+Exudate,MeOH,13.83,"Pentadeca-2,3,6,9,12,13-hexaen-8-one,2,5,5,11,11,14-hexamethyl-",10.14,Sesquiterpenoid
+Exudate,MeOH,12.91,Curzerene,2.51,Sesquiterpene
+Exudate,MeOH,36.76,7alpha-Methylcholesterol,9.94,Sterol
+Exudate,MeOH,35.31,Cholest-7-en-3-ol (3alpha),2.62,Steroid
+Exudate,MeOH,35.40,"Ergost-25-ene-3,5,6-triol (3beta,5alpha,6alpha)",2.63,Steroid
+Exudate,MeOH,10.02,"9-(3-furanyl)-2,6-dimethyl-2,5-nonadien-4-one",4.02,Monoterpenoid
+Stem bark,DCM,10.04,"14-Hydroxy-5,9,12,13,16-pentamethyl-4-oxatricyclo[10.3.1.0]hexadeca-1(15),8-dien-2-one",3.38,Sesquiterpenoid
+Stem bark,DCM,36.91,7alpha-Methylcholesterol,6.55,Sterol
+Stem bark,DCM,11.60,Hexadecanoic acid,2.58,Fatty acid
+Stem bark,DCM,7.68,alpha-Copaene,3.36,Sesquiterpenoid
+Stem bark,DCM,35.52,Lathosterol,8.78,Sterol
+Stem bark,DCM,38.43,"6-Hydroxy-10a-methyl-4,7-dimethylidene-2,8-dioxododecahydrooxireno[8,9]cyclodeca[1,2-b]furan-5-yl (2Z)-2-methylbut-2-enoate",2.52,Sesquiterpenoid
+Stem bark,DCM,32.78,"4,8,13-Cyclotetradecatriene-1,3-diol,1,5,9-trimethyl-12-(1-methylethyl)-",2.52,Diterpenoid
+Stem bark,DCM,22.21,"Phthalic acid, di(2-propylpentyl) ester",2.52,Phthalate ester
+Stem bark,DCM,12.55,Curzerene,2.51,Sesquiterpene
+Stem bark,DCM,20.64,Cumanin,3.34,Sesquiterpenoid
+Stem bark,MeOH,8.46,2-Phenylaniline,3.18,Aromatic amine
+Stem bark,MeOH,35.46,"Cholest-8(14)-en-3-ol (3alpha,5alpha)",9.23,Steroid
+Stem bark,MeOH,16.72,"Dodecane,1-cyclopentyl-4-(3-cyclopentylpropyl)-",4.21,Aliphatic hydrocarbon
+Stem bark,MeOH,20.75,Torreyol,3.13,Sesquiterpene
+Stem bark,MeOH,43.68,"Spirost-8-en-11-one,3-hydroxy-",2.66,Steroid
+Stem bark,MeOH,14.14,16-Hentriacontanol,3.59,Fatty alcohol
+Stem bark,MeOH,36.86,Phytol,8.36,Diterpenoid
+Stem bark,MeOH,32.78,Spiro[4.5]decan-2-one,3.46,Sesquiterpenoid

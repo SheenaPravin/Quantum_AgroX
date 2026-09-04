@@ -1,0 +1,121 @@
+Species,Assay,Extract,Concentration_mg_mL,Exposure_h,Mean_mortality_percent
+R. decoloratus,Adult immersion test,Stem bark-DCM,5,24,18.0
+R. decoloratus,Adult immersion test,Stem bark-DCM,5,48,29.33
+R. decoloratus,Adult immersion test,Stem bark-DCM,5,72,48.33
+R. decoloratus,Adult immersion test,Stem bark-MeOH,5,24,8.67
+R. decoloratus,Adult immersion test,Stem bark-MeOH,5,48,18.0
+R. decoloratus,Adult immersion test,Stem bark-MeOH,5,72,39.0
+R. decoloratus,Adult immersion test,Exudate-MeOH,5,24,5.67
+R. decoloratus,Adult immersion test,Exudate-MeOH,5,48,12.0
+R. decoloratus,Adult immersion test,Exudate-MeOH,5,72,28.0
+R. decoloratus,Adult immersion test,Exudate-DCM,5,24,10.33
+R. decoloratus,Adult immersion test,Exudate-DCM,5,48,21.67
+R. decoloratus,Adult immersion test,Exudate-DCM,5,72,41.0
+R. decoloratus,Adult immersion test,Stem bark-DCM,10,24,25.33
+R. decoloratus,Adult immersion test,Stem bark-DCM,10,48,39.33
+R. decoloratus,Adult immersion test,Stem bark-DCM,10,72,58.33
+R. decoloratus,Adult immersion test,Stem bark-MeOH,10,24,12.0
+R. decoloratus,Adult immersion test,Stem bark-MeOH,10,48,27.67
+R. decoloratus,Adult immersion test,Stem bark-MeOH,10,72,46.67
+R. decoloratus,Adult immersion test,Exudate-MeOH,10,24,10.0
+R. decoloratus,Adult immersion test,Exudate-MeOH,10,48,18.0
+R. decoloratus,Adult immersion test,Exudate-MeOH,10,72,36.0
+R. decoloratus,Adult immersion test,Exudate-DCM,10,24,18.33
+R. decoloratus,Adult immersion test,Exudate-DCM,10,48,29.0
+R. decoloratus,Adult immersion test,Exudate-DCM,10,72,56.0
+R. decoloratus,Adult immersion test,Stem bark-DCM,20,24,29.0
+R. decoloratus,Adult immersion test,Stem bark-DCM,20,48,50.33
+R. decoloratus,Adult immersion test,Stem bark-DCM,20,72,71.67
+R. decoloratus,Adult immersion test,Stem bark-MeOH,20,24,19.33
+R. decoloratus,Adult immersion test,Stem bark-MeOH,20,48,46.67
+R. decoloratus,Adult immersion test,Stem bark-MeOH,20,72,63.0
+R. decoloratus,Adult immersion test,Exudate-MeOH,20,24,15.0
+R. decoloratus,Adult immersion test,Exudate-MeOH,20,48,32.0
+R. decoloratus,Adult immersion test,Exudate-MeOH,20,72,58.33
+R. decoloratus,Adult immersion test,Exudate-DCM,20,24,25.0
+R. decoloratus,Adult immersion test,Exudate-DCM,20,48,47.67
+R. decoloratus,Adult immersion test,Exudate-DCM,20,72,70.0
+R. decoloratus,Adult immersion test,Stem bark-DCM,40,24,34.33
+R. decoloratus,Adult immersion test,Stem bark-DCM,40,48,67.33
+R. decoloratus,Adult immersion test,Stem bark-DCM,40,72,85.67
+R. decoloratus,Adult immersion test,Stem bark-MeOH,40,24,26.0
+R. decoloratus,Adult immersion test,Stem bark-MeOH,40,48,52.67
+R. decoloratus,Adult immersion test,Stem bark-MeOH,40,72,74.0
+R. decoloratus,Adult immersion test,Exudate-MeOH,40,24,22.33
+R. decoloratus,Adult immersion test,Exudate-MeOH,40,48,39.33
+R. decoloratus,Adult immersion test,Exudate-MeOH,40,72,72.0
+R. decoloratus,Adult immersion test,Exudate-DCM,40,24,32.33
+R. decoloratus,Adult immersion test,Exudate-DCM,40,48,57.0
+R. decoloratus,Adult immersion test,Exudate-DCM,40,72,81.33
+R. decoloratus,Adult immersion test,Stem bark-DCM,80,24,47.33
+R. decoloratus,Adult immersion test,Stem bark-DCM,80,48,75.67
+R. decoloratus,Adult immersion test,Stem bark-DCM,80,72,100.0
+R. decoloratus,Adult immersion test,Stem bark-MeOH,80,24,35.67
+R. decoloratus,Adult immersion test,Stem bark-MeOH,80,48,58.0
+R. decoloratus,Adult immersion test,Stem bark-MeOH,80,72,95.0
+R. decoloratus,Adult immersion test,Exudate-MeOH,80,24,28.67
+R. decoloratus,Adult immersion test,Exudate-MeOH,80,48,53.0
+R. decoloratus,Adult immersion test,Exudate-MeOH,80,72,86.0
+R. decoloratus,Adult immersion test,Exudate-DCM,80,24,38.0
+R. decoloratus,Adult immersion test,Exudate-DCM,80,48,68.33
+R. decoloratus,Adult immersion test,Exudate-DCM,80,72,100.0
+R. microplus,Adult immersion test,Stem bark-DCM,5,24,16.0
+R. microplus,Adult immersion test,Stem bark-DCM,5,48,27.67
+R. microplus,Adult immersion test,Stem bark-DCM,5,72,34.67
+R. microplus,Adult immersion test,Stem bark-MeOH,5,24,8.67
+R. microplus,Adult immersion test,Stem bark-MeOH,5,48,16.67
+R. microplus,Adult immersion test,Stem bark-MeOH,5,72,28.0
+R. microplus,Adult immersion test,Exudate-MeOH,5,24,5.33
+R. microplus,Adult immersion test,Exudate-MeOH,5,48,11.67
+R. microplus,Adult immersion test,Exudate-MeOH,5,72,21.0
+R. microplus,Adult immersion test,Exudate-DCM,5,24,9.33
+R. microplus,Adult immersion test,Exudate-DCM,5,48,21.33
+R. microplus,Adult immersion test,Exudate-DCM,5,72,30.0
+R. microplus,Adult immersion test,Stem bark-DCM,10,24,22.0
+R. microplus,Adult immersion test,Stem bark-DCM,10,48,34.33
+R. microplus,Adult immersion test,Stem bark-DCM,10,72,57.0
+R. microplus,Adult immersion test,Stem bark-MeOH,10,24,12.0
+R. microplus,Adult immersion test,Stem bark-MeOH,10,48,21.0
+R. microplus,Adult immersion test,Stem bark-MeOH,10,72,46.33
+R. microplus,Adult immersion test,Exudate-MeOH,10,24,9.0
+R. microplus,Adult immersion test,Exudate-MeOH,10,48,16.67
+R. microplus,Adult immersion test,Exudate-MeOH,10,72,28.67
+R. microplus,Adult immersion test,Exudate-DCM,10,24,15.0
+R. microplus,Adult immersion test,Exudate-DCM,10,48,29.67
+R. microplus,Adult immersion test,Exudate-DCM,10,72,47.67
+R. microplus,Adult immersion test,Stem bark-DCM,20,24,26.67
+R. microplus,Adult immersion test,Stem bark-DCM,20,48,42.67
+R. microplus,Adult immersion test,Stem bark-DCM,20,72,68.33
+R. microplus,Adult immersion test,Stem bark-MeOH,20,24,15.33
+R. microplus,Adult immersion test,Stem bark-MeOH,20,48,32.33
+R. microplus,Adult immersion test,Stem bark-MeOH,20,72,58.67
+R. microplus,Adult immersion test,Exudate-MeOH,20,24,14.67
+R. microplus,Adult immersion test,Exudate-MeOH,20,48,24.67
+R. microplus,Adult immersion test,Exudate-MeOH,20,72,44.33
+R. microplus,Adult immersion test,Exudate-DCM,20,24,24.33
+R. microplus,Adult immersion test,Exudate-DCM,20,48,36.33
+R. microplus,Adult immersion test,Exudate-DCM,20,72,64.67
+R. microplus,Adult immersion test,Stem bark-DCM,40,24,34.0
+R. microplus,Adult immersion test,Stem bark-DCM,40,48,59.67
+R. microplus,Adult immersion test,Stem bark-DCM,40,72,84.67
+R. microplus,Adult immersion test,Stem bark-MeOH,40,24,26.67
+R. microplus,Adult immersion test,Stem bark-MeOH,40,48,41.33
+R. microplus,Adult immersion test,Stem bark-MeOH,40,72,66.67
+R. microplus,Adult immersion test,Exudate-MeOH,40,24,20.33
+R. microplus,Adult immersion test,Exudate-MeOH,40,48,36.33
+R. microplus,Adult immersion test,Exudate-MeOH,40,72,59.0
+R. microplus,Adult immersion test,Exudate-DCM,40,24,31.0
+R. microplus,Adult immersion test,Exudate-DCM,40,48,47.0
+R. microplus,Adult immersion test,Exudate-DCM,40,72,75.0
+R. microplus,Adult immersion test,Stem bark-DCM,80,24,41.67
+R. microplus,Adult immersion test,Stem bark-DCM,80,48,73.0
+R. microplus,Adult immersion test,Stem bark-DCM,80,72,100.0
+R. microplus,Adult immersion test,Stem bark-MeOH,80,24,31.0
+R. microplus,Adult immersion test,Stem bark-MeOH,80,48,55.0
+R. microplus,Adult immersion test,Stem bark-MeOH,80,72,88.0
+R. microplus,Adult immersion test,Exudate-MeOH,80,24,26.67
+R. microplus,Adult immersion test,Exudate-MeOH,80,48,48.0
+R. microplus,Adult immersion test,Exudate-MeOH,80,72,83.33
+R. microplus,Adult immersion test,Exudate-DCM,80,24,37.0
+R. microplus,Adult immersion test,Exudate-DCM,80,48,67.33
+R. microplus,Adult immersion test,Exudate-DCM,80,72,93.33

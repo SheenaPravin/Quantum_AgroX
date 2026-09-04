@@ -1,0 +1,241 @@
+Species,Assay,Extract,Concentration_mg_mL,Exposure_h,Mean_mortality_percent,Stage,PlantPart,Solvent,Mortality_fraction,Data_type,Species_Rhipicephalus_decoloratus,Species_Rhipicephalus_microplus,Stage_Adult,Stage_Larval,PlantPart_Exudate,PlantPart_Stem_bark,Solvent_DCM,Solvent_MeOH
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,5.0,24.0,16.65,Larval,Stem bark,DCM,0.16649999999999998,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,5.0,48.0,49.49,Larval,Stem bark,DCM,0.4949,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,5.0,72.0,68.98,Larval,Stem bark,DCM,0.6898000000000001,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,5.0,24.0,3.73,Larval,Stem bark,MeOH,0.0373,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,5.0,48.0,25.59,Larval,Stem bark,MeOH,0.2559,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,5.0,72.0,40.99,Larval,Stem bark,MeOH,0.40990000000000004,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,5.0,24.0,3.04,Larval,Exudate,MeOH,0.0304,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,5.0,48.0,24.9,Larval,Exudate,MeOH,0.249,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,5.0,72.0,38.19,Larval,Exudate,MeOH,0.38189999999999996,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,5.0,24.0,14.69,Larval,Exudate,DCM,0.1469,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,5.0,48.0,35.95,Larval,Exudate,DCM,0.35950000000000004,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,5.0,72.0,50.17,Larval,Exudate,DCM,0.5017,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,10.0,24.0,26.7,Larval,Stem bark,DCM,0.267,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,10.0,48.0,65.46,Larval,Stem bark,DCM,0.6546,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,10.0,72.0,76.84,Larval,Stem bark,DCM,0.7684000000000001,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,10.0,24.0,15.31,Larval,Stem bark,MeOH,0.1531,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,10.0,48.0,35.13,Larval,Stem bark,MeOH,0.3513,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,10.0,72.0,63.89,Larval,Stem bark,MeOH,0.6389,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,10.0,24.0,8.45,Larval,Exudate,MeOH,0.08449999999999999,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,10.0,48.0,33.83,Larval,Exudate,MeOH,0.3383,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,10.0,72.0,51.73,Larval,Exudate,MeOH,0.5173,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,10.0,24.0,22.05,Larval,Exudate,DCM,0.2205,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,10.0,48.0,61.5,Larval,Exudate,DCM,0.615,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,10.0,72.0,65.08,Larval,Exudate,DCM,0.6507999999999999,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,20.0,24.0,33.45,Larval,Stem bark,DCM,0.3345,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,20.0,48.0,75.61,Larval,Stem bark,DCM,0.7561,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,20.0,72.0,85.56,Larval,Stem bark,DCM,0.8556,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,20.0,24.0,17.72,Larval,Stem bark,MeOH,0.1772,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,20.0,48.0,51.17,Larval,Stem bark,MeOH,0.5117,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,20.0,72.0,76.48,Larval,Stem bark,MeOH,0.7648,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,20.0,24.0,10.42,Larval,Exudate,MeOH,0.1042,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,20.0,48.0,39.74,Larval,Exudate,MeOH,0.39740000000000003,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,20.0,72.0,75.07,Larval,Exudate,MeOH,0.7506999999999999,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,20.0,24.0,30.91,Larval,Exudate,DCM,0.3091,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,20.0,48.0,71.44,Larval,Exudate,DCM,0.7143999999999999,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,20.0,72.0,84.48,Larval,Exudate,DCM,0.8448,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,40.0,24.0,49.47,Larval,Stem bark,DCM,0.4947,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,40.0,48.0,83.49,Larval,Stem bark,DCM,0.8349,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,40.0,72.0,96.67,Larval,Stem bark,DCM,0.9667,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,40.0,24.0,21.64,Larval,Stem bark,MeOH,0.2164,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,40.0,48.0,65.62,Larval,Stem bark,MeOH,0.6562,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,40.0,72.0,89.37,Larval,Stem bark,MeOH,0.8937,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,40.0,24.0,14.68,Larval,Exudate,MeOH,0.14679999999999999,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,40.0,48.0,57.54,Larval,Exudate,MeOH,0.5754,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,40.0,72.0,85.71,Larval,Exudate,MeOH,0.8571,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,40.0,24.0,40.56,Larval,Exudate,DCM,0.4056,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,40.0,48.0,78.95,Larval,Exudate,DCM,0.7895,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,40.0,72.0,93.75,Larval,Exudate,DCM,0.9375,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,80.0,24.0,62.88,Larval,Stem bark,DCM,0.6288,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,80.0,48.0,88.53,Larval,Stem bark,DCM,0.8853,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-DCM,80.0,72.0,100.0,Larval,Stem bark,DCM,1.0,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,1,0
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,80.0,24.0,27.28,Larval,Stem bark,MeOH,0.2728,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,80.0,48.0,81.32,Larval,Stem bark,MeOH,0.8131999999999999,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Stem bark-MeOH,80.0,72.0,100.0,Larval,Stem bark,MeOH,1.0,Paper-reported mean; not raw replicate-level observations,1,0,0,1,0,1,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,80.0,24.0,20.33,Larval,Exudate,MeOH,0.20329999999999998,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,80.0,48.0,71.32,Larval,Exudate,MeOH,0.7132,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-MeOH,80.0,72.0,100.0,Larval,Exudate,MeOH,1.0,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,0,1
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,80.0,24.0,58.34,Larval,Exudate,DCM,0.5834,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,80.0,48.0,82.69,Larval,Exudate,DCM,0.8269,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus decoloratus,Larval immersion test,Exudate-DCM,80.0,72.0,100.0,Larval,Exudate,DCM,1.0,Paper-reported mean; not raw replicate-level observations,1,0,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,5.0,24.0,12.58,Larval,Stem bark,DCM,0.1258,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,5.0,48.0,32.18,Larval,Stem bark,DCM,0.3218,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,5.0,72.0,48.22,Larval,Stem bark,DCM,0.48219999999999996,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,5.0,24.0,3.54,Larval,Stem bark,MeOH,0.0354,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,5.0,48.0,20.0,Larval,Stem bark,MeOH,0.2,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,5.0,72.0,38.95,Larval,Stem bark,MeOH,0.3895,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,5.0,24.0,2.22,Larval,Exudate,MeOH,0.0222,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,5.0,48.0,15.55,Larval,Exudate,MeOH,0.1555,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,5.0,72.0,35.54,Larval,Exudate,MeOH,0.3554,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,5.0,24.0,11.33,Larval,Exudate,DCM,0.1133,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,5.0,48.0,24.69,Larval,Exudate,DCM,0.2469,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,5.0,72.0,46.31,Larval,Exudate,DCM,0.4631,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,10.0,24.0,19.88,Larval,Stem bark,DCM,0.19879999999999998,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,10.0,48.0,44.18,Larval,Stem bark,DCM,0.44179999999999997,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,10.0,72.0,68.19,Larval,Stem bark,DCM,0.6819,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,10.0,24.0,13.92,Larval,Stem bark,MeOH,0.1392,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,10.0,48.0,30.45,Larval,Stem bark,MeOH,0.3045,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,10.0,72.0,56.16,Larval,Stem bark,MeOH,0.5616,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,10.0,24.0,6.56,Larval,Exudate,MeOH,0.06559999999999999,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,10.0,48.0,21.21,Larval,Exudate,MeOH,0.2121,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,10.0,72.0,43.87,Larval,Exudate,MeOH,0.4387,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,10.0,24.0,18.08,Larval,Exudate,DCM,0.1808,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,10.0,48.0,40.4,Larval,Exudate,DCM,0.40399999999999997,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,10.0,72.0,63.67,Larval,Exudate,DCM,0.6367,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,20.0,24.0,29.32,Larval,Stem bark,DCM,0.2932,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,20.0,48.0,55.86,Larval,Stem bark,DCM,0.5586,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,20.0,72.0,77.17,Larval,Stem bark,DCM,0.7717,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,20.0,24.0,16.14,Larval,Stem bark,MeOH,0.16140000000000002,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,20.0,48.0,44.84,Larval,Stem bark,MeOH,0.4484,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,20.0,72.0,67.42,Larval,Stem bark,MeOH,0.6742,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,20.0,24.0,9.67,Larval,Exudate,MeOH,0.0967,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,20.0,48.0,33.04,Larval,Exudate,MeOH,0.33039999999999997,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,20.0,72.0,56.35,Larval,Exudate,MeOH,0.5635,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,20.0,24.0,24.39,Larval,Exudate,DCM,0.2439,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,20.0,48.0,48.69,Larval,Exudate,DCM,0.4869,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,20.0,72.0,73.42,Larval,Exudate,DCM,0.7342,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,40.0,24.0,45.4,Larval,Stem bark,DCM,0.45399999999999996,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,40.0,48.0,65.83,Larval,Stem bark,DCM,0.6583,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,40.0,72.0,85.71,Larval,Stem bark,DCM,0.8571,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,40.0,24.0,21.16,Larval,Stem bark,MeOH,0.2116,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,40.0,48.0,51.95,Larval,Stem bark,MeOH,0.5195000000000001,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,40.0,72.0,72.08,Larval,Stem bark,MeOH,0.7208,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,40.0,24.0,14.33,Larval,Exudate,MeOH,0.1433,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,40.0,48.0,43.88,Larval,Exudate,MeOH,0.4388,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,40.0,72.0,66.48,Larval,Exudate,MeOH,0.6648000000000001,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,40.0,24.0,38.27,Larval,Exudate,DCM,0.38270000000000004,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,40.0,48.0,53.39,Larval,Exudate,DCM,0.5339,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,40.0,72.0,77.5,Larval,Exudate,DCM,0.775,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,80.0,24.0,51.26,Larval,Stem bark,DCM,0.5126,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,80.0,48.0,83.0,Larval,Stem bark,DCM,0.83,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-DCM,80.0,72.0,100.0,Larval,Stem bark,DCM,1.0,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,1,0
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,80.0,24.0,25.46,Larval,Stem bark,MeOH,0.2546,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,80.0,48.0,69.27,Larval,Stem bark,MeOH,0.6927,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Stem bark-MeOH,80.0,72.0,92.11,Larval,Stem bark,MeOH,0.9211,Paper-reported mean; not raw replicate-level observations,0,1,0,1,0,1,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,80.0,24.0,18.24,Larval,Exudate,MeOH,0.18239999999999998,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,80.0,48.0,59.04,Larval,Exudate,MeOH,0.5904,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-MeOH,80.0,72.0,86.75,Larval,Exudate,MeOH,0.8675,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,0,1
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,80.0,24.0,40.59,Larval,Exudate,DCM,0.40590000000000004,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,80.0,48.0,81.28,Larval,Exudate,DCM,0.8128,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus microplus,Larval immersion test,Exudate-DCM,80.0,72.0,94.44,Larval,Exudate,DCM,0.9444,Paper-reported mean; not raw replicate-level observations,0,1,0,1,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,5.0,24.0,18.0,Adult,Stem bark,DCM,0.18,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,5.0,48.0,29.33,Adult,Stem bark,DCM,0.2933,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,5.0,72.0,48.33,Adult,Stem bark,DCM,0.4833,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,5.0,24.0,8.67,Adult,Stem bark,MeOH,0.0867,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,5.0,48.0,18.0,Adult,Stem bark,MeOH,0.18,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,5.0,72.0,39.0,Adult,Stem bark,MeOH,0.39,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,5.0,24.0,5.67,Adult,Exudate,MeOH,0.0567,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,5.0,48.0,12.0,Adult,Exudate,MeOH,0.12,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,5.0,72.0,28.0,Adult,Exudate,MeOH,0.28,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,5.0,24.0,10.33,Adult,Exudate,DCM,0.1033,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,5.0,48.0,21.67,Adult,Exudate,DCM,0.2167,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,5.0,72.0,41.0,Adult,Exudate,DCM,0.41,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,10.0,24.0,25.33,Adult,Stem bark,DCM,0.25329999999999997,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,10.0,48.0,39.33,Adult,Stem bark,DCM,0.3933,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,10.0,72.0,58.33,Adult,Stem bark,DCM,0.5832999999999999,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,10.0,24.0,12.0,Adult,Stem bark,MeOH,0.12,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,10.0,48.0,27.67,Adult,Stem bark,MeOH,0.2767,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,10.0,72.0,46.67,Adult,Stem bark,MeOH,0.4667,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,10.0,24.0,10.0,Adult,Exudate,MeOH,0.1,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,10.0,48.0,18.0,Adult,Exudate,MeOH,0.18,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,10.0,72.0,36.0,Adult,Exudate,MeOH,0.36,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,10.0,24.0,18.33,Adult,Exudate,DCM,0.1833,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,10.0,48.0,29.0,Adult,Exudate,DCM,0.29,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,10.0,72.0,56.0,Adult,Exudate,DCM,0.56,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,20.0,24.0,29.0,Adult,Stem bark,DCM,0.29,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,20.0,48.0,50.33,Adult,Stem bark,DCM,0.5033,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,20.0,72.0,71.67,Adult,Stem bark,DCM,0.7167,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,20.0,24.0,19.33,Adult,Stem bark,MeOH,0.19329999999999997,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,20.0,48.0,46.67,Adult,Stem bark,MeOH,0.4667,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,20.0,72.0,63.0,Adult,Stem bark,MeOH,0.63,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,20.0,24.0,15.0,Adult,Exudate,MeOH,0.15,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,20.0,48.0,32.0,Adult,Exudate,MeOH,0.32,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,20.0,72.0,58.33,Adult,Exudate,MeOH,0.5832999999999999,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,20.0,24.0,25.0,Adult,Exudate,DCM,0.25,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,20.0,48.0,47.67,Adult,Exudate,DCM,0.4767,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,20.0,72.0,70.0,Adult,Exudate,DCM,0.7,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,40.0,24.0,34.33,Adult,Stem bark,DCM,0.3433,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,40.0,48.0,67.33,Adult,Stem bark,DCM,0.6733,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,40.0,72.0,85.67,Adult,Stem bark,DCM,0.8567,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,40.0,24.0,26.0,Adult,Stem bark,MeOH,0.26,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,40.0,48.0,52.67,Adult,Stem bark,MeOH,0.5267000000000001,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,40.0,72.0,74.0,Adult,Stem bark,MeOH,0.74,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,40.0,24.0,22.33,Adult,Exudate,MeOH,0.22329999999999997,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,40.0,48.0,39.33,Adult,Exudate,MeOH,0.3933,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,40.0,72.0,72.0,Adult,Exudate,MeOH,0.72,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,40.0,24.0,32.33,Adult,Exudate,DCM,0.3233,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,40.0,48.0,57.0,Adult,Exudate,DCM,0.57,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,40.0,72.0,81.33,Adult,Exudate,DCM,0.8133,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,80.0,24.0,47.33,Adult,Stem bark,DCM,0.4733,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,80.0,48.0,75.67,Adult,Stem bark,DCM,0.7567,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-DCM,80.0,72.0,100.0,Adult,Stem bark,DCM,1.0,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,1,0
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,80.0,24.0,35.67,Adult,Stem bark,MeOH,0.3567,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,80.0,48.0,58.0,Adult,Stem bark,MeOH,0.58,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Stem bark-MeOH,80.0,72.0,95.0,Adult,Stem bark,MeOH,0.95,Paper-reported mean; not raw replicate-level observations,1,0,1,0,0,1,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,80.0,24.0,28.67,Adult,Exudate,MeOH,0.2867,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,80.0,48.0,53.0,Adult,Exudate,MeOH,0.53,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-MeOH,80.0,72.0,86.0,Adult,Exudate,MeOH,0.86,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,0,1
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,80.0,24.0,38.0,Adult,Exudate,DCM,0.38,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,80.0,48.0,68.33,Adult,Exudate,DCM,0.6833,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus decoloratus,Adult immersion test,Exudate-DCM,80.0,72.0,100.0,Adult,Exudate,DCM,1.0,Paper-reported mean; not raw replicate-level observations,1,0,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,5.0,24.0,16.0,Adult,Stem bark,DCM,0.16,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,5.0,48.0,27.67,Adult,Stem bark,DCM,0.2767,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,5.0,72.0,34.67,Adult,Stem bark,DCM,0.3467,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,5.0,24.0,8.67,Adult,Stem bark,MeOH,0.0867,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,5.0,48.0,16.67,Adult,Stem bark,MeOH,0.16670000000000001,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,5.0,72.0,28.0,Adult,Stem bark,MeOH,0.28,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,5.0,24.0,5.33,Adult,Exudate,MeOH,0.0533,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,5.0,48.0,11.67,Adult,Exudate,MeOH,0.1167,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,5.0,72.0,21.0,Adult,Exudate,MeOH,0.21,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,5.0,24.0,9.33,Adult,Exudate,DCM,0.0933,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,5.0,48.0,21.33,Adult,Exudate,DCM,0.2133,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,5.0,72.0,30.0,Adult,Exudate,DCM,0.3,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,10.0,24.0,22.0,Adult,Stem bark,DCM,0.22,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,10.0,48.0,34.33,Adult,Stem bark,DCM,0.3433,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,10.0,72.0,57.0,Adult,Stem bark,DCM,0.57,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,10.0,24.0,12.0,Adult,Stem bark,MeOH,0.12,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,10.0,48.0,21.0,Adult,Stem bark,MeOH,0.21,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,10.0,72.0,46.33,Adult,Stem bark,MeOH,0.4633,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,10.0,24.0,9.0,Adult,Exudate,MeOH,0.09,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,10.0,48.0,16.67,Adult,Exudate,MeOH,0.16670000000000001,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,10.0,72.0,28.67,Adult,Exudate,MeOH,0.2867,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,10.0,24.0,15.0,Adult,Exudate,DCM,0.15,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,10.0,48.0,29.67,Adult,Exudate,DCM,0.2967,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,10.0,72.0,47.67,Adult,Exudate,DCM,0.4767,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,20.0,24.0,26.67,Adult,Stem bark,DCM,0.2667,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,20.0,48.0,42.67,Adult,Stem bark,DCM,0.4267,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,20.0,72.0,68.33,Adult,Stem bark,DCM,0.6833,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,20.0,24.0,15.33,Adult,Stem bark,MeOH,0.1533,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,20.0,48.0,32.33,Adult,Stem bark,MeOH,0.3233,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,20.0,72.0,58.67,Adult,Stem bark,MeOH,0.5867,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,20.0,24.0,14.67,Adult,Exudate,MeOH,0.1467,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,20.0,48.0,24.67,Adult,Exudate,MeOH,0.24670000000000003,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,20.0,72.0,44.33,Adult,Exudate,MeOH,0.44329999999999997,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,20.0,24.0,24.33,Adult,Exudate,DCM,0.2433,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,20.0,48.0,36.33,Adult,Exudate,DCM,0.36329999999999996,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,20.0,72.0,64.67,Adult,Exudate,DCM,0.6467,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,40.0,24.0,34.0,Adult,Stem bark,DCM,0.34,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,40.0,48.0,59.67,Adult,Stem bark,DCM,0.5967,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,40.0,72.0,84.67,Adult,Stem bark,DCM,0.8467,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,40.0,24.0,26.67,Adult,Stem bark,MeOH,0.2667,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,40.0,48.0,41.33,Adult,Stem bark,MeOH,0.4133,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,40.0,72.0,66.67,Adult,Stem bark,MeOH,0.6667000000000001,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,40.0,24.0,20.33,Adult,Exudate,MeOH,0.20329999999999998,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,40.0,48.0,36.33,Adult,Exudate,MeOH,0.36329999999999996,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,40.0,72.0,59.0,Adult,Exudate,MeOH,0.59,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,40.0,24.0,31.0,Adult,Exudate,DCM,0.31,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,40.0,48.0,47.0,Adult,Exudate,DCM,0.47,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,40.0,72.0,75.0,Adult,Exudate,DCM,0.75,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,80.0,24.0,41.67,Adult,Stem bark,DCM,0.4167,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,80.0,48.0,73.0,Adult,Stem bark,DCM,0.73,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-DCM,80.0,72.0,100.0,Adult,Stem bark,DCM,1.0,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,1,0
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,80.0,24.0,31.0,Adult,Stem bark,MeOH,0.31,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,80.0,48.0,55.0,Adult,Stem bark,MeOH,0.55,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Stem bark-MeOH,80.0,72.0,88.0,Adult,Stem bark,MeOH,0.88,Paper-reported mean; not raw replicate-level observations,0,1,1,0,0,1,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,80.0,24.0,26.67,Adult,Exudate,MeOH,0.2667,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,80.0,48.0,48.0,Adult,Exudate,MeOH,0.48,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-MeOH,80.0,72.0,83.33,Adult,Exudate,MeOH,0.8332999999999999,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,0,1
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,80.0,24.0,37.0,Adult,Exudate,DCM,0.37,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,80.0,48.0,67.33,Adult,Exudate,DCM,0.6733,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0
+Rhipicephalus microplus,Adult immersion test,Exudate-DCM,80.0,72.0,93.33,Adult,Exudate,DCM,0.9333,Paper-reported mean; not raw replicate-level observations,0,1,1,0,1,0,1,0

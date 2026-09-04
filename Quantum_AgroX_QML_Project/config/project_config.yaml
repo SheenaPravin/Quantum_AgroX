@@ -1,0 +1,73 @@
+project:
+  name: "Quantum_AgroX_QML"
+  version: "0.1.0"
+  description: "Quantum Machine Learning Platform for Botanical Acaricide Discovery"
+
+data:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  mortality_dataset: "qml_mortality_dataset.csv"
+  docking_candidates: "qml_docking_candidates_dataset.csv"
+  docking_validation: "docking_validation_dataset.csv"
+  phytochemicals: "01_major_phytochemicals_reported.csv"
+  lc50_data: "04_LC50_LC90_reported.csv"
+
+features:
+  numerical_cols:
+    - "Concentration_mg_mL"
+    - "Exposure_h"
+    - "Mortality_fraction"
+  encoded_cols:
+    - "Species_Rhipicephalus_decoloratus"
+    - "Species_Rhipicephalus_microplus"
+    - "Stage_Adult"
+    - "Stage_Larval"
+    - "PlantPart_Exudate"
+    - "PlantPart_Stem_bark"
+    - "Solvent_DCM"
+    - "Solvent_MeOH"
+  target_mortality: "Mortality_fraction"
+  target_classification: "high_efficacy"
+
+classification_threshold:
+  high_efficacy: 0.5
+
+quantum:
+  n_qubits: 8
+  circuit_depth: 2
+  n_layers: 3
+  shots: 1024
+  feature_map: "angle"
+  entanglement: "full"
+
+models:
+  random_forest:
+    n_estimators: 100
+    max_depth: 10
+    random_state: 42
+  xgboost:
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+    random_state: 42
+  svm:
+    kernel: "rbf"
+    C: 1.0
+    gamma: "scale"
+  kernel_ridge:
+    kernel: "rbf"
+    alpha: 1.0
+
+evaluation:
+  cv_folds: 5
+  test_size: 0.2
+  random_state: 42
+  regression_metrics:
+    - "MAE"
+    - "RMSE"
+    - "R2"
+  classification_metrics:
+    - "accuracy"
+    - "balanced_accuracy"
+    - "f1"
+    - "roc_auc"

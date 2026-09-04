@@ -1,0 +1,11 @@
+Species,Extract,Compound,Binding_affinity_kcal_mol,Reported_interactions
+R. decoloratus,DCM - stem bark,"6-Hydroxy-10a-methyl-4,7-dimethylidene-2,8-dioxododecahydrooxireno[8,9]cyclodeca[1,2-b]furan-5-yl(2Z)-2-methylbut-2-enoate",-8.5,H-bond Arg580; C-H bond Asp409; pi-alkyl Tyr447/His448
+R. decoloratus,DCM - exudate,"4,6-Androstadien-3beta-ol-17-one acetate",-8.5,"pi-alkyl/alkyl Leu122, Val118, Tyr383; van der Waals"
+R. decoloratus,MeOH - stem bark,"Spirost-8-en-11-one,3-hydroxy-",-8.6,H-bond Thr121; pi-alkyl/alkyl; van der Waals
+R. decoloratus,MeOH - exudate,"2-Furanmethanol, tetrahydro-alpha,alpha,5-trimethyl-5-(4-methyl-3-cyclohexen-1-yl)",-9.7,H-bond Val118; pi-pi T-shaped/pi-alkyl Tyr173/Tyr383; van der Waals
+R. decoloratus,Control,Chlorfenvinphos,-6.0,pi-alkyl Phe384/Tyr173/Tyr383; van der Waals
+R. microplus,MeOH - stem bark,"3,17-Dioxo-11-alpha-hydroxyandrostane-1,4-diene",-10.1,H-bonds Trp512/Trp486; pi-alkyl/alkyl Tyr512/Pro485/Pro599; van der Waals
+R. microplus,MeOH - exudate,"Ergost-25-ene-3,5,6-triol (3alpha,5alpha,6alpha)",-10.0,pi-alkyl Pro485/Met136/Pro499/Val186; van der Waals
+R. microplus,DCM - stem bark,"14-Hydroxy-5,9,12,13,16-pentamethyl-4-oxatricyclo...hexadecadien-2-one",-9.7,H-bonds Ser377/Leu375/Gln474; pi-alkyl; van der Waals; reported covalent contact Gln474
+R. microplus,DCM - exudate,"4,6-Androstadien-3beta-ol-17-one acetate",-9.8,H-bond Trp137; alkyl Met136/Pro485; van der Waals
+R. microplus,Control,Chlorfenvinphos,-6.5,H-bond Gly495; pi-alkyl/alkyl Trp137/Val186/Val498; van der Waals
