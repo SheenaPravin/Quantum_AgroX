@@ -1,0 +1,257 @@
+{
+  "meta": {
+    "title": "Quantum_AgroX",
+    "subtitle": "Quantum Machine Learning Platform for Botanical Acaricide Discovery",
+    "project": "Commiphora swynnertonii benchmark",
+    "data_note": "Paper-derived benchmark: aggregate means, not raw replicates"
+  },
+  "statcards": [
+    {
+      "label": "Bioassay Records",
+      "value": 240,
+      "icon": "bi-capsule",
+      "unit": "measurements"
+    },
+    {
+      "label": "Phytochemicals",
+      "value": 40,
+      "icon": "bi-flask",
+      "unit": "GC-MS hits"
+    },
+    {
+      "label": "Docking Candidates",
+      "value": 10,
+      "icon": "bi-bounding-box",
+      "unit": "AChE poses"
+    },
+    {
+      "label": "LC50 / LC90 Entries",
+      "value": 16,
+      "icon": "bi-graph-up",
+      "unit": "probit fits"
+    },
+    {
+      "label": "Docking Validation",
+      "value": 6,
+      "icon": "bi-check2-circle",
+      "unit": "PDB complexes"
+    },
+    {
+      "label": "QML Models",
+      "value": 3,
+      "icon": "bi-cpu",
+      "unit": "quantum algorithms"
+    }
+  ],
+  "mortality_by_extract": [
+    {
+      "extract": "Stem bark-DCM",
+      "records": 60
+    },
+    {
+      "extract": "Stem bark-MeOH",
+      "records": 60
+    },
+    {
+      "extract": "Exudate-MeOH",
+      "records": 60
+    },
+    {
+      "extract": "Exudate-DCM",
+      "records": 60
+    }
+  ],
+  "mortality_by_species": [
+    {
+      "species": "R. decoloratus",
+      "records": 120
+    },
+    {
+      "species": "R. microplus",
+      "records": 120
+    }
+  ],
+  "mortality_by_assay": [
+    {
+      "assay": "Larval",
+      "records": 120
+    },
+    {
+      "assay": "Adult",
+      "records": 120
+    }
+  ],
+  "lc50_best": [
+    {
+      "extract": "Stem bark DCM",
+      "lc50": 2.78,
+      "assay": "Larval",
+      "species": "R. decoloratus"
+    },
+    {
+      "extract": "Stem bark MeOH",
+      "lc50": 6.91,
+      "assay": "Larval",
+      "species": "R. decoloratus"
+    },
+    {
+      "extract": "Exudate DCM",
+      "lc50": 5.54,
+      "assay": "Larval",
+      "species": "R. decoloratus"
+    },
+    {
+      "extract": "Exudate MeOH",
+      "lc50": 8.42,
+      "assay": "Larval",
+      "species": "R. decoloratus"
+    }
+  ],
+  "docking_dock": [
+    {
+      "species": "R. decoloratus",
+      "avg_affinity": 8.82
+    },
+    {
+      "species": "R. microplus",
+      "avg_affinity": 9.9
+    }
+  ],
+  "validation": [
+    {
+      "pdb": "2ZC9",
+      "calc": -37.7,
+      "exp": -35.4,
+      "rmsd": 1.99
+    },
+    {
+      "pdb": "2ZF0",
+      "calc": -37.0,
+      "exp": -34.8,
+      "rmsd": 1.68
+    },
+    {
+      "pdb": "2ZHQ",
+      "calc": -40.6,
+      "exp": -37.8,
+      "rmsd": 2.02
+    },
+    {
+      "pdb": "2ZIQ",
+      "calc": -38.1,
+      "exp": -37.4,
+      "rmsd": 1.77
+    },
+    {
+      "pdb": "2ZI2",
+      "calc": -34.7,
+      "exp": -32.8,
+      "rmsd": 1.93
+    },
+    {
+      "pdb": "2ZFF",
+      "calc": -33.9,
+      "exp": -31.7,
+      "rmsd": 1.61
+    }
+  ],
+  "phytochemical_classes": [
+    {
+      "cls": "Sesquiterpenoid",
+      "count": 9
+    },
+    {
+      "cls": "Sesquiterpene",
+      "count": 7
+    },
+    {
+      "cls": "Steroid",
+      "count": 5
+    },
+    {
+      "cls": "Diterpenoid",
+      "count": 4
+    },
+    {
+      "cls": "Sterol",
+      "count": 4
+    },
+    {
+      "cls": "Monoterpenoid",
+      "count": 2
+    },
+    {
+      "cls": "Sesquiterpenoids",
+      "count": 1
+    },
+    {
+      "cls": "Aromatic compound",
+      "count": 1
+    }
+  ],
+  "ach_models": [
+    {
+      "species": "R. decoloratus",
+      "generator": "MODELLER",
+      "ramachandran": 88.5,
+      "verify3d": 84.41,
+      "errrat": 82.76,
+      "prosa": -5.98
+    },
+    {
+      "species": "R. microplus",
+      "generator": "MODELLER",
+      "ramachandran": 86.9,
+      "verify3d": 82.02,
+      "errrat": 73.04,
+      "prosa": -8.36
+    },
+    {
+      "species": "R. decoloratus",
+      "generator": "SWISS-MODEL",
+      "ramachandran": 90.6,
+      "verify3d": 91.78,
+      "errrat": 87.91,
+      "prosa": -9.59
+    },
+    {
+      "species": "R. microplus",
+      "generator": "SWISS-MODEL",
+      "ramachandran": 93.2,
+      "verify3d": 94.21,
+      "errrat": 92.69,
+      "prosa": -9.79
+    }
+  ],
+  "qml_modules": {
+    "Quantum Kernel Regression": "Quantum fidelity kernel + Kernel Ridge Regression for mortality fraction / LC50 prediction",
+    "Quantum Kernel SVM (QSVM)": "Fidelity kernel and quantum feature-map approaches for high vs lower acaricidal efficacy",
+    "Variational Quantum Classifier (VQC)": "Parameterized quantum circuits with angle embedding for efficacy classification and mortality regression"
+  },
+  "pipeline": [
+    {
+      "step": "Ingest",
+      "detail": "GC-MS, bioassay, LC50/90, docking, AChE model datasets"
+    },
+    {
+      "step": "Encode",
+      "detail": "Feature engineering, normalization, angle encoding"
+    },
+    {
+      "step": "Classical baselines",
+      "detail": "RF, XGBoost, SVM regression + classification"
+    },
+    {
+      "step": "Quantum models",
+      "detail": "Fidelity kernel KRR, QSVM, VQC"
+    },
+    {
+      "step": "Evaluate",
+      "detail": "5-fold CV, MAE/RMSE/R2, Acc/F1/ROC-AUC"
+    },
+    {
+      "step": "AgroX score",
+      "detail": "Multi-objective efficacy + safety ranking"
+    }
+  ]
+}

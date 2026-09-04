@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum_AgroX — MEDxAI Dashboard</title>
+<meta name="description" content="Quantum_AgroX: Quantum Machine Learning Platform for Botanical Acaricide Discovery — MEDxAI Innovations.">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --q-cyan: #22d3ee;
+    --q-blue: #3b82f6;
+    --q-violet: #8b5cf6;
+    --q-magenta: #e879f9;
+    --q-bg: #070b1a;
+    --q-surface: #0d1428;
+    --q-border: #1e2a4a;
+    --q-text: #dbe4ff;
+    --q-muted: #7c8cc9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: radial-gradient(1200px 600px at 20% -10%, #14204a 0%, transparent 55%),
+                radial-gradient(1000px 500px at 100% 0%, #1b1140 0%, transparent 50%),
+                var(--q-bg);
+    color: var(--q-text);
+    font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .navbar-glow {
+    background: rgba(13, 20, 40, 0.72);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--q-border);
+  }
+  .brand-logo {
+    height: 46px; width: auto;
+    border-radius: 10px;
+    background: #fff;
+    padding: 3px;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 8px 24px rgba(34,211,238,.15);
+  }
+  .brand-title {
+    font-weight: 800; letter-spacing: .5px;
+    background: linear-gradient(90deg, var(--q-cyan), var(--q-violet), var(--q-magenta));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero { padding: 72px 0 40px; }
+  .hero h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; }
+  .hero .lead { color: var(--q-muted); max-width: 800px; margin: 0 auto; }
+  .badge-q { background: rgba(139,92,246,.15); color: #c4b5fd; border: 1px solid rgba(139,92,246,.35); }
+  .stat-card {
+    background: linear-gradient(180deg, rgba(255,255,255,.04), transparent), var(--q-surface);
+    border: 1px solid var(--q-border);
+    border-radius: 16px;
+    padding: 20px;
+    transition: transform .18s ease, box-shadow .18s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(34,211,238,.12); }
+  .stat-card .icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: grid; place-items: center; font-size: 1.3rem;
+    background: linear-gradient(135deg, var(--q-cyan), var(--q-violet));
+    color: #fff; margin-bottom: 12px;
+  }
+  .stat-card .value { font-size: 1.9rem; font-weight: 800; line-height: 1; }
+  .stat-card .label { color: var(--q-muted); font-size: .82rem; margin-top: 6px; }
+  .panel {
+    background: var(--q-surface);
+    border: 1px solid var(--q-border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .panel h2.title {
+    font-size: 1rem; font-weight: 700; letter-spacing: .8px;
+    text-transform: uppercase; color: var(--q-cyan);
+    display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  }
+  .panel canvas { max-height: 300px; }
+  .pipeline-node {
+    border-left: 2px solid var(--q-border);
+    padding-left: 16px; padding-bottom: 18px; position: relative;
+  }
+  .pipeline-node::before {
+    content: ""; position: absolute; left: -7px; top: 2px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--q-cyan), var(--q-violet));
+  }
+  .pipeline-node .step { font-weight: 700; color: var(--q-text); }
+  .pipeline-node .detail { color: var(--q-muted); font-size: .85rem; }
+  .qml-box {
+    border: 1px solid rgba(34,211,238,.25);
+    background: linear-gradient(135deg, rgba(34,211,238,.06), rgba(139,92,246,.06));
+    border-radius: 12px; padding: 14px 16px;
+  }
+  .qml-box .qname { font-weight: 700; color: var(--q-cyan); }
+  .qml-box .qdesc { color: var(--q-muted); font-size: .85rem; }
+  footer {
+    border-top: 1px solid var(--q-border);
+    background: rgba(7,11,26,.8);
+    color: var(--q-muted);
+    font-size: .82rem;
+  }
+  footer .foot-logo { height: 34px; border-radius: 8px; }
+  .glow-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:#34d399; box-shadow:0 0 10px #34d399; }
+  .table-dark { --bs-table-bg: transparent; --bs-table-border-color: var(--q-border); }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top navbar-glow">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+      <img src="assets/medxai_logo.png" alt="MEDxAI Logo" class="brand-logo">
+      <span class="d-flex flex-column">
+        <span class="brand-title">Quantum_AgroX</span>
+        <span class="d-block" style="font-size:.68rem; color:var(--q-muted); letter-spacing:1.6px;">MEDxAI INNOVATIONS · QML</span>
+      </span>
+    </a>
+    <div class="ms-auto d-flex align-items-center gap-3">
+      <span class="badge badge-q"><i class="bi bi-cpu me-1"></i>PennyLane · QKernel · QSVM · VQC</span>
+      <a class="btn btn-sm btn-outline-light" style="border-color:var(--q-border); color:var(--q-cyan);"
+         href="https://github.com/SheenaPravin/Quantum_AgroX/tree/Feat/Sheena" target="_blank" rel="noopener">
+        <i class="bi bi-github me-1"></i>Code
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero text-center container">
+  <p class="text-uppercase mb-2" style="letter-spacing:3px; color:var(--q-muted); font-size:.78rem;">
+    <span class="glow-dot me-2"></span>Live · GitHub Pages</p>
+  <h1 class="brand-title d-inline-block">Quantum Machine Learning for Botanical Acaricide Discovery</h1>
+  <p class="lead mt-3">
+    <em>Commiphora swynnertonii</em> benchmark — GC-MS phytochemistry, tick bioassays, LC50/LC90,
+    AChE modelling and docking, powered by quantum kernels &amp; variational quantum circuits.
+  </p>
+</header>
+
+<main class="container">
+  <!-- Stat cards -->
+  <div class="row g-4" id="statCards"></div>
+
+  <!-- Charts -->
+  <div class="row g-4 mt-1">
+    <div class="col-lg-4">
+      <div class="panel h-100">
+        <h2 class="title"><i class="bi bi-capsule"></i> Mortality by Extract</h2>
+        <canvas id="chartExtract"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="panel h-100">
+        <h2 class="title"><i class="bi bi-bounding-box"></i> Best LC50 by Extract</h2>
+        <canvas id="chartLC50"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="panel h-100">
+        <h2 class="title"><i class="bi bi-flask"></i> Phytochemical Classes</h2>
+        <canvas id="chartPhyto"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-1">
+    <div class="col-lg-6">
+      <div class="panel h-100">
+        <h2 class="title"><i class="bi bi-diagram-3"></i> End-to-End QML Pipeline</h2>
+        <div id="pipelineList"></div>
+        <div class="mt-3 d-flex flex-wrap gap-2" id="qmlModules"></div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="panel h-100">
+        <h2 class="title"><i class="bi bi-check2-circle"></i> Docking Validation (calc vs experimental)</h2>
+        <canvas id="chartValidation"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-1">
+    <div class="col-lg-7">
+      <div class="panel h-100">
+        <h2 class="title"><i class="bi bi-table"></i> Docking Candidates — AChE Binding Affinity</h2>
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0" id="dockTable">
+            <thead><tr><th>Species</th><th>Extract</th><th>Compound</th><th class="text-end">ΔG (kcal/mol)</th><th>Interactions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="panel h-100">
+        <h2 class="title"><i class="bi bi-stars"></i> AChE Homology Model Validation</h2>
+        <div class="table-responsive">
+          <table class="table table-dark table-hover mb-0" id="achTable">
+            <thead><tr><th>Species</th><th>Generator</th><th class="text-end">Ramachandran %</th><th class="text-end">Verify3D %</th><th class="text-end">ERRAT</th><th class="text-end">ProSA Z</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="mt-3" id="smartText"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="mt-5">
+  <div class="container py-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+    <div class="d-flex align-items-center gap-3">
+      <img src="assets/medxai_logo_small.png" alt="MEDxAI" class="foot-logo">
+      <div>
+        <div style="font-weight:700; color:var(--q-text);">MEDxAI Innovations</div>
+        <div class="text-uppercase" style="letter-spacing:2px;">Quantum AgroX · Platform</div>
+      </div>
+    </div>
+    <div class="text-md-end">
+      <div>Quantum ML Platform for Agrochemical Discovery</div>
+      <div>Branch <code style="color:var(--q-cyan);">Feat/Sheena</code> · <span id="footYear"></span></div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+const QCOLORS = ["#22d3ee", "#8b5cf6", "#e879f9", "#3b82f6", "#34d399", "#fbbf24", "#f472b6", "#94a3b8"];
+Chart.defaults.color = "#aeb9e6";
+Chart.defaults.borderColor = "rgba(120,140,190,.12)";
+Chart.defaults.font.family = "'Inter','Segoe UI',sans-serif";
+
+let DATA = null;
+
+async function load() {
+  const res = await fetch("assets/dashboard_data.json?_v=" + Date.now());
+  DATA = await res.json();
+  renderStats();
+  renderCharts();
+  renderTables();
+  renderPipeline();
+}
+
+function iconFor(ic) { return `icon-${ic}`; }
+
+function renderStats() {
+  const wrap = document.getElementById("statCards");
+  DATA.statcards.forEach(s => {
+    const colors = ["#22d3ee","#8b5cf6","#e879f9","#3b82f6","#34d399","#fbbf24"];
+    const c = colors[Math.floor(Math.random()*colors.length)];
+    wrap.insertAdjacentHTML("beforeend", `
+      <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card">
+          <div class="icon" style="background:linear-gradient(135deg,${c},${c}66);box-shadow:0 8px 20px ${c}33;">
+            <i class="bi ${s.icon}"></i>
+          </div>
+          <div class="value">${s.value}</div>
+          <div class="label">${s.label}<br><small>${s.unit}</small></div>
+        </div>
+      </div>`);
+  });
+}
+
+function renderCharts() {
+  // Mortality by extract
+  new Chart(chartExtract, {
+    type: "bar",
+    data: {
+      labels: DATA.mortality_by_extract.map(d => d.extract.replace("-", " · ")),
+      datasets: [{ label: "Bioassay records", data: DATA.mortality_by_extract.map(d => d.records),
+        backgroundColor: QCOLORS.map(c => c + "bb"), borderRadius: 8 }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+  // LC50
+  new Chart(chartLC50, {
+    type: "bar",
+    data: {
+      labels: DATA.lc50_best.map(d => d.extract),
+      datasets: [{ label: "LC50 (mg/mL)", data: DATA.lc50_best.map(d => d.lc50),
+        backgroundColor: "#e879f9bb", borderRadius: 8 }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+  // Phytochemical classes
+  new Chart(chartPhyto, {
+    type: "doughnut",
+    data: {
+      labels: DATA.phytochemical_classes.map(d => d.cls),
+      datasets: [{ data: DATA.phytochemical_classes.map(d => d.count), backgroundColor: QCOLORS, borderColor: "#0d1428" }]
+    },
+    options: { plugins: { legend: { position: "right", labels: { boxWidth: 12 } } } }
+  });
+  // Docking validation scatter
+  new Chart(chartValidation, {
+    type: "scatter",
+    data: {
+      datasets: DATA.validation.map((v, i) => ({
+        label: v.pdb,
+        data: [{ x: v.calc, y: v.exp }],
+        backgroundColor: QCOLORS[i % QCOLORS.length]
+      }))
+    },
+    options: {
+      plugins: { tooltip: { callbacks: { label: c => ` ${c.label}  calc=${c.raw.x}  exp=${c.raw.y}  RMSD=${DATA.validation[c.dataIndex].rmsd}Å` } } },
+      scales: {
+        x: { title: { display: true, text: "Calculated ΔG (kJ/mol)" } },
+        y: { title: { display: true, text: "Experimental ΔG (kJ/mol)" } }
+      }
+    }
+  });
+}
+
+const DOCK_CSV = `Species,Extract,Compound,Binding_affinity_kcal_mol
+R. decoloratus,DCM - stem bark,6-Hydroxy-10a-methyl-4,7-dimethylidene-2,8-dioxododecahydrooxireno[8,9]cyclodeca[1,2-b]furan-5-yl(2Z)-2-methylbut-2-enoate,-8.5
+R. decoloratus,DCM - exudate,"4;6-Androstadien-3beta-ol-17-one acetate",-8.5
+R. decoloratus,MeOH - stem bark,"Spirost-8-en-11-one,3-hydroxy-",-8.6
+R. decoloratus,MeOH - exudate,2-Furanmethanol tetrahydro-alpha-alpha-5-trimethyl-5-(4-methyl-3-cyclohexen-1-yl),-9.7
+R. decoloratus,Control,Chlorfenvinphos,-6.0
+R. microplus,MeOH - stem bark,"3;17-Dioxo-11-alpha-hydroxyandrostane-1.4-diene",-10.1
+R. microplus,MeOH - exudate,"Ergost-25-ene-3,5,6-triol (3alpha,5alpha,6alpha)",-10.0
+R. microplus,DCM - stem bark,14-Hydroxy-5,9-12-13-16-pentamethyl-4-oxatricyclo-hexadecadien-2-one,-9.7
+R. microplus,DCM - exudate,"4;6-Androstadien-3beta-ol-17-one acetate",-9.8
+R. microplus,Control,Chlorfenvinphos,-6.5`;
+
+function renderTables() {
+  const tb = document.querySelector("#dockTable tbody");
+  DOCK_CSV.trim().split("\n").slice(1).forEach(line => {
+    const [sp, ex, cp, aff] = line.split(",");
+    const clean = s => s.replace(/"/g, "");
+    tb.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${clean(sp)}</td><td>${clean(ex)}</td><td style="max-width:300px">${clean(cp)}</td>
+        <td class="text-end"><span class="badge ${parseFloat(aff) <= -9 ? 'text-bg-warning' : 'text-bg-success'}">${aff}</span></td>
+        <td><span class="text-muted small">${parseFloat(aff) <= -9 ? "Strong" : "Moderate"}</span></td>
+      </tr>`);
+  });
+  const at = document.querySelector("#achTable tbody");
+  DATA.ach_models.forEach(r => {
+    at.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td class="small">${r.species}</td><td class="small">${r.generator}</td>
+        <td class="text-end">${r.ramachandran.toFixed(1)}</td>
+        <td class="text-end">${r.verify3d.toFixed(1)}</td>
+        <td class="text-end">${r.errrat.toFixed(1)}</td>
+        <td class="text-end" style="color:${Math.abs(r.prosa) >= 8 ? "#34d399" : "#fbbf24"}">${r.prosa}</td>
+      </tr>`);
+  });
+  // SMART like insight
+  const best = DATA.ach_models.reduce((a, b) => a.ramachandran > b.ramachandran ? a : b);
+  document.getElementById("smartText").innerHTML =
+    `<div class="p-3 rounded" style="background:linear-gradient(135deg,rgba(34,211,238,.08),rgba(139,92,246,.08)); border:1px solid var(--q-border);">
+      <i class="bi bi-lightbulb text-warning me-1"></i>
+      <strong style="color:var(--q-cyan)">SWISS-MODEL (${best.species})</strong> tops model validation with
+      <strong>${best.ramachandran}%</strong> Ramachandran-favoured residues and ProSA Z = ${best.prosa}, supporting reliable docking of the top phytochemical hits.
+    </div>`;
+}
+
+function renderPipeline() {
+  const pl = document.getElementById("pipelineList");
+  DATA.pipeline.forEach(p => {
+    pl.insertAdjacentHTML("beforeend", `
+      <div class="pipeline-node">
+        <div class="step"><i class="bi bi-chevron-right me-1" style="color:var(--q-cyan);"></i>${p.step}</div>
+        <div class="detail">${p.detail}</div>
+      </div>`);
+  });
+  const qm = document.getElementById("qmlModules");
+  Object.entries(DATA.qml_modules).forEach(([name, desc]) => {
+    qm.insertAdjacentHTML("beforeend", `
+      <div class="qml-box flex-fill">
+        <div class="qname"><i class="bi bi-cpu me-1"></i>${name}</div>
+        <div class="qdesc mt-1">${desc}</div>
+      </div>`);
+  });
+}
+
+document.getElementById("footYear").textContent = "© " + new Date().getFullYear();
+load().catch(err => {
+  document.body.insertAdjacentHTML("beforeend", `<div class="alert alert-warning fixed-bottom m-3">Failed to load dashboard data: ${err.message}</div>`);
+});
+</script>
+</body>
+</html>
