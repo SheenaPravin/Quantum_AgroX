@@ -580,38 +580,45 @@
       markDone("syntheticx");
       logTrail("AgroSyntheticX: drawing workbench opened");
       var p = el("div", "panel");
-      p.innerHTML = "<div class='panel-h'>AgroSyntheticX — draw a synthetic molecule → SMILES</div>" +
-        "<p class='sml dim'>Sketch a novel candidate on the in-dashboard editor. Export produces a canonical, RDKit-validated SMILES: use the drawer's <b>Use as A / B</b> buttons to drop it into the Molecule Lab pair, then continue — AgroDockX picks that pair up automatically.</p>" +
-        "<div style='display:flex;gap:10px;flex-wrap:wrap;margin:8px 0'>" +
-        "<button class='primary' id='syn-draw'>✏ Draw molecule</button>" +
-        "<button class='ghost' id='syn-to-dock'>Continue to AgroDockX →</button></div>" +
-        "<div class='kv sml'>Drawn SMILES: <span class='kbd' id='syn-smi'>—</span></div>" +
+      p.innerHTML = "<div class='panel-h'>AgroSyntheticX — draw two synthetic molecules → SMILES</div>" +
+        "<p class='sml dim'>Sketch two candidates on the in-dashboard editor. Each is stored <b>separately</b> as <b>Synthetic A</b> / <b>Synthetic B</b>: inside the drawer press <b>Export to SMILES</b>, then <b>Use as A</b> / <b>Use as B</b>. AgroDockX can then take either one.</p>" +
+        "<div class='grid c2 mlgens'>" +
+        "<div><div class='panel-h sml'>Synthetic A</div><div class='kv sml'>SMILES: <span class='kbd' id='syn-smi-a'>—</span></div>" +
+        "<div style='margin-top:6px'><button class='primary' id='syn-draw-a'>✏ Draw A</button></div></div>" +
+        "<div><div class='panel-h sml'>Synthetic B</div><div class='kv sml'>SMILES: <span class='kbd' id='syn-smi-b'>—</span></div>" +
+        "<div style='margin-top:6px'><button class='primary' id='syn-draw-b'>✏ Draw B</button></div></div></div>" +
+        "<div style='display:flex;gap:10px;flex-wrap:wrap;margin:10px 0'>" +
+        "<button class='ghost' id='syn-to-dock'>Send both to AgroDockX →</button></div>" +
         "<p class='sml dim' id='syn-note'></p>";
       content.appendChild(p);
-      function showSmi(smi) { $("#syn-smi").textContent = smi || "—"; }
-      if (APP.synthSmi) showSmi(APP.synthSmi);
+      function showSlot(w) { var n = $("#syn-smi-" + w.toLowerCase()); if (n) n.textContent = APP["synth" + w] || "—"; }
+      showSlot("A"); showSlot("B");
+      function openDrawer() {
+        if (window.QXSketch) QXSketch.open($("#smi-a").value, $("#smi-b").value);
+        else $("#syn-note").textContent = "Drawer unavailable (sketcher.js not loaded).";
+      }
       if (window.QXSketch) {
         /* Chain onto the drawer callback (same A/B → Molecule Lab effect
-           as the lab's own handler) and capture the SMILES for the report. */
+           as the lab's own handler) and store each slot separately. */
         QXSketch.onUse(function (which, smi) {
-          APP.synthSmi = smi;
+          var feat = null;
           try {
             if (APP.RDKit) {
               var mm = rdMol(smi, "synthetic");
-              APP.synthFeat = molFeatures(mm);
+              feat = molFeatures(mm);
               try { mm.delete(); } catch (e2) {}
-            } else { APP.synthFeat = null; }
-          } catch (e) { APP.synthFeat = null; }
-          if (which === "A") $("#smi-a").value = smi; else $("#smi-b").value = smi;
-          showSmi(smi);
-          $("#syn-note").textContent = "Captured from drawer ✓ — stored as Molecule Lab " + which + ". Continue to AgroDockX when ready.";
-          logTrail("AgroSyntheticX: molecule drawn → " + smi + " (Molecule Lab " + which + ")");
+            }
+          } catch (e) { feat = null; }
+          APP.synthSmi = smi; APP.synthFeat = feat;
+          if (which === "A") { APP.synthA = smi; APP.synthFeatA = feat; $("#smi-a").value = smi; }
+          else { APP.synthB = smi; APP.synthFeatB = feat; $("#smi-b").value = smi; }
+          showSlot("A"); showSlot("B");
+          $("#syn-note").textContent = "Captured from drawer ✓ — stored as Synthetic " + which + " (+ Molecule Lab " + which + ").";
+          logTrail("AgroSyntheticX: molecule drawn → " + smi + " (Synthetic " + which + ")");
         });
       }
-      $("#syn-draw").addEventListener("click", function () {
-        if (window.QXSketch) QXSketch.open($("#smi-a").value, $("#smi-b").value);
-        else $("#syn-note").textContent = "Drawer unavailable (sketcher.js not loaded).";
-      });
+      $("#syn-draw-a").addEventListener("click", openDrawer);
+      $("#syn-draw-b").addEventListener("click", openDrawer);
       $("#syn-to-dock").addEventListener("click", function () {
         var i = M.modules.findIndex(function (m) { return m.id === "dockx"; });
         openPipelineAt(i >= 0 ? i : APP.pipe);
@@ -685,6 +692,8 @@
         "<div style='display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px'>" +
         "<button class='primary' id='dock-run'>Estimate affinity</button>" +
         "<button class='ghost' id='dock-phyto'>Use AgroPhytoX pair</button>" +
+        "<button class='ghost' id='dock-syn-a'>Take Synthetic A</button>" +
+        "<button class='ghost' id='dock-syn-b'>Take Synthetic B</button>" +
         "<button class='ghost' id='dock-sync'>Use Molecule Lab pair</button>" +
         "<span class='sml dim' id='dock-note'>Output below.</span></div><div id='dock-out' style='margin-top:12px'></div>";
       content.appendChild(lab);
@@ -706,6 +715,21 @@
       }
       if (APP.phytoA || APP.phytoB) pullPhytoPair();
       $("#dock-phyto").addEventListener("click", pullPhytoPair);
+      function takeSynthetic(which) {
+        var smi = which === "A" ? APP.synthA : APP.synthB;
+        var noteEl = $("#dock-note");
+        if (smi) {
+          if (which === "A") a.value = smi; else b.value = smi;
+          noteEl.textContent = "Synthetic " + which + " taken into Molecule " + which + " ✓";
+          noteEl.style.color = "var(--em)";
+          logTrail("AgroDockX: took Synthetic " + which + " from AgroSyntheticX");
+        } else {
+          noteEl.textContent = "No Synthetic " + which + " stored yet — draw it in AgroSyntheticX first.";
+          noteEl.style.color = "var(--amber)";
+        }
+      }
+      $("#dock-syn-a").addEventListener("click", function () { takeSynthetic("A"); });
+      $("#dock-syn-b").addEventListener("click", function () { takeSynthetic("B"); });
       $("#dock-run").addEventListener("click", function () {
         $("#smi-a").value = a.value; $("#smi-b").value = b.value;
         labAnalyze("#dock-out");
@@ -922,7 +946,7 @@
         if (APP.ledger.length) bestSnap = APP.ledger.slice().sort(function (a, b) { return a.affC - b.affC; })[0];
         html += "<h3>Snapshot — the bottom line</h3><div class='grid c2'>" +
           "<div class='bc'><b>" + esc(APP.phytoA && APP.phytoB ? APP.phytoA + " + " + APP.phytoB : "—") + "</b><span class='dim sml'>AgroPhytoX pair</span></div>" +
-          "<div class='bc'><b class='kbd'>" + esc(APP.synthSmi || "—") + "</b><span class='dim sml'>AgroSyntheticX drawing</span></div>" +
+          "<div class='bc'><b class='kbd'>" + esc((APP.synthA || "—") + " / " + (APP.synthB || "—")) + "</b><span class='dim sml'>AgroSyntheticX A / B</span></div>" +
           "<div class='bc'><b>" + (bestSnap ? bestSnap.affC + " kcal/mol · synergy " + bestSnap.synergy + " (" + esc(bestSnap.syn) + ")" : "—") + "</b><span class='dim sml'>best combo" + (bestSnap ? " · " + esc(bestSnap.target) : " · run the Molecule Lab") + "</span></div>" +
           "<div class='bc'><b>" + (bestSnap ? esc(bestSnap.dose) : "—") + "</b><span class='dim sml'>dose guidance</span></div></div>";
 
@@ -938,19 +962,21 @@
           html += "<div class='dim'>No phytochemical pair chosen yet. Open Pipeline → AgroPhytoX and pick two names.</div>";
         }
 
-        html += "<h3>2 · AgroSyntheticX — drawn molecule</h3>";
-        if (APP.synthSmi) {
-          var featRows = "";
-          if (APP.synthFeat) {
-            featRows = "<tr><td>MW / cLogP / TPSA</td><td class='num'>" + round(APP.synthFeat.mw, 1) + " / " + round(APP.synthFeat.clogp, 2) + " / " + round(APP.synthFeat.tpsa, 1) + "</td></tr>" +
-              "<tr><td>HBA / HBD / RotB / Rings</td><td class='num'>" + APP.synthFeat.hba + " / " + APP.synthFeat.hbd + " / " + APP.synthFeat.rotb + " / " + APP.synthFeat.rings + "</td></tr>";
+        html += "<h3>2 · AgroSyntheticX — drawn molecules</h3>";
+        if (APP.synthA || APP.synthB) {
+          function featRowsFor(f) {
+            if (!f) return "";
+            return "<tr><td>MW / cLogP / TPSA</td><td class='num'>" + round(f.mw, 1) + " / " + round(f.clogp, 2) + " / " + round(f.tpsa, 1) + "</td></tr>" +
+              "<tr><td>HBA / HBD / RotB / Rings</td><td class='num'>" + f.hba + " / " + f.hbd + " / " + f.rotb + " / " + f.rings + "</td></tr>";
           }
           html += "<table class='kv sml'><tbody>" +
-            "<tr><td>Drawn SMILES</td><td class='num kbd'>" + esc(APP.synthSmi) + "</td></tr>" +
-            featRows +
-            "<tr><td>Handoff</td><td class='num'>stored as Molecule Lab pair → AgroDockX</td></tr></tbody></table>";
+            "<tr><td>Synthetic A</td><td class='num kbd'>" + esc(APP.synthA || "—") + "</td></tr>" +
+            featRowsFor(APP.synthFeatA) +
+            "<tr><td>Synthetic B</td><td class='num kbd'>" + esc(APP.synthB || "—") + "</td></tr>" +
+            featRowsFor(APP.synthFeatB) +
+            "<tr><td>Handoff</td><td class='num'>Take Synthetic A / B into AgroDockX, or via Molecule Lab pair</td></tr></tbody></table>";
         } else {
-          html += "<div class='dim'>No synthetic molecule drawn yet. Open Pipeline → AgroSyntheticX.</div>";
+          html += "<div class='dim'>No synthetic molecules drawn yet. Open Pipeline → AgroSyntheticX and store A and B.</div>";
         }
 
         html += "<h3>3 · AgroTargetX / AgroSiteMap — receptor target</h3>";

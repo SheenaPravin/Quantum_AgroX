@@ -353,7 +353,7 @@
     var cr = c[0], cc = c[1];
     var axis;
     if (name === "benzene" || name === "pyridine" || name === "cyclohexane") {
-      var k = name === "pyridine" ? "N" : "C";
+      var k = "C";
       var elRing = [];
       var start = cr % 2 ? cc + 1 : cc;
       var pos = [
