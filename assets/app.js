@@ -53,13 +53,13 @@
   function bootRDKit() {
     var factory = window.initRDKitModule || window.initRDKit;
     if (!factory) return Promise.reject(new Error("RDKit script not found — check your connection"));
-    return factory().then(function (m) { APP.RDKit = m; APP.rdkitReady = true; return m; });
+    return factory().then(function (m) { APP.RDKit = m; window.RDKIT = m; APP.rdkitReady = true; window.setTimeout(renderFloatMols, 0); return m; });
   }
   function loadRDKit() {
     return new Promise(function (resolve, reject) {
       var factory = window.initRDKitModule || window.initRDKit;
       if (factory) { bootRDKit().then(resolve)["catch"](reject); return; }
-      if (window.RDKit && window.RDKit.get_mol) { APP.RDKit = window.RDKit; return resolve(); }
+      if (window.RDKit && window.RDKit.get_mol) { APP.RDKit = window.RDKit; window.RDKIT = window.RDKit; return resolve(); }
       var s = document.createElement("script");
       s.src = "vendor/RDKit_minimal.js";
       s.onload = function () { bootRDKit().then(resolve)["catch"](reject); };
@@ -377,7 +377,8 @@
     wrap.innerHTML = "";
     M.modules.forEach(function (mod, i) {
       var c = el("div", "modcard");
-      c.innerHTML = "<div class='mname'>" + esc(mod.name) + "</div>" +
+      c.innerHTML = "<div class='mchip'>" + String(i + 1).padStart(2, "0") + "</div>" +
+        "<div class='mname'>" + esc(mod.name) + "</div>" +
         "<div class='mfunc'>" + esc(mod.func) + "</div>" +
         "<div class='mdesc'>" + esc(mod.desc) + "</div>" +
         "<div class='mlaunch'>Open module →</div>";
@@ -1045,6 +1046,13 @@
     if ($("#ex-a")) $("#ex-a").addEventListener("change", function () { var v = $("#ex-a").value; if (v) { $("#smi-a").value = v; } });
     if ($("#ex-b")) $("#ex-b").addEventListener("change", function () { var v = $("#ex-b").value; if (v) { $("#smi-b").value = v; } });
     if ($("#ex-target")) $("#ex-target").addEventListener("change", function () { var v = $("#ex-target").value; if (v) { $("#target").value = v; updateTargetHint(); } });
+    if ($("#draw-open")) $("#draw-open").addEventListener("click", function () {
+      if (!window.QXSketch) return;
+      QXSketch.open($("#smi-a").value, $("#smi-b").value);
+      QXSketch.onUse(function (which, smi) {
+        if (which === "A") $("#smi-a").value = smi; else $("#smi-b").value = smi;
+      });
+    });
     /* defaults */
     $("#smi-a").value = "CC1=CCC2CC1C2(C)C";   /* alpha-pinene */
     $("#smi-b").value = "COc1cc(CC=C)ccc1O";   /* eugenol */
@@ -1094,6 +1102,29 @@
     });
   }
 
+  function fillKpis() {
+    function set(id, v) { var e = $(id); if (e) e.textContent = v; }
+    set("#kp-modules", M.modules.length);
+    set("#kp-targets", M.targets.length);
+    set("#kp-examples", M.smilesExamples ? M.smilesExamples.length : "–");
+    set("#kp-datasets", D.datasets ? D.datasets.length : "–");
+    set("#kp-bench", D.bench ? D.bench.length : "–");
+  }
+  function renderFloatMols() {
+    if (!window.RDKIT || !M || !M.smilesExamples) return;
+    var map = {};
+    M.smilesExamples.forEach(function (e) { map[e.name.toLowerCase()] = e.smi; });
+    $$(".fl-svg[data-ext]").forEach(function (el) {
+      var nm = (el.getAttribute("data-ext") || "").toLowerCase();
+      var smi = map[nm];
+      if (!smi) return;
+      try {
+        var m = RDKIT.get_mol(smi);
+        if (m && m.is_valid()) el.innerHTML = m.get_svg(160, 110);
+        if (m && m.delete) m.delete();
+      } catch (ex) {}
+    });
+  }
   function loadData() {
     return fetch("assets/dashboard_data.json").then(function (r) { return r.json(); }).then(function (d) {
       D = d;
@@ -1103,6 +1134,8 @@
       renderExampleSelects();
       renderTargetDatalist();
       updateTargetHint();
+      fillKpis();
+      renderFloatMols();
       if (APP.tab === "evid") { litRender(); litVerificationPanel(); }
       if (APP.pendingPipe && M) {
         var miP = M.modules.findIndex(function (mo) { return mo.id === APP.pendingPipe; });
