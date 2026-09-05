@@ -535,14 +535,23 @@
       var selA = $("#phy-a"), selB = $("#phy-b");
       selA.innerHTML = names.map(function (n) { return "<option>" + esc(n) + "</option>"; }).join("");
       selB.innerHTML = names.map(function (n) { return "<option>" + esc(n) + "</option>"; }).join("");
-      if (APP.phytoA && names.indexOf(APP.phytoA) >= 0) selA.value = APP.phytoA;
-      if (APP.phytoB && names.indexOf(APP.phytoB) >= 0) selB.value = APP.phytoB;
-      else if (names.length > 1) selB.selectedIndex = 1;
+      /* Defaults prefer compounds that HAVE a curated SMILES, so the
+         AgroDockX handoff visibly works out of the box. */
+      var mapped = names.filter(function (n) { return phytoSmilesFor(n); });
+      if (!(APP.phytoA && names.indexOf(APP.phytoA) >= 0)) APP.phytoA = mapped[0] || names[0] || "";
+      if (!(APP.phytoB && names.indexOf(APP.phytoB) >= 0) || APP.phytoB === APP.phytoA) {
+        var rest = mapped.filter(function (n) { return n !== APP.phytoA; });
+        APP.phytoB = rest[0] || mapped[0] || names.filter(function (n) { return n !== APP.phytoA; })[0] || "";
+      }
+      selA.value = APP.phytoA; selB.value = APP.phytoB;
       function pairNote() {
         APP.phytoA = selA.value; APP.phytoB = selB.value;
         var hA = phytoSmilesFor(APP.phytoA), hB = phytoSmilesFor(APP.phytoB);
-        $("#phy-pair-note").innerHTML = "A: " + (hA ? "SMILES ✓" : "no curated SMILES — paste manually in AgroDockX") +
-          " · B: " + (hB ? "SMILES ✓" : "no curated SMILES — paste manually in AgroDockX");
+        var note = $("#phy-pair-note");
+        note.innerHTML = "A: " + (hA ? "SMILES ✓ (" + esc(hA.key) + ")" : "no curated SMILES — paste manually in AgroDockX") +
+          " · B: " + (hB ? "SMILES ✓ (" + esc(hB.key) + ")" : "no curated SMILES — paste manually in AgroDockX") +
+          ((!hA || !hB) ? " · tip: Phytol, Copaene, Curzerene, Valencene, Lathosterol… carry curated SMILES" : "");
+        note.style.color = (hA && hB) ? "var(--em)" : "var(--amber)";
         logTrail("AgroPhytoX: pair selected — " + APP.phytoA + " + " + APP.phytoB);
       }
       selA.addEventListener("change", pairNote);
@@ -641,15 +650,17 @@
       var a = $("#dock-a"), b = $("#dock-b");
       a.value = $("#smi-a").value; b.value = $("#smi-b").value;
       function pullPhytoPair() {
-        var notes = [];
+        var notes = [], filled = 0;
         [["phytoA", "A", a], ["phytoB", "B", b]].forEach(function (t3) {
           var nm = APP[t3[0]];
           if (!nm) { notes.push(t3[1] + ": no phytochemical chosen in AgroPhytoX"); return; }
           var hit = phytoSmilesFor(nm);
-          if (hit) { t3[2].value = hit.smi; notes.push(t3[1] + ": " + nm + " ✓"); }
-          else { notes.push(t3[1] + ": " + nm + " — no curated SMILES, paste manually"); }
+          if (hit) { t3[2].value = hit.smi; filled++; notes.push(t3[1] + ": " + nm + " ✓"); }
+          else { notes.push(t3[1] + ": " + nm + " — no curated SMILES, paste manually (tip: Phytol, Copaene, Curzerene…)"); }
         });
-        $("#dock-note").textContent = notes.join(" · ");
+        var noteEl = $("#dock-note");
+        noteEl.textContent = filled + "/2 SMILES filled — " + notes.join(" · ");
+        noteEl.style.color = filled === 2 ? "var(--em)" : "var(--amber)";
         logTrail("AgroDockX: SMILES pulled from AgroPhytoX pair (" + notes.join("; ") + ")");
       }
       if (APP.phytoA || APP.phytoB) pullPhytoPair();
@@ -663,6 +674,10 @@
       });
       $("#dock-sync").addEventListener("click", function () {
         a.value = $("#smi-a").value; b.value = $("#smi-b").value;
+        var noteEl = $("#dock-note");
+        noteEl.textContent = "Molecule Lab pair copied into A/B ✓";
+        noteEl.style.color = "var(--em)";
+        logTrail("AgroDockX: Molecule Lab pair copied into A/B");
       });
     };
     fns.dosex = function () {
@@ -855,15 +870,12 @@
       logTrail("AgroReport: reproducible report generated");
       var r = el("div", "panel report");
       r.innerHTML = "<div class='panel-h'>AgroReport — reproducible summary</div>" +
-        "<p class='sml dim'>Audit-trail snapshot, dataset coverage, pipeline completion and active session credentials. Printable — use your browser's Print → Save as PDF.</p>" +
-        "<button class='primary' id='rep-print' style='margin-bottom:12px'>Print / Save as PDF</button>" +
+        "<p class='sml dim'>Parameters grouped under their sub-module. Quantum_AgroX™ · <i>Commiphora swynnertonii</i> vs <i>R. microplus</i> &amp; <i>R. decoloratus</i>.</p>" +
         "<div id='rep-body'></div>";
       content.appendChild(r);
       var b = $("#rep-body");
       function txt() {
         var html = "";
-        html += "<p><b>Quantum_AgroX™</b> — Quantum Machine Learning based Agro-Chemical Discovery. MEDxAI; benchmark: <i>Commiphora swynnertonii</i> vs <i>R. microplus</i> &amp; <i>R. decoloratus</i>. Parameters are grouped under their sub-module below.</p>";
-
         html += "<h3>1 · AgroPhytoX — phytochemical pair</h3>";
         if (APP.phytoA || APP.phytoB) {
           html += "<table class='kv sml'><tbody>" +
@@ -940,6 +952,7 @@
           "<li>No field efficacy / livestock / environmental safety inferred from docking alone.</li>" +
           "<li>No mixing of experimental and model-generated labels as equivalents.</li></ul>";
         html += "<p class='sml dim'>Generated " + esc(nowStamp()) + " · Quantum_AgroX interactive layer (demo).</p>";
+        html += "<div style='margin-top:10px'><button class='ghost' id='rep-print'>Print / Save as PDF</button></div>";
         return html;
       }
       b.innerHTML = txt();
