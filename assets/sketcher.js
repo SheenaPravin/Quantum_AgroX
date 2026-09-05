@@ -475,7 +475,7 @@
     ["qxs-bond1", "qxs-bond2", "qxs-bond3"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.addEventListener("click", function () {
-        state.tool = "bond"; state.order = +id.slice(9); refreshToolUI();
+        state.tool = "bond"; state.order = +id.slice(8); refreshToolUI();
       });
     });
     var erase = document.getElementById("qxs-erase");
@@ -484,7 +484,7 @@
     if (clear) clear.addEventListener("click", function () { clearState(); setStatus("Canvas cleared."); draw(); });
     ["qxs-tpl-benzene", "qxs-tpl-pyridine", "qxs-tpl-furan", "qxs-tpl-cyclohexane"].forEach(function (id) {
       var el = document.getElementById(id);
-      if (el) el.addEventListener("click", function () { placeTemplate(id.slice(9)); });
+      if (el) el.addEventListener("click", function () { placeTemplate(id.slice(8)); });
     });
     var exp = document.getElementById("qxs-export");
     if (exp) exp.addEventListener("click", function () { exportSmiles(); });

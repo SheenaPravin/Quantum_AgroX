@@ -917,6 +917,15 @@
       var b = $("#rep-body");
       function txt() {
         var html = "";
+        /* Snapshot — the bottom line first, details grouped below. */
+        var bestSnap = null;
+        if (APP.ledger.length) bestSnap = APP.ledger.slice().sort(function (a, b) { return a.affC - b.affC; })[0];
+        html += "<h3>Snapshot — the bottom line</h3><div class='grid c2'>" +
+          "<div class='bc'><b>" + esc(APP.phytoA && APP.phytoB ? APP.phytoA + " + " + APP.phytoB : "—") + "</b><span class='dim sml'>AgroPhytoX pair</span></div>" +
+          "<div class='bc'><b class='kbd'>" + esc(APP.synthSmi || "—") + "</b><span class='dim sml'>AgroSyntheticX drawing</span></div>" +
+          "<div class='bc'><b>" + (bestSnap ? bestSnap.affC + " kcal/mol · synergy " + bestSnap.synergy + " (" + esc(bestSnap.syn) + ")" : "—") + "</b><span class='dim sml'>best combo" + (bestSnap ? " · " + esc(bestSnap.target) : " · run the Molecule Lab") + "</span></div>" +
+          "<div class='bc'><b>" + (bestSnap ? esc(bestSnap.dose) : "—") + "</b><span class='dim sml'>dose guidance</span></div></div>";
+
         html += "<h3>1 · AgroPhytoX — phytochemical pair</h3>";
         if (APP.phytoA || APP.phytoB) {
           html += "<table class='kv sml'><tbody>" +
@@ -998,9 +1007,9 @@
           return (APP.done[m.id] ? "☑" : "☐") + " " + esc(m.name);
         }).join("<br>") + "</div>";
 
-        html += "<div class='trailbox' style='margin-top:8px'>" +
+        html += "<div style='margin-top:8px'><details><summary class='sml dim'>Audit trail (" + APP.trail.length + " events — click to expand)</summary><div class='trailbox' style='margin-top:8px'>" +
           (APP.trail.length ? APP.trail.map(function (t0) { return "<div>" + esc(t0.t) + " — " + esc(t0.m) + "</div>"; }).join("") : "<div class='dim'>No session actions yet.</div>") +
-          "</div>";
+          "</div></details></div>";
 
         html += "<h3>8 · Safeguards</h3><ul class='sml'>" +
           "<li>Aggregate paper-derived benchmark — pipeline development, not advantage claims.</li>" +
