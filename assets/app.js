@@ -317,6 +317,36 @@
     return APP.lastLab;
   }
   var PHYTO_SMILES = [
+    /* Benchmark phytochemicals (Commiphora swynnertonii GC-MS set).
+       Ordered most-specific-first: "7alpha-methylcholesterol" must hit
+       "methylcholesterol" before the generic "cholest" scaffold.
+       Steroid rows marked scaffold carry a representative scaffold —
+       curate exact stereochemistry (PubChem / Suppl. File 1) before
+       production docking. All SMILES RDKit-validated. */
+    ["methylcholesterol", "CC(C)CCCC(C)C1CCC2C3CCC4CC(O)CCC4(C)C3CCC12C"],
+    ["chlorfenvinphos", "CCOP(=O)(OCC)OC(=CCl)C1=CC=C(Cl)C=C1Cl"],
+    ["hexadecanoic", "CCCCCCCCCCCCCCCC(=O)O"],
+    ["palmitic", "CCCCCCCCCCCCCCCC(=O)O"],
+    ["pentadecanoate", "CCCCCCCCCCCCCCC(=O)OCC"],
+    ["hentriacontanol", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCO"],
+    ["phenylaniline", "NC1=CC=CC=C1C1=CC=CC=C1"],
+    ["aminobiphenyl", "NC1=CC=CC=C1C1=CC=CC=C1"],
+    ["caryophyllene", "CC1=CCCC(=CCCC1)C"],
+    ["humulene", "CC1=CCCC(=CCCC1)C"],
+    ["cedrol", "CC1CCC2C1C1CCCC1(C)C2O"],
+    ["farnesol", "CC(=CCCC(=CCCC(=CCO)C)C)C"],
+    ["valencene", "CC1=CCC2CCC(C)C2C1=C(C)C"],
+    ["copaene", "CC1=CCC2C3CC(C2C1)C3(C)C"],
+    ["curzerene", "C=CC1=C(C)C2=C(O1)C(C)CC2"],
+    ["dendrolasin", "CC(=CCCC(=CCOC1=CC=CO1)C)C"],
+    ["torreyol", "CC1CCC(C)C2CCC(C)(O)C2C1"],
+    ["phytol", "CC(C)CCCC(C)CCCC(C)CCCC(=CCO)C"],
+    ["lathosterol", "CC(C)CCCC(C)C1CCC2C3CC=C4CC(O)CCC4(C)C3CCC12C"],
+    ["ergost", "CC(C)C(C)CCC(C)C1CCC2C3CC(O)C(O)CC3CCC12C"],
+    ["androst", "CC12CCC3C4CCCC4CCC3C1CCC2O"],
+    ["spirost", "CC(C)CCCC(C)C1CCC2C3CCC4CC(O)CCC4(C)C3CCC12C"],
+    ["furanmethanol", "CC1CCC(C)(C2CCC(C)=CC2)OC1"],
+    ["cholest", "CC(C)CCCC(C)C1CCC2C3CCC4CC(O)CCC4(C)C3CCC12C"],
     ["pinene", "CC1=CCC2CC1C2(C)C"],
     ["limonene", "CC1=CCC(CC1)=C(C)C"],
     ["linalool", "CC(C)=CCCC(C)(O)C=C"],
@@ -330,6 +360,19 @@
     ["quercetin", "O=C1c2c(O)cc(O)cc2OC(c2cc(O)c(O)c(O)c2)=C1O"],
     ["kaempferol", "O=C1c2c(O)cc(O)cc2OC(c2ccc(O)cc2)=C1O"]
   ];
+  /* Resolve a phytochemical *name* to its SMILES entry.
+     Longest-key-first substring match, so "7alpha-methylcholesterol"
+     resolves to "methylcholesterol" rather than the generic "cholest"
+     scaffold. Returns {key, smi} or null (→ manual SMILES entry). */
+  function phytoSmilesFor(name) {
+    var lname = String(name || "").toLowerCase();
+    if (!lname) return null;
+    var best = null;
+    PHYTO_SMILES.forEach(function (p) {
+      if (lname.indexOf(p[0]) >= 0 && (!best || p[0].length > best[0].length)) best = p;
+    });
+    return best ? { key: best[0], smi: best[1] } : null;
+  }
   function useTopPhytochemicals() {
     var filled = [];
     if (D && D.phytochemicals) {
@@ -478,9 +521,38 @@
       markDone("phytox");
       var p = el("div", "panel");
       p.innerHTML = "<div class='panel-h'>Phytochemical library (" + (D.stats ? D.stats.phytochemicals : 0) + " profiled)</div>" +
-        "<input id='phy-q' type='text' placeholder='Filter name / class / part / solvent' style='width:100%;max-width:460px;background:var(--panel2);color:var(--txt);border:1px solid var(--line2);border-radius:8px;padding:9px'>" +
-        "<div id='phy-rows' style='margin-top:10px'></div>";
+        "<p class='sml dim'>Pick <b>two phytochemicals by name</b> — their SMILES travel with the session into AgroDockX.</p>" +
+        "<div class='grid c2 mlgens'>" +
+        "<div><label>Phytochemical A — name</label><select id='phy-a'></select></div>" +
+        "<div><label>Phytochemical B — name</label><select id='phy-b'></select></div></div>" +
+        "<div style='display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px'>" +
+        "<button class='primary' id='phy-send'>Send pair to AgroDockX →</button>" +
+        "<span class='sml dim' id='phy-pair-note'></span></div>" +
+        "<div style='margin-top:14px'><input id='phy-q' type='text' placeholder='Filter name / class / part / solvent' style='width:100%;max-width:460px;background:var(--panel2);color:var(--txt);border:1px solid var(--line2);border-radius:8px;padding:9px'>" +
+        "<div id='phy-rows' style='margin-top:10px'></div></div>";
       content.appendChild(p);
+      var names = (D.phytochemicals || []).map(function (r) { return r.compound; });
+      var selA = $("#phy-a"), selB = $("#phy-b");
+      selA.innerHTML = names.map(function (n) { return "<option>" + esc(n) + "</option>"; }).join("");
+      selB.innerHTML = names.map(function (n) { return "<option>" + esc(n) + "</option>"; }).join("");
+      if (APP.phytoA && names.indexOf(APP.phytoA) >= 0) selA.value = APP.phytoA;
+      if (APP.phytoB && names.indexOf(APP.phytoB) >= 0) selB.value = APP.phytoB;
+      else if (names.length > 1) selB.selectedIndex = 1;
+      function pairNote() {
+        APP.phytoA = selA.value; APP.phytoB = selB.value;
+        var hA = phytoSmilesFor(APP.phytoA), hB = phytoSmilesFor(APP.phytoB);
+        $("#phy-pair-note").innerHTML = "A: " + (hA ? "SMILES ✓" : "no curated SMILES — paste manually in AgroDockX") +
+          " · B: " + (hB ? "SMILES ✓" : "no curated SMILES — paste manually in AgroDockX");
+        logTrail("AgroPhytoX: pair selected — " + APP.phytoA + " + " + APP.phytoB);
+      }
+      selA.addEventListener("change", pairNote);
+      selB.addEventListener("change", pairNote);
+      pairNote();
+      $("#phy-send").addEventListener("click", function () {
+        pairNote();
+        var i = M.modules.findIndex(function (m) { return m.id === "dockx"; });
+        openPipelineAt(i >= 0 ? i : APP.pipe);
+      });
       var draw = function () {
         var q = (($("#phy-q") || {}).value || "").trim().toLowerCase();
         var list = (D.phytochemicals || []).slice(0, 40).filter(function (r) {
@@ -555,17 +627,33 @@
       logTrail("AgroDockX: docking-estimate workbench opened");
       var lab = el("div", "panel");
       lab.innerHTML = "<div class='panel-h'>AgroDockX — protein–ligand affinity estimate</div>" +
-        "<p class='sml dim'>Enter any SMILES pair and the receptor (set in AgroTargetX or type free text) and run the surrogate. Stronger (more negative) affinity = better predicted pose.</p>" +
+        "<p class='sml dim'>Enter any SMILES pair and the receptor (set in AgroTargetX or type free text) and run the surrogate. Stronger (more negative) affinity = better predicted pose. " +
+        "To bring the SMILES of the two AgroPhytoX phytochemicals, press <b>Use AgroPhytoX pair</b>.</p>" +
         "<div class='grid c2 mlgens'>" +
         "<div><label>Molecule A</label><textarea id='dock-a' rows='2'></textarea></div>" +
         "<div><label>Molecule B</label><textarea id='dock-b' rows='2'></textarea></div></div>" +
         "<div style='display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px'>" +
         "<button class='primary' id='dock-run'>Estimate affinity</button>" +
+        "<button class='ghost' id='dock-phyto'>Use AgroPhytoX pair</button>" +
         "<button class='ghost' id='dock-sync'>Use Molecule Lab pair</button>" +
-        "<span class='sml dim'>Output below.</span></div><div id='dock-out' style='margin-top:12px'></div>";
+        "<span class='sml dim' id='dock-note'>Output below.</span></div><div id='dock-out' style='margin-top:12px'></div>";
       content.appendChild(lab);
       var a = $("#dock-a"), b = $("#dock-b");
       a.value = $("#smi-a").value; b.value = $("#smi-b").value;
+      function pullPhytoPair() {
+        var notes = [];
+        [["phytoA", "A", a], ["phytoB", "B", b]].forEach(function (t3) {
+          var nm = APP[t3[0]];
+          if (!nm) { notes.push(t3[1] + ": no phytochemical chosen in AgroPhytoX"); return; }
+          var hit = phytoSmilesFor(nm);
+          if (hit) { t3[2].value = hit.smi; notes.push(t3[1] + ": " + nm + " ✓"); }
+          else { notes.push(t3[1] + ": " + nm + " — no curated SMILES, paste manually"); }
+        });
+        $("#dock-note").textContent = notes.join(" · ");
+        logTrail("AgroDockX: SMILES pulled from AgroPhytoX pair (" + notes.join("; ") + ")");
+      }
+      if (APP.phytoA || APP.phytoB) pullPhytoPair();
+      $("#dock-phyto").addEventListener("click", pullPhytoPair);
       $("#dock-run").addEventListener("click", function () {
         $("#smi-a").value = a.value; $("#smi-b").value = b.value;
         labAnalyze("#dock-out");
@@ -774,25 +862,21 @@
       var b = $("#rep-body");
       function txt() {
         var html = "";
-        html += "<h3>Project</h3><p><b>Quantum_AgroX™</b> — Quantum Machine Learning based Agro-Chemical Discovery. MEDxAI; benchmark: <i>Commiphora swynnertonii</i> vs <i>R. microplus</i> &amp; <i>R. decoloratus</i>.</p>";
+        html += "<p><b>Quantum_AgroX™</b> — Quantum Machine Learning based Agro-Chemical Discovery. MEDxAI; benchmark: <i>Commiphora swynnertonii</i> vs <i>R. microplus</i> &amp; <i>R. decoloratus</i>. Parameters are grouped under their sub-module below.</p>";
 
-        html += "<h3>1 · Molecules called in this session</h3>";
-        if (APP.ledger.length) {
-          var bySmi = {};
-          APP.ledger.forEach(function (L) { [L.smiA, L.smiB].forEach(function (s) { bySmi[s] = (bySmi[s] || 0) + 1; }); });
-          html += "<table class='data'><thead><tr><th>SMILES</th><th>Runs</th><th>Receptor target(s)</th></tr></thead><tbody>" +
-            Object.keys(bySmi).map(function (s) {
-              var tgAll = [];
-              APP.ledger.forEach(function (L) { if (L.smiA === s || L.smiB === s) tgAll.push(L.target); });
-              var tg = [];
-              tgAll.forEach(function (x) { if (tg.indexOf(x) < 0) tg.push(x); });
-              return "<tr><td class='kbd'>" + esc(s) + "</td><td class='num'>" + bySmi[s] + "</td><td>" + (tg.length ? esc(tg.join(", ")) : "—") + "</td></tr>";
+        html += "<h3>1 · AgroPhytoX — phytochemical pair</h3>";
+        if (APP.phytoA || APP.phytoB) {
+          html += "<table class='kv sml'><tbody>" +
+            [["Phytochemical A", APP.phytoA], ["Phytochemical B", APP.phytoB]].map(function (row) {
+              var hit = phytoSmilesFor(row[1]);
+              return "<tr><td>" + row[0] + "</td><td class='num'>" + esc(row[1] || "—") +
+                (hit ? "<br><span class='kbd'>" + esc(hit.smi) + "</span>" : "<br>no curated SMILES") + "</td></tr>";
             }).join("") + "</tbody></table>";
         } else {
-          html += "<div class='dim'>No molecule was submitted yet in this session. Open the Molecule Lab and run a pair.</div>";
+          html += "<div class='dim'>No phytochemical pair chosen yet. Open Pipeline → AgroPhytoX and pick two names.</div>";
         }
 
-        html += "<h3>2 · Receptor targets used</h3>";
+        html += "<h3>2 · AgroTargetX / AgroSiteMap — receptor target</h3>";
         if (APP.ledger.length) {
           var byT = {};
           APP.ledger.forEach(function (L) { byT[L.target] = (byT[L.target] || 0) + 1; });
@@ -805,43 +889,52 @@
           html += "<div class='dim'>None yet.</div>";
         }
 
-        html += "<h3>3 · Model parameters</h3><table class='kv sml'><tbody>" +
-          "<tr><td>Affinity surrogate</td><td class='num'>Ridge QSAR, " + (M.trainligands ? M.trainligands.length : 20) + " reference ligands</td></tr>" +
-          "<tr><td>Descriptors</td><td class='num'>" + esc((FEATURES && FEATURES.length ? FEATURES : M.features || []).join(", ")) + "</td></tr>" +
-          "<tr><td>Calibrated targets</td><td class='num'>" + (M.targets ? M.targets.filter(function (tt) { return tt.anchorKey && tt.anchorFeat; }).length : 14) + " of " + (M.targets ? M.targets.length : "—") + " carry a bundled anchor ligand</td></tr>" +
-          "<tr><td>Synergy heuristic</td><td class='num'>0.35 · (1 − Tanimoto) + 0.20 · LogP balance + 0.20 · size mixing + 0.25 · affinity gain</td></tr>" +
-          "<tr><td>Dose window</td><td class='num'>5–80 mg/mL topical (study-tested range)</td></tr>" +
-          "<tr><td>Determinism</td><td class='num'>Fully deterministic — no quantum sampling in the interactive layer</td></tr>" +
-          "</tbody></table>";
-
-        html += "<h3>4 · Inference</h3>";
+        html += "<h3>3 · AgroDockX / AgroSynergyX — molecules & inference</h3>";
         if (APP.ledger.length) {
+          var bySmi = {};
+          APP.ledger.forEach(function (L) { [L.smiA, L.smiB].forEach(function (s) { bySmi[s] = (bySmi[s] || 0) + 1; }); });
+          html += "<table class='data'><thead><tr><th>SMILES</th><th>Runs</th><th>Receptor target(s)</th></tr></thead><tbody>" +
+            Object.keys(bySmi).map(function (s) {
+              var tgAll = [];
+              APP.ledger.forEach(function (L) { if (L.smiA === s || L.smiB === s) tgAll.push(L.target); });
+              var tg = [];
+              tgAll.forEach(function (x) { if (tg.indexOf(x) < 0) tg.push(x); });
+              return "<tr><td class='kbd'>" + esc(s) + "</td><td class='num'>" + bySmi[s] + "</td><td>" + (tg.length ? esc(tg.join(", ")) : "—") + "</td></tr>";
+            }).join("") + "</tbody></table>";
           var best = APP.ledger.slice().sort(function (a, b) { return a.affC - b.affC; })[0];
           html += "<table class='kv sml'><tbody>" +
             "<tr><td>Most promising combination (lowest predicted combo affinity)</td><td class='num kbd'>" + esc(best.smiA) + " + " + esc(best.smiB) + "</td></tr>" +
             "<tr><td>Predicted combo affinity</td><td class='num'>" + best.affC + " kcal/mol</td></tr>" +
             "<tr><td>Synergy</td><td class='num'>" + best.synergy + " (" + esc(best.syn) + ")</td></tr>" +
-            "<tr><td>Dose guidance</td><td class='num'>" + esc(best.dose) + "</td></tr>" +
             "<tr><td>Confidence</td><td class='num'>" + (best.lowConf ? "generic calibration — no bundled anchor for this target" : "bundled anchor calibration") + "</td></tr>" +
             "<tr><td>Session runs</td><td class='num'>" + APP.ledger.length + "</td></tr></tbody></table>";
         } else {
-          html += "<div class='dim'>Run the Molecule Lab to generate an inference.</div>";
+          html += "<div class='dim'>No molecule was submitted yet in this session. Open the Molecule Lab and run a pair.</div>";
         }
 
-        html += "<h3>5 · Dataset coverage</h3><table class='kv sml'><tbody>" +
+        html += "<h3>4 · AgroDoseX / AgroQML — model parameters</h3><table class='kv sml'><tbody>" +
+          "<tr><td>Affinity surrogate</td><td class='num'>Ridge QSAR, " + (M.trainligands ? M.trainligands.length : 20) + " reference ligands</td></tr>" +
+          "<tr><td>Descriptors</td><td class='num'>" + esc((FEATURES && FEATURES.length ? FEATURES : M.features || []).join(", ")) + "</td></tr>" +
+          "<tr><td>Calibrated targets</td><td class='num'>" + (M.targets ? M.targets.filter(function (tt) { return tt.anchorKey && tt.anchorFeat; }).length : 14) + " of " + (M.targets ? M.targets.length : "—") + " carry a bundled anchor ligand</td></tr>" +
+          "<tr><td>Synergy heuristic</td><td class='num'>0.35 · (1 − Tanimoto) + 0.20 · LogP balance + 0.20 · size mixing + 0.25 · affinity gain</td></tr>" +
+          "<tr><td>Dose guidance</td><td class='num'>" + (APP.ledger.length ? esc(APP.ledger.slice().sort(function (a, b) { return a.affC - b.affC; })[0].dose) : "—") + " (5–80 mg/mL topical study window)</td></tr>" +
+          "<tr><td>Determinism</td><td class='num'>Fully deterministic — no quantum sampling in the interactive layer</td></tr>" +
+          "</tbody></table>";
+
+        html += "<h3>5 · AgroDataHub — dataset coverage</h3><table class='kv sml'><tbody>" +
           "<tr><td>Bioassay records</td><td class='num'>" + (D ? D.stats.records : "—") + "</td></tr>" +
           "<tr><td>Phytochemicals / docking hits / LC50 entries</td><td class='num'>" + (D ? D.stats.phytochemicals + " / " + D.stats.docking_hits + " / " + D.stats.lc50_entries : "—") + "</td></tr>" +
           "<tr><td>Selected target (default)</td><td class='num'>" + (APP.targetKey ? esc((M.targets.find(function (t) { return t.key === APP.targetKey; }) || {}).name || APP.targetKey) : "—") + "</td></tr></tbody></table>";
 
-        html += "<h3>6 · Pipeline completion</h3><div>" + M.modules.map(function (m) {
+        html += "<h3>6 · Pipeline completion & audit trail</h3><div>" + M.modules.map(function (m) {
           return (APP.done[m.id] ? "☑" : "☐") + " " + esc(m.name);
         }).join("<br>") + "</div>";
 
-        html += "<h3>7 · Audit trail</h3><div class='trailbox'>" +
+        html += "<div class='trailbox' style='margin-top:8px'>" +
           (APP.trail.length ? APP.trail.map(function (t0) { return "<div>" + esc(t0.t) + " — " + esc(t0.m) + "</div>"; }).join("") : "<div class='dim'>No session actions yet.</div>") +
           "</div>";
 
-        html += "<h3>8 · Safeguards</h3><ul class='sml'>" +
+        html += "<h3>7 · Safeguards</h3><ul class='sml'>" +
           "<li>Aggregate paper-derived benchmark — pipeline development, not advantage claims.</li>" +
           "<li>Docking scores are NOT proof of AChE inhibition (paper's own limitation).</li>" +
           "<li>No field efficacy / livestock / environmental safety inferred from docking alone.</li>" +
