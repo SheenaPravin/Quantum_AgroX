@@ -373,6 +373,16 @@
     });
     return best ? { key: best[0], smi: best[1] } : null;
   }
+  /* Default pair prefers compounds WITH a curated SMILES, so handoffs work
+     even if AgroDockX is opened before AgroPhytoX. */
+  function phytoDefaultPair() {
+    var names = (D && D.phytochemicals ? D.phytochemicals : []).map(function (r) { return r.compound; });
+    var mapped = names.filter(function (n) { return phytoSmilesFor(n); });
+    var dA = mapped[0] || names[0] || "";
+    var rest = mapped.filter(function (n) { return n !== dA; });
+    var dB = rest[0] || mapped[0] || names.filter(function (n) { return n !== dA; })[0] || "";
+    return [dA, dB];
+  }
   function useTopPhytochemicals() {
     var filled = [];
     if (D && D.phytochemicals) {
@@ -537,11 +547,10 @@
       selB.innerHTML = names.map(function (n) { return "<option>" + esc(n) + "</option>"; }).join("");
       /* Defaults prefer compounds that HAVE a curated SMILES, so the
          AgroDockX handoff visibly works out of the box. */
-      var mapped = names.filter(function (n) { return phytoSmilesFor(n); });
-      if (!(APP.phytoA && names.indexOf(APP.phytoA) >= 0)) APP.phytoA = mapped[0] || names[0] || "";
+      var dp = phytoDefaultPair();
+      if (!(APP.phytoA && names.indexOf(APP.phytoA) >= 0)) APP.phytoA = dp[0];
       if (!(APP.phytoB && names.indexOf(APP.phytoB) >= 0) || APP.phytoB === APP.phytoA) {
-        var rest = mapped.filter(function (n) { return n !== APP.phytoA; });
-        APP.phytoB = rest[0] || mapped[0] || names.filter(function (n) { return n !== APP.phytoA; })[0] || "";
+        APP.phytoB = (dp[1] && dp[1] !== APP.phytoA) ? dp[1] : dp[0];
       }
       selA.value = APP.phytoA; selB.value = APP.phytoB;
       function pairNote() {
@@ -695,11 +704,21 @@
         "<button class='ghost' id='dock-syn-a'>Take Synthetic A</button>" +
         "<button class='ghost' id='dock-syn-b'>Take Synthetic B</button>" +
         "<button class='ghost' id='dock-sync'>Use Molecule Lab pair</button>" +
-        "<span class='sml dim' id='dock-note'>Output below.</span></div><div id='dock-out' style='margin-top:12px'></div>";
+        "<span class='sml dim' id='dock-note'>Output below.</span></div>" +
+        "<div style='margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)'>" +
+        "<div class='panel-h sml'>Mixed pair — e.g. phytochemical as A + synthetic as B</div>" +
+        "<div class='grid c2 mlgens'>" +
+        "<div><label>Molecule A from</label><select id='mix-a'><option value='keep'>Keep current</option><option value='phyA'>AgroPhytoX A</option><option value='synA'>Synthetic A</option><option value='labA'>Molecule Lab A</option></select></div>" +
+        "<div><label>Molecule B from</label><select id='mix-b'><option value='keep'>Keep current</option><option value='phyB'>AgroPhytoX B</option><option value='synB'>Synthetic B</option><option value='labB'>Molecule Lab B</option></select></div></div>" +
+        "<div style='margin-top:6px'><button class='ghost' id='mix-apply'>Build mixed pair →</button></div></div>" +
+        "<div id='dock-out' style='margin-top:12px'></div>";
       content.appendChild(lab);
       var a = $("#dock-a"), b = $("#dock-b");
       a.value = $("#smi-a").value; b.value = $("#smi-b").value;
       function pullPhytoPair() {
+        var dp0 = phytoDefaultPair();
+        if (!APP.phytoA) APP.phytoA = dp0[0];
+        if (!APP.phytoB) APP.phytoB = dp0[1];
         var notes = [], filled = 0;
         [["phytoA", "A", a], ["phytoB", "B", b]].forEach(function (t3) {
           var nm = APP[t3[0]];
@@ -730,6 +749,36 @@
       }
       $("#dock-syn-a").addEventListener("click", function () { takeSynthetic("A"); });
       $("#dock-syn-b").addEventListener("click", function () { takeSynthetic("B"); });
+      function sourceSmiles(kind) {
+        var slot = kind.slice(-1);
+        if (kind.indexOf("phy") === 0) {
+          var dp1 = phytoDefaultPair();
+          var nm = slot === "A" ? (APP.phytoA || dp1[0]) : (APP.phytoB || dp1[1]);
+          var hit = nm && phytoSmilesFor(nm);
+          return hit ? { smi: hit.smi, label: nm } : null;
+        }
+        if (kind.indexOf("syn") === 0) {
+          var s = slot === "A" ? APP.synthA : APP.synthB;
+          return s ? { smi: s, label: "Synthetic " + slot } : null;
+        }
+        var v = (slot === "A" ? $("#smi-a") : $("#smi-b")).value || "";
+        v = v.trim();
+        return v ? { smi: v, label: "Molecule Lab " + slot } : null;
+      }
+      $("#mix-apply").addEventListener("click", function () {
+        var ka = $("#mix-a").value, kb = $("#mix-b").value;
+        var notes = [], n = 0;
+        [["A", ka, a], ["B", kb, b]].forEach(function (t3) {
+          if (t3[1] === "keep") { notes.push(t3[0] + ": kept"); return; }
+          var r = sourceSmiles(t3[1]);
+          if (r) { t3[2].value = r.smi; n++; notes.push(t3[0] + ": " + r.label + " ✓"); }
+          else { notes.push(t3[0] + ": source empty (pick it first in its module)"); }
+        });
+        var noteEl = $("#dock-note");
+        noteEl.textContent = "Mixed pair — " + notes.join(" · ");
+        noteEl.style.color = "var(--em)";
+        logTrail("AgroDockX: mixed pair built (" + notes.join("; ") + ")");
+      });
       $("#dock-run").addEventListener("click", function () {
         $("#smi-a").value = a.value; $("#smi-b").value = b.value;
         labAnalyze("#dock-out");
@@ -996,42 +1045,39 @@
         if (APP.ledger.length) {
           var bySmi = {};
           APP.ledger.forEach(function (L) { [L.smiA, L.smiB].forEach(function (s) { bySmi[s] = (bySmi[s] || 0) + 1; }); });
+          var smiKeys = Object.keys(bySmi).slice(-8);
           html += "<table class='data'><thead><tr><th>SMILES</th><th>Runs</th><th>Receptor target(s)</th></tr></thead><tbody>" +
-            Object.keys(bySmi).map(function (s) {
+            smiKeys.map(function (s) {
               var tgAll = [];
               APP.ledger.forEach(function (L) { if (L.smiA === s || L.smiB === s) tgAll.push(L.target); });
               var tg = [];
               tgAll.forEach(function (x) { if (tg.indexOf(x) < 0) tg.push(x); });
               return "<tr><td class='kbd'>" + esc(s) + "</td><td class='num'>" + bySmi[s] + "</td><td>" + (tg.length ? esc(tg.join(", ")) : "—") + "</td></tr>";
-            }).join("") + "</tbody></table>";
+            }).join("") + "</tbody></table>" +
+            (Object.keys(bySmi).length > 8 ? "<p class='sml dim'>Last 8 of " + Object.keys(bySmi).length + " molecules shown.</p>" : "");
           var best = APP.ledger.slice().sort(function (a, b) { return a.affC - b.affC; })[0];
           html += "<table class='kv sml'><tbody>" +
-            "<tr><td>Most promising combination (lowest predicted combo affinity)</td><td class='num kbd'>" + esc(best.smiA) + " + " + esc(best.smiB) + "</td></tr>" +
-            "<tr><td>Predicted combo affinity</td><td class='num'>" + best.affC + " kcal/mol</td></tr>" +
-            "<tr><td>Synergy</td><td class='num'>" + best.synergy + " (" + esc(best.syn) + ")</td></tr>" +
-            "<tr><td>Confidence</td><td class='num'>" + (best.lowConf ? "generic calibration — no bundled anchor for this target" : "bundled anchor calibration") + "</td></tr>" +
-            "<tr><td>Session runs</td><td class='num'>" + APP.ledger.length + "</td></tr></tbody></table>";
+            "<tr><td>Best combo</td><td class='num kbd'>" + esc(best.smiA) + " + " + esc(best.smiB) + "</td></tr>" +
+            "<tr><td>Affinity / synergy / dose</td><td class='num'>" + best.affC + " kcal/mol · " + best.synergy + " (" + esc(best.syn) + ") · " + esc(best.dose) + "</td></tr></tbody></table>";
         } else {
           html += "<div class='dim'>No molecule was submitted yet in this session. Open the Molecule Lab and run a pair.</div>";
         }
 
         html += "<h3>5 · AgroDoseX / AgroQML — model parameters</h3><table class='kv sml'><tbody>" +
           "<tr><td>Affinity surrogate</td><td class='num'>Ridge QSAR, " + (M.trainligands ? M.trainligands.length : 20) + " reference ligands</td></tr>" +
-          "<tr><td>Descriptors</td><td class='num'>" + esc((FEATURES && FEATURES.length ? FEATURES : M.features || []).join(", ")) + "</td></tr>" +
-          "<tr><td>Calibrated targets</td><td class='num'>" + (M.targets ? M.targets.filter(function (tt) { return tt.anchorKey && tt.anchorFeat; }).length : 14) + " of " + (M.targets ? M.targets.length : "—") + " carry a bundled anchor ligand</td></tr>" +
           "<tr><td>Synergy heuristic</td><td class='num'>0.35 · (1 − Tanimoto) + 0.20 · LogP balance + 0.20 · size mixing + 0.25 · affinity gain</td></tr>" +
-          "<tr><td>Dose guidance</td><td class='num'>" + (APP.ledger.length ? esc(APP.ledger.slice().sort(function (a, b) { return a.affC - b.affC; })[0].dose) : "—") + " (5–80 mg/mL topical study window)</td></tr>" +
-          "<tr><td>Determinism</td><td class='num'>Fully deterministic — no quantum sampling in the interactive layer</td></tr>" +
+          "<tr><td>Dose window</td><td class='num'>5–80 mg/mL topical (study-tested range)</td></tr>" +
           "</tbody></table>";
 
         html += "<h3>6 · AgroDataHub — dataset coverage</h3><table class='kv sml'><tbody>" +
           "<tr><td>Bioassay records</td><td class='num'>" + (D ? D.stats.records : "—") + "</td></tr>" +
-          "<tr><td>Phytochemicals / docking hits / LC50 entries</td><td class='num'>" + (D ? D.stats.phytochemicals + " / " + D.stats.docking_hits + " / " + D.stats.lc50_entries : "—") + "</td></tr>" +
-          "<tr><td>Selected target (default)</td><td class='num'>" + (APP.targetKey ? esc((M.targets.find(function (t) { return t.key === APP.targetKey; }) || {}).name || APP.targetKey) : "—") + "</td></tr></tbody></table>";
+          "<tr><td>Phytochemicals / docking hits / LC50 entries</td><td class='num'>" + (D ? D.stats.phytochemicals + " / " + D.stats.docking_hits + " / " + D.stats.lc50_entries : "—") + "</td></tr></tbody></table>";
 
-        html += "<h3>7 · Pipeline completion & audit trail</h3><div>" + M.modules.map(function (m) {
-          return (APP.done[m.id] ? "☑" : "☐") + " " + esc(m.name);
-        }).join("<br>") + "</div>";
+        html += "<h3>7 · Pipeline completion & audit trail</h3>";
+        var pendingMods = M.modules.filter(function (m) { return !APP.done[m.id]; });
+        var doneCount = M.modules.length - pendingMods.length;
+        html += "<div>" + doneCount + "/" + M.modules.length + " stages complete" +
+          (pendingMods.length ? " — pending: " + esc(pendingMods.map(function (m) { return m.name.replace("™", ""); }).join(", ")) : " — all done ✓") + "</div>";
 
         html += "<div style='margin-top:8px'><details><summary class='sml dim'>Audit trail (" + APP.trail.length + " events — click to expand)</summary><div class='trailbox' style='margin-top:8px'>" +
           (APP.trail.length ? APP.trail.map(function (t0) { return "<div>" + esc(t0.t) + " — " + esc(t0.m) + "</div>"; }).join("") : "<div class='dim'>No session actions yet.</div>") +
