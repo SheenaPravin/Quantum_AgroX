@@ -595,6 +595,13 @@
            as the lab's own handler) and capture the SMILES for the report. */
         QXSketch.onUse(function (which, smi) {
           APP.synthSmi = smi;
+          try {
+            if (APP.RDKit) {
+              var mm = rdMol(smi, "synthetic");
+              APP.synthFeat = molFeatures(mm);
+              try { mm.delete(); } catch (e2) {}
+            } else { APP.synthFeat = null; }
+          } catch (e) { APP.synthFeat = null; }
           if (which === "A") $("#smi-a").value = smi; else $("#smi-b").value = smi;
           showSmi(smi);
           $("#syn-note").textContent = "Captured from drawer ✓ — stored as Molecule Lab " + which + ". Continue to AgroDockX when ready.";
@@ -924,8 +931,14 @@
 
         html += "<h3>2 · AgroSyntheticX — drawn molecule</h3>";
         if (APP.synthSmi) {
+          var featRows = "";
+          if (APP.synthFeat) {
+            featRows = "<tr><td>MW / cLogP / TPSA</td><td class='num'>" + round(APP.synthFeat.mw, 1) + " / " + round(APP.synthFeat.clogp, 2) + " / " + round(APP.synthFeat.tpsa, 1) + "</td></tr>" +
+              "<tr><td>HBA / HBD / RotB / Rings</td><td class='num'>" + APP.synthFeat.hba + " / " + APP.synthFeat.hbd + " / " + APP.synthFeat.rotb + " / " + APP.synthFeat.rings + "</td></tr>";
+          }
           html += "<table class='kv sml'><tbody>" +
             "<tr><td>Drawn SMILES</td><td class='num kbd'>" + esc(APP.synthSmi) + "</td></tr>" +
+            featRows +
             "<tr><td>Handoff</td><td class='num'>stored as Molecule Lab pair → AgroDockX</td></tr></tbody></table>";
         } else {
           html += "<div class='dim'>No synthetic molecule drawn yet. Open Pipeline → AgroSyntheticX.</div>";

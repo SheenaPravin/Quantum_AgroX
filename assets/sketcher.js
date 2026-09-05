@@ -392,6 +392,8 @@
 
   function open(aMolA, aMolB) {
     state.sel1 = null;
+    var bg = document.getElementById("qxs-backdrop");
+    if (bg) bg.hidden = false;
     var m = document.getElementById("qxs-modal");
     if (m) m.hidden = false;
     if (aMolA !== undefined) state.aMolA = aMolA;
@@ -401,6 +403,8 @@
   }
 
   function close() {
+    var bg = document.getElementById("qxs-backdrop");
+    if (bg) bg.hidden = true;
     var m = document.getElementById("qxs-modal");
     if (m) m.hidden = true;
   }
