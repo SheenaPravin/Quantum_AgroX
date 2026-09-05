@@ -34,7 +34,7 @@
   var D = null, M = null;         /* dashboard data + model layer */
   var APP = {
     RDKit: null, rdkitReady: false, tab: "home",
-    pipe: 0, trail: [], done: {}, targetKey: null, lastLab: null
+    pipe: 0, trail: [], done: {}, targetKey: null, lastLab: null, ledger: [], pendingPipe: null
   };
   window.APP = APP;
 
@@ -306,6 +306,13 @@
     out.innerHTML = html;
     APP.lastLab = { smiA: smiA, smiB: smiB, target: t ? (t.name + " (" + t.organism + ")") : targetName, targetKey: (t || {}).key,
       affA: affA, affB: affB, affC: affC, synergy: synergy, dose: dbC.mg, fA: fA, fB: fB, lowConf: lowConf };
+    APP.ledger.unshift({
+      t: nowStamp(), smiA: smiA, smiB: smiB,
+      target: t ? (t.name + " (" + t.organism + ")") : targetName, targetKey: (t || {}).key,
+      affA: round(affA, 2), affB: round(affB, 2), affC: round(affC, 2), synergy: round(synergy, 2),
+      syn: sl.t, dose: dbC.mg + " mg/mL", lowConf: lowConf, mwA: round(fA.mw, 1), mwB: round(fB.mw, 1)
+    });
+    if (APP.ledger.length > 25) APP.ledger.length = 25;
     logTrail("AgroDockX/AgroSynergyX: analyzed " + (t ? t.name : targetName) + " — affinity " + round(affC, 2) + " kcal/mol, synergy " + round(synergy, 2));
     return APP.lastLab;
   }
@@ -370,8 +377,7 @@
     wrap.innerHTML = "";
     M.modules.forEach(function (mod, i) {
       var c = el("div", "modcard");
-      c.innerHTML = "<div class='ic'>" + svgIcon(mod.icon) + "</div>" +
-        "<div class='mname'>" + esc(mod.name) + "</div>" +
+      c.innerHTML = "<div class='mname'>" + esc(mod.name) + "</div>" +
         "<div class='mfunc'>" + esc(mod.func) + "</div>" +
         "<div class='mdesc'>" + esc(mod.desc) + "</div>" +
         "<div class='mlaunch'>Open module →</div>";
@@ -447,7 +453,7 @@
     var mod = M.modules[APP.pipe];
     body.innerHTML = "";
     var card = el("div", "panel");
-    card.innerHTML = "<div class='panel-h'>" + svgIcon(mod.icon) + " " + esc(mod.name) + " <span class='tag mid'>" + esc(mod.func) + "</span></div>" +
+    card.innerHTML = "<div class='panel-h'>" + esc(mod.name) + " <span class='tag mid'>" + esc(mod.func) + "</span></div>" +
       "<p class='sml dim'>" + esc(mod.desc) + "</p>";
     body.appendChild(card);
     var content = el("div", "");
@@ -463,7 +469,7 @@
         return "<tr><td>" + esc(ds.file) + "</td><td class='num'>" + ds.rows + " rows</td><td>" + esc(ds.type) + "</td></tr>";
       }).join("");
       inv.innerHTML += "<table class='data'><thead><tr><th>File</th><th>Records</th><th>Contents</th></tr></thead><tbody>" + rows + "</tbody></table>";
-      inv.innerHTML += "<p class='sml dim' style='margin-top:10px'>Import standards: GC-MS peak lists, SDF/SMILES, FASTA (targets), VCF (populations), and bioassay/docking tables are accepted. Every ingestion writes a provenance record for AgroReport™.</p>";
+      inv.innerHTML += "<p class='sml dim' style='margin-top:10px'>Import standards: GC-MS peak lists, SDF/SMILES, FASTA (targets), VCF (populations), and bioassay/docking tables are accepted. Every ingestion writes a provenance record for AgroReport.</p>";
       content.appendChild(inv);
     };
     fns.phytox = function () {
@@ -516,7 +522,7 @@
             APP.targetKey = t.key;
             $("#target").value = t.name + " (" + t.organism + ")";
             $("#target").dispatchEvent(new Event("input"));
-            sel.innerHTML = "Receptor selected: <b>" + esc(t.name) + "</b> (" + esc(t.organism) + "). Continue to AgroDockX™ to test molecules against it.";
+            sel.innerHTML = "Receptor selected: <b>" + esc(t.name) + "</b> (" + esc(t.organism) + "). Continue to AgroDockX to test molecules against it.";
             logTrail("AgroTargetX: target selected — " + t.name + " (" + t.organism + ")");
             draw();
           });
@@ -540,15 +546,15 @@
         return "<div class='vrow'><b>" + esc(s.site) + "</b><div class='sml dim'>" + esc(s.note) + "</div></div>";
       }).join("");
       p.innerHTML += "<div style='margin-top:14px'><div class='panel-h'>Pocket notes</div>" + panels +
-        "<p class='sml dim'>Cryptic/induced-fit pockets require MD sampling (AgroMD™) — static maps can miss them.</p></div>";
+        "<p class='sml dim'>Cryptic/induced-fit pockets require MD sampling (AgroMD) — static maps can miss them.</p></div>";
       content.appendChild(p);
     };
     fns.dockx = function () {
       markDone("dockx");
       logTrail("AgroDockX: docking-estimate workbench opened");
       var lab = el("div", "panel");
-      lab.innerHTML = "<div class='panel-h'>AgroDockX™ — protein–ligand affinity estimate</div>" +
-        "<p class='sml dim'>Enter any SMILES pair and the receptor (set in AgroTargetX™ or type free text) and run the surrogate. Stronger (more negative) affinity = better predicted pose.</p>" +
+      lab.innerHTML = "<div class='panel-h'>AgroDockX — protein–ligand affinity estimate</div>" +
+        "<p class='sml dim'>Enter any SMILES pair and the receptor (set in AgroTargetX or type free text) and run the surrogate. Stronger (more negative) affinity = better predicted pose.</p>" +
         "<div class='grid c2 mlgens'>" +
         "<div><label>Molecule A</label><textarea id='dock-a' rows='2'></textarea></div>" +
         "<div><label>Molecule B</label><textarea id='dock-b' rows='2'></textarea></div></div>" +
@@ -574,7 +580,7 @@
       markDone("dosex");
       logTrail("AgroDoseX: dose-response workbench opened");
       var p = el("div", "panel");
-      p.innerHTML = "<div class='panel-h'>AgroDoseX™ — dose–response &amp; LC50/LC90</div>" +
+      p.innerHTML = "<div class='panel-h'>AgroDoseX — dose–response &amp; LC50/LC90</div>" +
         "<p class='sml dim'>A linear surrogate (mortality ∼ log concentration + exposure + species + extract) is fitted live on the 240 benchmark records. Predict mean mortality at any point; compare with reported probit LC50/LC90 below.</p>" +
         "<div class='grid c2' style='margin-top:8px'>" +
         "<div class='kv'>Concentration (mg/mL): <input id='dd-conc' type='number' value='20' min='1' step='1' style='width:120px;background:var(--panel2);color:var(--txt);border:1px solid var(--line2);border-radius:7px;padding:7px'></div>" +
@@ -610,7 +616,7 @@
       markDone("qml");
       logTrail("AgroQML: methodology layer reviewed");
       var q = el("div", "panel");
-      q.innerHTML = "<div class='panel-h'>AgroQML™ — quantum machine learning layer</div>" +
+      q.innerHTML = "<div class='panel-h'>AgroQML — quantum machine learning layer</div>" +
         "<p>In the Quantum_AgroX architecture, QML is <b>one computational layer</b>, not a claim of advantage. Features are normalized and angle-encoded into qubits; a feature-map circuit builds a Hilbert-space representation; then a quantum fidelity kernel, QSVM-style classifier, variational circuit (VQC) or hybrid regression learns the mapping. Classical baselines remain the reference and every comparison uses identical splits, preprocessing and leakage controls.</p>" +
         "<table class='kv sml'><tbody>" +
         "<tr><td>Qubits</td><td class='num'>8</td></tr>" +
@@ -628,7 +634,7 @@
       markDone("md");
       logTrail("AgroMD: dynamics pipeline described");
       var m = el("div", "panel");
-      m.innerHTML = "<div class='panel-h'>AgroMD™ — molecular dynamics</div>" +
+      m.innerHTML = "<div class='panel-h'>AgroMD — molecular dynamics</div>" +
         "<p>Workflow: parametrize complex (GROMACS), solvate, equilibrate, run production (tens to hundreds of ns), then compute <b>RMSD</b> (complex stability), <b>RMSF</b> (residue flexibility), <b>interaction persistence</b> (H-bonds/salt bridges/π-stacking lifetimes) and <b>MM/PBSA</b> binding free energies. These confirm or interrogate the static docking poses and surface cryptic pockets.</p>" +
         "<table class='kv sml'><tbody>" +
         "<tr><td>Engine</td><td class='num'>GROMACS (backend, not bundled in this demo UI)</td></tr>" +
@@ -639,7 +645,7 @@
     };
     fns.resistance = function () {
       var p = el("div", "panel");
-      p.innerHTML = "<div class='panel-h'>AgroResistanceScan™ — mutation → structure → affinity</div>" +
+      p.innerHTML = "<div class='panel-h'>AgroResistanceScan — mutation → structure → affinity</div>" +
         "<p class='sml dim'>Pick a known resistance mutation. The scan reports the structural hypothesis, the expected affinity change on the selected receptor, and the literature cue. <b>Hypothesis-generation only.</b></p>" +
         "<div class='mlgens'><label>Mutation</label><select id='mut-sel'></select></div>" +
         "<div id='mut-out' style='margin-top:10px'></div>";
@@ -677,7 +683,7 @@
       markDone("select");
       logTrail("AgroSelect: selectivity rules reviewed");
       var s = el("div", "panel");
-      s.innerHTML = "<div class='panel-h'>AgroSelect™ — pest vs beneficial selectivity</div>";
+      s.innerHTML = "<div class='panel-h'>AgroSelect — pest vs beneficial selectivity</div>";
       var rows = M.selectivity.map(function (r) {
         var flag = r.flag === "HIGH" ? "tag bad" : r.flag === "MOD" ? "tag mid" : "tag ok";
         return "<tr><td>" + esc(r.family) + "</td><td class='sml dim'>" + esc(r.chemistry) + "</td><td>" + esc(r.beneficial) + "</td><td><span class='" + flag + "'>" + esc(r.flag) + "</span></td><td class='sml dim'>" + esc(r.note) + "</td></tr>";
@@ -690,7 +696,7 @@
       markDone("ecorisk");
       logTrail("AgroEcoRisk: environmental flags reviewed");
       var e = el("div", "panel");
-      e.innerHTML = "<div class='panel-h'>AgroEcoRisk™ — non-target risk prioritization</div>";
+      e.innerHTML = "<div class='panel-h'>AgroEcoRisk — non-target risk prioritization</div>";
       var rows = M.ecorisk.map(function (r) {
         var lv = r.level === "HIGH" ? "tag bad" : r.level === "MOD" ? "tag mid" : "tag ok";
         return "<tr><td>" + esc(r.rule) + "</td><td>" + esc(r.flag) + "</td><td><span class='" + lv + "'>" + esc(r.level) + "</span></td></tr>";
@@ -713,7 +719,7 @@
       markDone("synergyx");
       logTrail("AgroSynergyX: synergy workbench opened");
       var s = el("div", "panel");
-      s.innerHTML = "<div class='panel-h'>AgroSynergyX™ — combination / synergy</div>" +
+      s.innerHTML = "<div class='panel-h'>AgroSynergyX — combination / synergy</div>" +
         "<p class='sml dim'>Uses the same pair plus receptor as the Molecule Lab. Run to refresh the synergy index into this stage.</p>" +
         "<div style='display:flex;gap:10px;flex-wrap:wrap;margin:8px 0'>" +
         "<button class='primary' id='syn-run'>Run synergy now</button>" +
@@ -726,7 +732,7 @@
       markDone("optimize");
       logTrail("AgroOptimize: multi-objective ranking computed");
       var o = el("div", "panel");
-      o.innerHTML = "<div class='panel-h'>AgroOptimize™ — multi-objective ranking</div>" +
+      o.innerHTML = "<div class='panel-h'>AgroOptimize — multi-objective ranking</div>" +
         "<p class='sml dim'>Composite = 0.55 × normalized efficacy + 0.30 × inverse LC50 + 0.15 × evidence completeness (demo weights — tunable per project).</p>" +
         "<table class='data' id='opt-t'><thead><tr><th>Extract</th><th>Records</th><th>Mean mortality</th><th>Best LC50 (mg/mL)</th><th>Composite</th></tr></thead><tbody id='opt-b'></tbody></table>" +
         "<p class='sml dim' style='margin-top:10px'>Lab hits, selectivity flags and eco-risk flags join this matrix in the full engine (Phase 7 AgroX decision score).</p>";
@@ -759,36 +765,82 @@
       markDone("report");
       logTrail("AgroReport: reproducible report generated");
       var r = el("div", "panel report");
-      r.innerHTML = "<div class='panel-h'>AgroReport™ — reproducible summary</div>" +
+      r.innerHTML = "<div class='panel-h'>AgroReport — reproducible summary</div>" +
         "<p class='sml dim'>Audit-trail snapshot, dataset coverage, pipeline completion and active session credentials. Printable — use your browser's Print → Save as PDF.</p>" +
         "<button class='primary' id='rep-print' style='margin-bottom:12px'>Print / Save as PDF</button>" +
         "<div id='rep-body'></div>";
       content.appendChild(r);
       var b = $("#rep-body");
       function txt() {
-        var lab = APP.lastLab;
         var html = "";
         html += "<h3>Project</h3><p><b>Quantum_AgroX™</b> — Quantum Machine Learning based Agro-Chemical Discovery. MEDxAI; benchmark: <i>Commiphora swynnertonii</i> vs <i>R. microplus</i> &amp; <i>R. decoloratus</i>.</p>";
-        html += "<h3>Dataset coverage</h3><table class='kv sml'><tbody>" +
+
+        html += "<h3>1 · Molecules called in this session</h3>";
+        if (APP.ledger.length) {
+          var bySmi = {};
+          APP.ledger.forEach(function (L) { [L.smiA, L.smiB].forEach(function (s) { bySmi[s] = (bySmi[s] || 0) + 1; }); });
+          html += "<table class='data'><thead><tr><th>SMILES</th><th>Runs</th><th>Receptor target(s)</th></tr></thead><tbody>" +
+            Object.keys(bySmi).map(function (s) {
+              var tgAll = [];
+              APP.ledger.forEach(function (L) { if (L.smiA === s || L.smiB === s) tgAll.push(L.target); });
+              var tg = [];
+              tgAll.forEach(function (x) { if (tg.indexOf(x) < 0) tg.push(x); });
+              return "<tr><td class='kbd'>" + esc(s) + "</td><td class='num'>" + bySmi[s] + "</td><td>" + (tg.length ? esc(tg.join(", ")) : "—") + "</td></tr>";
+            }).join("") + "</tbody></table>";
+        } else {
+          html += "<div class='dim'>No molecule was submitted yet in this session. Open the Molecule Lab and run a pair.</div>";
+        }
+
+        html += "<h3>2 · Receptor targets used</h3>";
+        if (APP.ledger.length) {
+          var byT = {};
+          APP.ledger.forEach(function (L) { byT[L.target] = (byT[L.target] || 0) + 1; });
+          html += "<table class='data'><thead><tr><th>Receptor target</th><th>Runs</th><th>Calibration</th></tr></thead><tbody>" +
+            Object.keys(byT).map(function (k) {
+              var anchored = APP.ledger.some(function (L) { return L.target === k && !L.lowConf; });
+              return "<tr><td>" + esc(k) + "</td><td class='num'>" + byT[k] + "</td><td>" + (anchored ? "bundled anchor ligand" : "generic calibration") + "</td></tr>";
+            }).join("") + "</tbody></table>";
+        } else {
+          html += "<div class='dim'>None yet.</div>";
+        }
+
+        html += "<h3>3 · Model parameters</h3><table class='kv sml'><tbody>" +
+          "<tr><td>Affinity surrogate</td><td class='num'>Ridge QSAR, " + (M.trainligands ? M.trainligands.length : 20) + " reference ligands</td></tr>" +
+          "<tr><td>Descriptors</td><td class='num'>" + esc((FEATURES && FEATURES.length ? FEATURES : M.features || []).join(", ")) + "</td></tr>" +
+          "<tr><td>Calibrated targets</td><td class='num'>" + (M.targets ? M.targets.filter(function (tt) { return tt.anchorKey && tt.anchorFeat; }).length : 14) + " of " + (M.targets ? M.targets.length : "—") + " carry a bundled anchor ligand</td></tr>" +
+          "<tr><td>Synergy heuristic</td><td class='num'>0.35 · (1 − Tanimoto) + 0.20 · LogP balance + 0.20 · size mixing + 0.25 · affinity gain</td></tr>" +
+          "<tr><td>Dose window</td><td class='num'>5–80 mg/mL topical (study-tested range)</td></tr>" +
+          "<tr><td>Determinism</td><td class='num'>Fully deterministic — no quantum sampling in the interactive layer</td></tr>" +
+          "</tbody></table>";
+
+        html += "<h3>4 · Inference</h3>";
+        if (APP.ledger.length) {
+          var best = APP.ledger.slice().sort(function (a, b) { return a.affC - b.affC; })[0];
+          html += "<table class='kv sml'><tbody>" +
+            "<tr><td>Most promising combination (lowest predicted combo affinity)</td><td class='num kbd'>" + esc(best.smiA) + " + " + esc(best.smiB) + "</td></tr>" +
+            "<tr><td>Predicted combo affinity</td><td class='num'>" + best.affC + " kcal/mol</td></tr>" +
+            "<tr><td>Synergy</td><td class='num'>" + best.synergy + " (" + esc(best.syn) + ")</td></tr>" +
+            "<tr><td>Dose guidance</td><td class='num'>" + esc(best.dose) + "</td></tr>" +
+            "<tr><td>Confidence</td><td class='num'>" + (best.lowConf ? "generic calibration — no bundled anchor for this target" : "bundled anchor calibration") + "</td></tr>" +
+            "<tr><td>Session runs</td><td class='num'>" + APP.ledger.length + "</td></tr></tbody></table>";
+        } else {
+          html += "<div class='dim'>Run the Molecule Lab to generate an inference.</div>";
+        }
+
+        html += "<h3>5 · Dataset coverage</h3><table class='kv sml'><tbody>" +
           "<tr><td>Bioassay records</td><td class='num'>" + (D ? D.stats.records : "—") + "</td></tr>" +
           "<tr><td>Phytochemicals / docking hits / LC50 entries</td><td class='num'>" + (D ? D.stats.phytochemicals + " / " + D.stats.docking_hits + " / " + D.stats.lc50_entries : "—") + "</td></tr>" +
-          "<tr><td>Selected target</td><td class='num'>" + (APP.targetKey ? esc((M.targets.find(function (t) { return t.key === APP.targetKey; }) || {}).name || APP.targetKey) : "—") + "</td></tr></tbody></table>";
-        if (lab) {
-          html += "<h3>Last Molecule Lab run</h3><table class='kv sml'><tbody>" +
-            "<tr><td>Pair</td><td class='num kbd'>" + esc(lab.smiA) + "</td></tr>" +
-            "<tr><td></td><td class='num kbd'>" + esc(lab.smiB) + "</td></tr>" +
-            "<tr><td>Receptor</td><td class='num'>" + esc(lab.target) + (lab.lowConf ? " (generic calibration)" : "") + "</td></tr>" +
-            "<tr><td>Affinity (combo)</td><td class='num'>" + round(lab.affC, 2) + " kcal/mol</td></tr>" +
-            "<tr><td>Synergy index</td><td class='num'>" + round(lab.synergy, 2) + "</td></tr>" +
-            "<tr><td>Dose (combo)</td><td class='num'>" + lab.dose + " mg/mL</td></tr></tbody></table>";
-        }
-        html += "<h3>Pipeline completion</h3><div>" + M.modules.map(function (m) {
+          "<tr><td>Selected target (default)</td><td class='num'>" + (APP.targetKey ? esc((M.targets.find(function (t) { return t.key === APP.targetKey; }) || {}).name || APP.targetKey) : "—") + "</td></tr></tbody></table>";
+
+        html += "<h3>6 · Pipeline completion</h3><div>" + M.modules.map(function (m) {
           return (APP.done[m.id] ? "☑" : "☐") + " " + esc(m.name);
         }).join("<br>") + "</div>";
-        html += "<h3>Audit trail</h3><div class='trailbox'>" +
+
+        html += "<h3>7 · Audit trail</h3><div class='trailbox'>" +
           (APP.trail.length ? APP.trail.map(function (t0) { return "<div>" + esc(t0.t) + " — " + esc(t0.m) + "</div>"; }).join("") : "<div class='dim'>No session actions yet.</div>") +
           "</div>";
-        html += "<h3>Safeguards</h3><ul class='sml'>" +
+
+        html += "<h3>8 · Safeguards</h3><ul class='sml'>" +
           "<li>Aggregate paper-derived benchmark — pipeline development, not advantage claims.</li>" +
           "<li>Docking scores are NOT proof of AChE inhibition (paper's own limitation).</li>" +
           "<li>No field efficacy / livestock / environmental safety inferred from docking alone.</li>" +
@@ -942,7 +994,7 @@
     $$(".tablink").forEach(function (b) { b.classList.toggle("active", b.dataset.tab === name); });
     $$(".tabpane").forEach(function (p) { p.classList.toggle("active", p.id === "pane-" + name); });
     if (name === "evid") { litRender(); litVerificationPanel(); }
-    if (name === "pipeline") { renderStepper(); renderStage(); }
+    if (name === "pipeline" && M) { renderStepper(); renderStage(); }
     try { history.replaceState(null, "", TAB_HASH[name] || "#home"); } catch (e) {}
   }
   function initTabs() {
@@ -957,8 +1009,11 @@
     if (names[h]) showTab(names[h]); else showTab("home");
     var pipeParam = (typeof URLSearchParams !== "undefined" && location.search) ? new URLSearchParams(location.search).get("pipe") : null;
     if (pipeParam) {
-      var mi = M.modules.findIndex(function (m) { return m.id === pipeParam; });
-      if (mi >= 0) openPipelineAt(mi);
+      APP.pendingPipe = pipeParam;
+      if (M) {
+        var mi = M.modules.findIndex(function (m) { return m.id === pipeParam; });
+        if (mi >= 0) openPipelineAt(mi);
+      }
     }
     var s1 = (typeof URLSearchParams !== "undefined" && location.search) ? new URLSearchParams(location.search).get("s1") : null;
     var s2 = (typeof URLSearchParams !== "undefined" && location.search) ? new URLSearchParams(location.search).get("s2") : null;
@@ -987,6 +1042,9 @@
     $("#lit-q").addEventListener("input", function () { litRender(); });
     $("#chat-send").addEventListener("click", chatSend);
     $("#chat-in").addEventListener("keydown", function (e) { if (e.key === "Enter") chatSend(); });
+    if ($("#ex-a")) $("#ex-a").addEventListener("change", function () { var v = $("#ex-a").value; if (v) { $("#smi-a").value = v; } });
+    if ($("#ex-b")) $("#ex-b").addEventListener("change", function () { var v = $("#ex-b").value; if (v) { $("#smi-b").value = v; } });
+    if ($("#ex-target")) $("#ex-target").addEventListener("change", function () { var v = $("#ex-target").value; if (v) { $("#target").value = v; updateTargetHint(); } });
     /* defaults */
     $("#smi-a").value = "CC1=CCC2CC1C2(C)C";   /* alpha-pinene */
     $("#smi-b").value = "COc1cc(CC=C)ccc1O";   /* eugenol */
@@ -1002,6 +1060,21 @@
     if (!v) h.innerHTML = "";
     else if (t) h.innerHTML = "Matched: <b>" + esc(t.name) + "</b> — " + esc(t.organism) + (t.anchorDG ? " · anchor " + esc(t.anchor) + " (" + t.anchorDG + " kcal/mol)" : "");
     else h.innerHTML = "<span class='warn-bc'>Not in the bundled library — will use generic insect-AChE calibration.</span>";
+  }
+  function renderExampleSelects() {
+    var ta = $("#ex-a"), tb = $("#ex-b"), exT = $("#ex-target");
+    if (!M || (!ta && !tb && !exT)) return;
+    var smiOps = "<option value=''>— pick a structure —</option>" + M.smilesExamples.map(function (e) {
+      return "<option value='" + esc(e.smi) + "'>" + esc(e.name) + " [" + esc(e.cls) + "]</option>";
+    }).join("");
+    if (ta) ta.innerHTML = smiOps;
+    if (tb) tb.innerHTML = smiOps;
+    if (exT) {
+      exT.innerHTML = "<option value=''>— pick a receptor —</option>" + M.targets.map(function (t) {
+        var label = t.name + " (" + t.organism + ")";
+        return "<option value='" + esc(label) + "'>" + esc(label) + " [" + esc(t.cls) + (t.anchorKey ? " · anchored" : "") + "]</option>";
+      }).join("");
+    }
   }
   function renderTargetDatalist() {
     var dl = $("#targets");
@@ -1027,8 +1100,15 @@
       M = window.AGROX.MODEL;
       FEATURES.length = 0; M.features.forEach(function (f0) { FEATURES.push(f0); });
       homeRender();
+      renderExampleSelects();
+      renderTargetDatalist();
+      updateTargetHint();
       if (APP.tab === "evid") { litRender(); litVerificationPanel(); }
-      if (APP.tab === "pipeline") { renderStepper(); renderStage(); }
+      if (APP.pendingPipe && M) {
+        var miP = M.modules.findIndex(function (mo) { return mo.id === APP.pendingPipe; });
+        APP.pendingPipe = null;
+        if (miP >= 0) openPipelineAt(miP);
+      } else if (APP.tab === "pipeline") { renderStepper(); renderStage(); }
     });
   }
 

@@ -7,12 +7,16 @@
 <script src="https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2025.3.4-1.0.0/Code/MinimalLib/dist/RDKit_minimal.js"></script>
 <style>
   :root{
-    --bg:#0b0f14; --panel:#11161d; --panel2:#151c25; --line:#1f2937; --line2:#26323f;
-    --txt:#e5edf3; --dim:#8ba0b3; --accent:#2dd4bf; --accent2:#a78bfa; --warn:#f59e0b; --bad:#f87171; --ok:#34d399;
+    --bg:#0a130d; --panel:#101b13; --panel2:#152419; --line:#1d3225; --line2:#2a4331;
+    --txt:#e6f0e8; --dim:#8ba695; --accent:#34d399; --accent2:#a78bfa; --warn:#f59e0b; --bad:#f87171; --ok:#34d399;
     --radius:10px;
+    --leaf-pat:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'><g fill='none' stroke='%2334d399' stroke-width='1' opacity='0.07'><path d='M18 26c16 8 24 24 14 44-18 2-30-10-28-26 4-10 12-15 14-18z'/><path d='M86 30c-16 14-18 30-10 46 14 8 30 2 38-12 0-12-12-26-28-34z'/><path d='M38 96c12 4 20 12 20 26-12 8-26 4-30-8 0-8 6-16 10-18z'/><path d='M104 92c8 2 14 8 14 18-8 6-18 2-20-6 0-6 4-10 6-12z'/></g></svg>"
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--txt);
+  body{margin:0;color:var(--txt);
+       background-color:var(--bg);
+       background-image:radial-gradient(1100px 520px at 82% -8%, rgba(52,211,153,.08), transparent 62%), var(--leaf-pat);
+       background-repeat:no-repeat, repeat;
        font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
   a{color:var(--accent);text-decoration:none}
   a:hover{text-decoration:underline}
@@ -164,7 +168,7 @@
     <img class="logo" src="assets/medxai_logo_small.png" alt="MEDxAI logo">
     <div class="wordmark">
       <h1><span class="tm">Quantum_AgroX™</span> — Quantum Machine Learning based Agro-Chemical Discovery</h1>
-      <p>Evidence-integrating agrochemical intelligence platform &middot; benchmarked on <i>Commiphora swynnertonii</i> botanical acaricide discovery</p>
+      <p>Natural-product &amp; synthetic agrochemical discovery, governed by classical reproducibility and evidence standards</p>
     </div>
     <div id="rdkit-status" class="rdstatus">Loading RDKit core…</div>
   </div>
@@ -230,7 +234,7 @@
   <section id="pane-pipeline" class="tabpane">
     <div class="panel">
       <div class="panel-h">Agro Chemical Discovery Pipeline</div>
-      <p class="sml dim">Walk the fourteen modules in order. Each stage below is live: it acts on the loaded benchmark data or your inputs, and logs every step to the audit trail consumed by AgroReport™. Numbers marked “demo schema” are pre-screening hypotheses.</p>
+      <p class="sml dim">Walk the fourteen modules in order. Each stage below is live: it acts on the loaded benchmark data or your inputs, and logs every step to the audit trail consumed by AgroReport. Numbers marked “demo schema” are pre-screening hypotheses.</p>
     </div>
     <div class="pipe-wrap">
       <div class="stepper" id="stepper"></div>
@@ -269,6 +273,15 @@
         </div>
       </div>
       <p class="sml dim" id="target-hint"></p>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)">
+        <div class="panel-h" style="font-size:13px;color:var(--dim)">Example library — 50 validated structures and 50 receptor targets</div>
+        <div class="grid mlgens" style="grid-template-columns:repeat(3,1fr);gap:12px">
+          <div><label>Example molecule A</label><select id="ex-a"></select></div>
+          <div><label>Example molecule B</label><select id="ex-b"></select></div>
+          <div><label>Example receptor target</label><select id="ex-target"></select></div>
+        </div>
+        <p class="sml dim" style="margin-top:8px">Picking an example fills the fields above. All structures are RDKit-validated; targets resolve to the bundled library where available.</p>
+      </div>
     </div>
     <div id="lab-out"></div>
   </section>

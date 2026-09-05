@@ -716,9 +716,839 @@ window.AGROX.MODEL = {
     11,
     0.86
    ]
+  },
+  {
+  "key": "ache2_microp",
+  "name": "Acetylcholinesterase 2 (AChE2 variant)",
+  "organism": "Rhipicephalus microplus (cattle tick)",
+  "cls": "mite",
+  "protein": "AChE2",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Tick acaricide target — OP/carbamate gorge, BME-2 paralog",
+  "note": "Unanchored paralog — generic AChE calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "gaba_mite",
+  "name": "GABA-gated chloride channel",
+  "organism": "Rhipicephalus microplus (cattle tick)",
+  "cls": "mite",
+  "protein": "GABA-ClC (Rdl)",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Tick acaricide target — fipronil-type site",
+  "note": "Unanchored — generic insect calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "vgsc_mite",
+  "name": "Voltage-gated sodium channel (kdr site)",
+  "organism": "Rhipicephalus microplus (cattle tick)",
+  "cls": "mite",
+  "protein": "VGSC",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Tick acaricide target — pyrethroid site I",
+  "note": "Unanchored — generic insect VGSC calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "glucl_mite",
+  "name": "Glutamate-gated chloride channel",
+  "organism": "Rhipicephalus microplus (cattle tick)",
+  "cls": "mite",
+  "protein": "GluCl",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Tick acaricide target — abamectin/milbemycin site",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "glucl_insect",
+  "name": "Glutamate-gated chloride channel",
+  "organism": "Musca domestica (house fly)",
+  "cls": "insect",
+  "protein": "GluCl",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Insecticide target — macrocyclic lactones",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "octopamine",
+  "name": "Octopamine receptor",
+  "organism": "Rhipicephalus microplus (cattle tick)",
+  "cls": "insect",
+  "protein": "OctR",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Formamidine (amitraz) site — acaricide",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "tyramine",
+  "name": "Tyramine receptor",
+  "organism": "Apis mellifera (honeybee)",
+  "cls": "insect",
+  "protein": "TyrR",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Biogenic-amine GPCR — selectivity comparator",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "jh_receptor",
+  "name": "Juvenile hormone receptor (Met)",
+  "organism": "Tribolium castaneum (red flour beetle)",
+  "cls": "insect",
+  "protein": "Met",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "IGR target — methoprene-type mimics",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "ecdysone",
+  "name": "Ecdysone receptor (EcR/USP)",
+  "organism": "Helicoverpa armigera (cotton bollworm)",
+  "cls": "insect",
+  "protein": "EcR",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "IGR target — diacylhydrazine moulting disruptors",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "mt_ci",
+  "name": "Mitochondrial complex I (NADH dehydrogenase)",
+  "organism": "Blattella germanica (German cockroach)",
+  "cls": "insect",
+  "protein": "ND1",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Respiratory inhibitor target — rotenone site",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "mt_atp",
+  "name": "Mitochondrial ATP synthase",
+  "organism": "Aedes aegypti (yellow fever mosquito)",
+  "cls": "insect",
+  "protein": "ATPase",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Respiratory inhibitor target",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "acc_insect",
+  "name": "Acetyl-CoA carboxylase (lipid)",
+  "organism": "Bemisia tabaci (whitefly)",
+  "cls": "insect",
+  "protein": "ACC",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Lipid-synthesis inhibitor (spirotetramat-like)",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "machr_insect",
+  "name": "Muscarinic acetylcholine receptor",
+  "organism": "Helicoverpa zea (corn earworm)",
+  "cls": "insect",
+  "protein": "mAChR",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Insect neuroreceptor target",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "ache_bee",
+  "name": "Acetylcholinesterase (synaptic)",
+  "organism": "Apis mellifera (honeybee) — selectivity comparator",
+  "cls": "insect",
+  "protein": "AChE",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Pollinator AAChE selectivity comparator",
+  "note": "Unanchored — used for selectivity balance, not efficacy.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "nachr_bee",
+  "name": "Nicotinic acetylcholine receptor (α-subunit)",
+  "organism": "Apis mellifera (honeybee) — selectivity comparator",
+  "cls": "insect",
+  "protein": "nAChR",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Pollinator nAChR selectivity comparator (neonicotinoid site)",
+  "note": "Unanchored — used for selectivity balance.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "carboxyles",
+  "name": "Carboxylesterase (detox)",
+  "organism": "Rhipicephalus microplus (cattle tick)",
+  "cls": "defense",
+  "protein": "CaE",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Detoxification enzyme — synergist target",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "catalase",
+  "name": "Catalase",
+  "organism": "Rhipicephalus microplus (cattle tick)",
+  "cls": "defense",
+  "protein": "CAT",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Antioxidant defense enzyme",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "sod",
+  "name": "Superoxide dismutase",
+  "organism": "Rhipicephalus microplus (cattle tick)",
+  "cls": "defense",
+  "protein": "SOD",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Antioxidant defense enzyme",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "cyp450",
+  "name": "Cytochromes P450 monooxygenase",
+  "organism": "Rhipicephalus microplus (cattle tick)",
+  "cls": "defense",
+  "protein": "CYP",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Metabolic detoxification — synergist target",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "ugt",
+  "name": "UDP-glycosyltransferase",
+  "organism": "Rhipicephalus microplus (cattle tick)",
+  "cls": "defense",
+  "protein": "UGT",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Phase II detoxification — synergist target",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "bc1_fungi",
+  "name": "Cytochrome bc1 complex (QoI site)",
+  "organism": "Botrytis cinerea (grey mould)",
+  "cls": "fungus",
+  "protein": "bc1",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Fungicide target — strobilurin QoI site",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "glcn6p_fungi",
+  "name": "Glucosamine-6-phosphate synthase",
+  "organism": "Fusarium graminearum (wheat blight)",
+  "cls": "fungus",
+  "protein": "GlmS",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Fungicide target — chitin/ergosterol precursor pathway",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "glucanase_fungi",
+  "name": "β-1,3-Glucan synthase",
+  "organism": "Magnaporthe oryzae (rice blast)",
+  "cls": "fungus",
+  "protein": "FKS",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Fungicide target — cell-wall glucan synthesis",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "chitin_fungi",
+  "name": "Chitin synthase",
+  "organism": "Botrytis cinerea (grey mould)",
+  "cls": "fungus",
+  "protein": "Chs",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Fungicide target — cell-wall chitin synthesis",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "als_weed",
+  "name": "Acetolactate synthase (ALS/AHAS)",
+  "organism": "Amaranthus palmeri (Palmer amaranth)",
+  "cls": "weed",
+  "protein": "ALS",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Herbicide target — branched-chain amino-acid biosynthesis",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "psi_weed",
+  "name": "Photosystem I acceptors",
+  "organism": "Chenopodium album (fat-hen)",
+  "cls": "weed",
+  "protein": "PSI",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Herbicide target — bipyridylium (paraquat) site",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "hppd_weed",
+  "name": "4-Hydroxyphenylpyruvate dioxygenase",
+  "organism": "Avena fatua (wild oat)",
+  "cls": "weed",
+  "protein": "HPPD",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Herbicide target — carotenoid/plastoquinone biosynthesis",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "ppo_weed",
+  "name": "Protoporphyrinogen oxidase (PPO)",
+  "organism": "Ipomoea hederacea (ivyleaf morningglory)",
+  "cls": "weed",
+  "protein": "PPO",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Herbicide target — chlorophyll biosynthesis",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "pds_weed",
+  "name": "Phytoene desaturase",
+  "organism": "Avena fatua (wild oat)",
+  "cls": "weed",
+  "protein": "PDS",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Herbicide target — carotenoid bleaching",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "accase_weed",
+  "name": "Acetyl-CoA carboxylase (ACCase, plastid)",
+  "organism": "Lolium rigidum (annual ryegrass)",
+  "cls": "weed",
+  "protein": "ACCase",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Herbicide target — graminicide lipid synthesis",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "gs_weed",
+  "name": "Glutamine synthetase",
+  "organism": "Sorghum halepense (johnsongrass)",
+  "cls": "weed",
+  "protein": "GS",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Herbicide target — amino-acid assimilation (glufosinate-like)",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "slo1_nema",
+  "name": "SLO-1 Ca²⁺-activated K⁺ channel",
+  "organism": "Haemonchus contortus (barber's pole worm)",
+  "cls": "nematode",
+  "protein": "SLO-1",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Anthelmintic target — emodepside site",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "glucl_nema",
+  "name": "Glutamate-gated chloride channel",
+  "organism": "Haemonchus contortus (barber's pole worm)",
+  "cls": "nematode",
+  "protein": "GluCl",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Anthelmintic target — avermectin site",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ },
+  {
+  "key": "tubulin_nema",
+  "name": "β-Tubulin (benzimidazole site)",
+  "organism": "Haemonchus contortus (barber's pole worm)",
+  "cls": "nematode",
+  "protein": "TUB",
+  "accession": "—",
+  "template": "—",
+  "anchor": "—",
+  "anchorKey": null,
+  "focus": "Anthelmintic/fungicide target — microtubule disruptors",
+  "note": "Unanchored — generic calibration applies.",
+  "box": "—",
+  "center": "—",
+  "anchorDG": null,
+  "anchorFeat": null
+ }
+  ],
+  "smilesExamples": [
+   {
+   "name": "α-Pinene (monoterpene)",
+   "smi": "CC1=CCC2CC1C2(C)C",
+   "cls": "botanical"
+  },
+   {
+   "name": "β-Pinene (monoterpene)",
+   "smi": "CC1(C)C2CCC1C(=C)C2",
+   "cls": "botanical"
+  },
+   {
+   "name": "Limonene (monoterpene)",
+   "smi": "CC1=CCC(CC1)=C(C)C",
+   "cls": "botanical"
+  },
+   {
+   "name": "Linalool (monoterpene)",
+   "smi": "CC(C)=CCCC(C)(O)C=C",
+   "cls": "botanical"
+  },
+   {
+   "name": "Geraniol (monoterpene)",
+   "smi": "CC(C)=CCCC(C)=CCO",
+   "cls": "botanical"
+  },
+   {
+   "name": "Thymol (monoterpene phenol)",
+   "smi": "CC(C)c1cc(C)ccc1O",
+   "cls": "botanical"
+  },
+   {
+   "name": "Carvacrol (monoterpene phenol)",
+   "smi": "CC(C)c1ccc(O)cc1C",
+   "cls": "botanical"
+  },
+   {
+   "name": "Menthol (monoterpene)",
+   "smi": "CC(C)C1CCC(C)CC1O",
+   "cls": "botanical"
+  },
+   {
+   "name": "Eugenol (phenylpropanoid)",
+   "smi": "COc1cc(CC=C)ccc1O",
+   "cls": "botanical"
+  },
+   {
+   "name": "Anethole (phenylpropanoid)",
+   "smi": "COc1ccc(C=CC)cc1",
+   "cls": "botanical"
+  },
+   {
+   "name": "Cinnamaldehyde (phenylpropanoid)",
+   "smi": "O=C/C=C/c1ccccc1",
+   "cls": "botanical"
+  },
+   {
+   "name": "Camphor (bicyclic ketone)",
+   "smi": "CC1(C)C2CCC1(C)C(=O)C2",
+   "cls": "botanical"
+  },
+   {
+   "name": "Phytol (diterpenoid)",
+   "smi": "CC(C)CCCC(C)CCCC(C)CCCC(C)=CCO",
+   "cls": "botanical"
+  },
+   {
+   "name": "Squalene (triterpene)",
+   "smi": "CC(=CCCC(=CCCC(=CCCC=C(C)C)C)C)C",
+   "cls": "botanical"
+  },
+   {
+   "name": "Quercetin (flavonoid)",
+   "smi": "O=C1c2c(O)cc(O)cc2OC(c2cc(O)c(O)c(O)c2)=C1O",
+   "cls": "botanical"
+  },
+   {
+   "name": "Kaempferol (flavonoid)",
+   "smi": "O=C1c2c(O)cc(O)cc2OC(c2ccc(O)cc2)=C1O",
+   "cls": "botanical"
+  },
+   {
+   "name": "Nicotine (alkaloid)",
+   "smi": "CN1CCC[C@H]1c1cccnc1",
+   "cls": "botanical"
+  },
+   {
+   "name": "Donepezil (AChE drug)",
+   "smi": "COc1ccc2CC(CC(=O)N3CCN(CC3)Cc3ccccc3)Cc2c1OC",
+   "cls": "drug"
+  },
+   {
+   "name": "Galantamine (AChE drug)",
+   "smi": "COc1cc2c(cc1OC)O[C@H]1C[C@@H](O)[C@@H](CN2CC=C)C1",
+   "cls": "drug"
+  },
+   {
+   "name": "Physostigmine (AChE drug)",
+   "smi": "CNC(=O)OC1=CC2=C(C=C1)N(C)C1CC(N(C)C)C2CC1",
+   "cls": "drug"
+  },
+   {
+   "name": "Chlorpyrifos (OP insecticide)",
+   "smi": "CCOP(=S)(OCC)Oc1nc(Cl)nc(Cl)c1Cl",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Chlorfenvinphos (OP acaricide)",
+   "smi": "Cl/C(Cl)=C(OP(=O)(OCC)OCC)c1ccc(Cl)cc1Cl",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Propoxur (carbamate)",
+   "smi": "CC(C)OC(=O)NC1=CC=CC=C1OC",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Carbaryl (carbamate)",
+   "smi": "CNC(=O)Oc1cccc2ccccc12",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Malathion (OP)",
+   "smi": "CCOC(=O)CC(SP(=S)(OC)OC)C(=O)OCC",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Permethrin (pyrethroid)",
+   "smi": "CC1(C)C(C=C(Cl)Cl)C1C(=O)OCCc1cccc(OCc2ccccc2)c1",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Imidacloprid (neonicotinoid)",
+   "smi": "Clc1ccc(CN2CCNC2=N[N+](=O)[O-])cn1",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Acetamiprid (neonicotinoid)",
+   "smi": "CN=C(C#N)NCC1=CC=C(N=C1)Cl",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Amitraz (formamidine acaricide)",
+   "smi": "CN(C=Nc1ccc(C)cc1C)C=Nc1ccc(C)cc1C",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Diflubenzuron (IGR)",
+   "smi": "Fc1ccc(F)cc1NC(=O)NC(=O)c1ccccc1Cl",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Methomyl (carbamate)",
+   "smi": "CNC(=O)O/N=C(\\C)SC",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Cyromazine (triazine IGR)",
+   "smi": "Nc1nc(N)nc(NC2CC2)n1",
+   "cls": "insecticide"
+  },
+   {
+   "name": "Levamisole (anthelmintic)",
+   "smi": "C1CS[C@H]2CN=C(N2C1)c3ccccc3",
+   "cls": "nematicide"
+  },
+   {
+   "name": "Albendazole (anthelmintic)",
+   "smi": "CCCSc1ccc2nc(NC(=O)OC)[nH]c2c1",
+   "cls": "nematicide"
+  },
+   {
+   "name": "Fenbendazole (anthelmintic)",
+   "smi": "COC(=O)Nc1nc2ccc(Sc3ccccc3)cc2[nH]1",
+   "cls": "nematicide"
+  },
+   {
+   "name": "Atrazine (triazine herbicide)",
+   "smi": "CCNc1nc(Cl)nc(NC(C)C)n1",
+   "cls": "herbicide"
+  },
+   {
+   "name": "Paraquat (bipyridylium herbicide)",
+   "smi": "C[n+]1ccc(-c2cc[n+](C)cc2)cc1",
+   "cls": "herbicide"
+  },
+   {
+   "name": "Diuron (urea herbicide)",
+   "smi": "CC(C)N(C)C(=O)Nc1ccc(Cl)cc1Cl",
+   "cls": "herbicide"
+  },
+   {
+   "name": "2,4-D (auxin herbicide)",
+   "smi": "OC(=O)COc1ccc(Cl)cc1Cl",
+   "cls": "herbicide"
+  },
+   {
+   "name": "Dicamba (benzoic herbicide)",
+   "smi": "COc1c(Cl)cc(Cl)cc1C(=O)O",
+   "cls": "herbicide"
+  },
+   {
+   "name": "Metolachlor (chloroacetanilide)",
+   "smi": "CCC1=CC=CC=C1N(C(C)COC)C(=O)CCl",
+   "cls": "herbicide"
+  },
+   {
+   "name": "Pretilachlor (chloroacetanilide)",
+   "smi": "CCC1=CC=CC=C1N(CCCOCC)C(=O)CCl",
+   "cls": "herbicide"
+  },
+   {
+   "name": "Pendimethalin (dinitroaniline)",
+   "smi": "CCC(CC)Nc1c(C)c(C)c([N+](=O)[O-])cc1[N+](=O)[O-]",
+   "cls": "herbicide"
+  },
+   {
+   "name": "Glyphosate (amino-acid herbicide)",
+   "smi": "OC(=O)CNCP(=O)(O)O",
+   "cls": "herbicide"
+  },
+   {
+   "name": "Bromoxynil (nitrile herbicide)",
+   "smi": "N#Cc1cc(Br)c(O)c(Br)c1C#N",
+   "cls": "herbicide"
+  },
+   {
+   "name": "Carbendazim (benzimidazole)",
+   "smi": "COC(=O)Nc1nc2ccccc2[nH]1",
+   "cls": "fungicide"
+  },
+   {
+   "name": "Thiabendazole (benzimidazole)",
+   "smi": "C1=CSC(=N1)c1nc2ccccc2[nH]1",
+   "cls": "fungicide"
+  },
+   {
+   "name": "Chlorothalonil (nitrile)",
+   "smi": "N#Cc1c(Cl)c(Cl)c(C#N)c(Cl)c1Cl",
+   "cls": "fungicide"
+  },
+   {
+   "name": "Tebuconazole (triazole)",
+   "smi": "CC(C)(C)CC(CC1=CNN=N1)c1ccc(Cl)cc1",
+   "cls": "fungicide"
+  },
+   {
+   "name": "Boscalid (pyridine carboxamide)",
+   "smi": "O=C(Nc1ccccc1-c1ccc(Cl)cc1)c1cccnc1Cl",
+   "cls": "fungicide"
   }
- ],
- "mutations": [
+  ],
+  "mutations": [
   {
    "name": "AChE G119S",
    "target": [
@@ -812,98 +1642,98 @@ window.AGROX.MODEL = {
  "modules": [
   {
    "id": "datahub",
-   "name": "AgroDataHub™",
+   "name": "AgroDataHub",
    "func": "Import & standardize",
    "desc": "Ingest and standardize GC-MS, SDF/SMILES, FASTA, VCF, bioassay and docking datasets with an auditable provenance step.",
    "icon": "M13 3h7v7M16 8l4-4M6 3H3v17h17v-3M3 11h6v10M14 11h3M14 16h3M14 21h3"
   },
   {
    "id": "phytox",
-   "name": "AgroPhytoX™",
+   "name": "AgroPhytoX",
    "func": "Phytochemical library",
    "desc": "Natural-product and phytochemical library; plant part, extraction solvent, abundance and structure metadata.",
    "icon": "M12 3c1 3 3 4 3 7a3 3 0 0 1-6 0c0-3 2-4 3-7ZM12 13v8M8 21l4-4M16 21l-4-4"
   },
   {
    "id": "targetx",
-   "name": "AgroTargetX™",
+   "name": "AgroTargetX",
    "func": "Target discovery",
    "desc": "Target discovery for pests, pathogens, fungi, bacteria, nematodes and weeds.",
    "icon": "M12 3l2.5 5.5 6 .5-4.5 4 1.2 5.9L12 16l-5.2 2.9L8 13l-4.5-4 6-.5L12 3Z"
   },
   {
    "id": "sitemap",
-   "name": "AgroSiteMap™",
+   "name": "AgroSiteMap",
    "func": "Binding-site analysis",
    "desc": "Binding-site, pocket, cryptic-pocket and druggability analysis.",
    "icon": "M4 5h16M4 5l3-2M4 5l3 2M20 5l-3-2M20 5l-3 2M12 5v14M12 19l-3-2M12 19l3-2"
   },
   {
    "id": "dockx",
-   "name": "AgroDockX™",
+   "name": "AgroDockX",
    "func": "Docking & affinity ranking",
    "desc": "Protein–ligand docking and affinity ranking.",
    "icon": "M5 4h14v6H5V4ZM5 14h14v6H5v-6Z"
   },
   {
    "id": "dosex",
-   "name": "AgroDoseX™",
+   "name": "AgroDoseX",
    "func": "Dose–response modelling",
    "desc": "Dose-response modelling, LC50/LC90 and time-dependent efficacy prediction.",
    "icon": "M3 12h4l2-5 2 10 2-6 2 8h10"
   },
   {
    "id": "qml",
-   "name": "AgroQML™",
+   "name": "AgroQML",
    "func": "Quantum learning",
    "desc": "Quantum kernels, QSVM, VQC, QNN and hybrid quantum-classical prediction.",
    "icon": "M12 2l3 5 5 1-3 5 3 5-5 1-3 5-3-5-5-1 3-5-3-5 5-1 3-5Z"
   },
   {
    "id": "md",
-   "name": "AgroMD™",
+   "name": "AgroMD",
    "func": "Molecular dynamics",
    "desc": "MD, RMSD/RMSF, interaction persistence and MM/PBSA thermodynamic estimates.",
    "icon": "M3 12c3-5 6-5 9 0s6 5 9 0M3 17c3-5 6-5 9 0s6 5 9 0"
   },
   {
    "id": "resistance",
-   "name": "AgroResistanceScan™",
+   "name": "AgroResistanceScan",
    "func": "Resistance hypotheses",
    "desc": "Mutation → structure → affinity-change workflow for resistance hypotheses.",
    "icon": "M12 2v20M12 2l5 4M12 6L7 2M12 22l-5-4M12 18l5 4"
   },
   {
    "id": "select",
-   "name": "AgroSelect™",
+   "name": "AgroSelect",
    "func": "Selectivity scoring",
    "desc": "Pest/pathogen versus crop/beneficial-organism selectivity scoring.",
    "icon": "M12 2l6 3v6c0 4.5-2.6 8-6 11-3.4-3-6-6.5-6-11V5l6-3ZM9 11l2 2 4-4"
   },
   {
    "id": "ecorisk",
-   "name": "AgroEcoRisk™",
+   "name": "AgroEcoRisk",
    "func": "Environmental risk",
    "desc": "Environmental and non-target risk prioritization.",
    "icon": "M12 3l9 16H3l9-16ZM12 10v4M12 17.2v.4"
   },
   {
    "id": "synergyx",
-   "name": "AgroSynergyX™",
+   "name": "AgroSynergyX",
    "func": "Combination analysis",
    "desc": "Combination/synergy analysis for botanical mixtures and pesticide combinations.",
    "icon": "M4 7h16M4 12h16M4 17h16M7 7V3M7 21v-4M17 7V3M17 21v-4M7 12v5M17 7v5"
   },
   {
    "id": "optimize",
-   "name": "AgroOptimize™",
+   "name": "AgroOptimize",
    "func": "Multi-objective optimization",
    "desc": "Multi-objective candidate and dose/formulation optimization.",
    "icon": "M5 20V10M10 20V4M15 20v-8M20 20V7"
   },
   {
    "id": "report",
-   "name": "AgroReport™",
+   "name": "AgroReport",
    "func": "Reproducible reporting",
    "desc": "Reproducible reports, rankings, figures and audit trails.",
    "icon": "M6 2h9l4 4v16H6V2ZM15 2v5h4M9 11h6M9 15h6M9 7h2"
@@ -1028,7 +1858,7 @@ window.AGROX.MODEL = {
   },
   {
    "site": "Note on cryptic pockets",
-   "note": "Cryptic/induced-fit pockets need MD sampling (AgroMD™) — static maps may miss them."
+   "note": "Cryptic/induced-fit pockets need MD sampling (AgroMD) — static maps may miss them."
   }
  ],
  "targetClasses": [
