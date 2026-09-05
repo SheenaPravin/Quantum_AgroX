@@ -576,6 +576,40 @@
       draw();
       setTimeout(function () { var qi = $("#phy-q"); if (qi) qi.addEventListener("input", draw); }, 0);
     };
+    fns.syntheticx = function () {
+      markDone("syntheticx");
+      logTrail("AgroSyntheticX: drawing workbench opened");
+      var p = el("div", "panel");
+      p.innerHTML = "<div class='panel-h'>AgroSyntheticX — draw a synthetic molecule → SMILES</div>" +
+        "<p class='sml dim'>Sketch a novel candidate on the in-dashboard editor. Export produces a canonical, RDKit-validated SMILES: use the drawer's <b>Use as A / B</b> buttons to drop it into the Molecule Lab pair, then continue — AgroDockX picks that pair up automatically.</p>" +
+        "<div style='display:flex;gap:10px;flex-wrap:wrap;margin:8px 0'>" +
+        "<button class='primary' id='syn-draw'>✏ Draw molecule</button>" +
+        "<button class='ghost' id='syn-to-dock'>Continue to AgroDockX →</button></div>" +
+        "<div class='kv sml'>Drawn SMILES: <span class='kbd' id='syn-smi'>—</span></div>" +
+        "<p class='sml dim' id='syn-note'></p>";
+      content.appendChild(p);
+      function showSmi(smi) { $("#syn-smi").textContent = smi || "—"; }
+      if (APP.synthSmi) showSmi(APP.synthSmi);
+      if (window.QXSketch) {
+        /* Chain onto the drawer callback (same A/B → Molecule Lab effect
+           as the lab's own handler) and capture the SMILES for the report. */
+        QXSketch.onUse(function (which, smi) {
+          APP.synthSmi = smi;
+          if (which === "A") $("#smi-a").value = smi; else $("#smi-b").value = smi;
+          showSmi(smi);
+          $("#syn-note").textContent = "Captured from drawer ✓ — stored as Molecule Lab " + which + ". Continue to AgroDockX when ready.";
+          logTrail("AgroSyntheticX: molecule drawn → " + smi + " (Molecule Lab " + which + ")");
+        });
+      }
+      $("#syn-draw").addEventListener("click", function () {
+        if (window.QXSketch) QXSketch.open($("#smi-a").value, $("#smi-b").value);
+        else $("#syn-note").textContent = "Drawer unavailable (sketcher.js not loaded).";
+      });
+      $("#syn-to-dock").addEventListener("click", function () {
+        var i = M.modules.findIndex(function (m) { return m.id === "dockx"; });
+        openPipelineAt(i >= 0 ? i : APP.pipe);
+      });
+    };
     fns.targetx = function () {
       logTrail("AgroTargetX: target library browsed");
       markDone("targetx");
@@ -888,7 +922,16 @@
           html += "<div class='dim'>No phytochemical pair chosen yet. Open Pipeline → AgroPhytoX and pick two names.</div>";
         }
 
-        html += "<h3>2 · AgroTargetX / AgroSiteMap — receptor target</h3>";
+        html += "<h3>2 · AgroSyntheticX — drawn molecule</h3>";
+        if (APP.synthSmi) {
+          html += "<table class='kv sml'><tbody>" +
+            "<tr><td>Drawn SMILES</td><td class='num kbd'>" + esc(APP.synthSmi) + "</td></tr>" +
+            "<tr><td>Handoff</td><td class='num'>stored as Molecule Lab pair → AgroDockX</td></tr></tbody></table>";
+        } else {
+          html += "<div class='dim'>No synthetic molecule drawn yet. Open Pipeline → AgroSyntheticX.</div>";
+        }
+
+        html += "<h3>3 · AgroTargetX / AgroSiteMap — receptor target</h3>";
         if (APP.ledger.length) {
           var byT = {};
           APP.ledger.forEach(function (L) { byT[L.target] = (byT[L.target] || 0) + 1; });
@@ -901,7 +944,7 @@
           html += "<div class='dim'>None yet.</div>";
         }
 
-        html += "<h3>3 · AgroDockX / AgroSynergyX — molecules & inference</h3>";
+        html += "<h3>4 · AgroDockX / AgroSynergyX — molecules & inference</h3>";
         if (APP.ledger.length) {
           var bySmi = {};
           APP.ledger.forEach(function (L) { [L.smiA, L.smiB].forEach(function (s) { bySmi[s] = (bySmi[s] || 0) + 1; }); });
@@ -924,7 +967,7 @@
           html += "<div class='dim'>No molecule was submitted yet in this session. Open the Molecule Lab and run a pair.</div>";
         }
 
-        html += "<h3>4 · AgroDoseX / AgroQML — model parameters</h3><table class='kv sml'><tbody>" +
+        html += "<h3>5 · AgroDoseX / AgroQML — model parameters</h3><table class='kv sml'><tbody>" +
           "<tr><td>Affinity surrogate</td><td class='num'>Ridge QSAR, " + (M.trainligands ? M.trainligands.length : 20) + " reference ligands</td></tr>" +
           "<tr><td>Descriptors</td><td class='num'>" + esc((FEATURES && FEATURES.length ? FEATURES : M.features || []).join(", ")) + "</td></tr>" +
           "<tr><td>Calibrated targets</td><td class='num'>" + (M.targets ? M.targets.filter(function (tt) { return tt.anchorKey && tt.anchorFeat; }).length : 14) + " of " + (M.targets ? M.targets.length : "—") + " carry a bundled anchor ligand</td></tr>" +
@@ -933,12 +976,12 @@
           "<tr><td>Determinism</td><td class='num'>Fully deterministic — no quantum sampling in the interactive layer</td></tr>" +
           "</tbody></table>";
 
-        html += "<h3>5 · AgroDataHub — dataset coverage</h3><table class='kv sml'><tbody>" +
+        html += "<h3>6 · AgroDataHub — dataset coverage</h3><table class='kv sml'><tbody>" +
           "<tr><td>Bioassay records</td><td class='num'>" + (D ? D.stats.records : "—") + "</td></tr>" +
           "<tr><td>Phytochemicals / docking hits / LC50 entries</td><td class='num'>" + (D ? D.stats.phytochemicals + " / " + D.stats.docking_hits + " / " + D.stats.lc50_entries : "—") + "</td></tr>" +
           "<tr><td>Selected target (default)</td><td class='num'>" + (APP.targetKey ? esc((M.targets.find(function (t) { return t.key === APP.targetKey; }) || {}).name || APP.targetKey) : "—") + "</td></tr></tbody></table>";
 
-        html += "<h3>6 · Pipeline completion & audit trail</h3><div>" + M.modules.map(function (m) {
+        html += "<h3>7 · Pipeline completion & audit trail</h3><div>" + M.modules.map(function (m) {
           return (APP.done[m.id] ? "☑" : "☐") + " " + esc(m.name);
         }).join("<br>") + "</div>";
 
@@ -946,7 +989,7 @@
           (APP.trail.length ? APP.trail.map(function (t0) { return "<div>" + esc(t0.t) + " — " + esc(t0.m) + "</div>"; }).join("") : "<div class='dim'>No session actions yet.</div>") +
           "</div>";
 
-        html += "<h3>7 · Safeguards</h3><ul class='sml'>" +
+        html += "<h3>8 · Safeguards</h3><ul class='sml'>" +
           "<li>Aggregate paper-derived benchmark — pipeline development, not advantage claims.</li>" +
           "<li>Docking scores are NOT proof of AChE inhibition (paper's own limitation).</li>" +
           "<li>No field efficacy / livestock / environmental safety inferred from docking alone.</li>" +
@@ -1027,8 +1070,8 @@
   /* ---------------- Chat ---------------- */
   var CHAT = {
     replies: [
-      { keys: ["hello", "hi ", "hey", "whats up"], ans: function () { return "Hello — I'm the Quantum_AgroX assistant. I cover the 14 modules, the benchmark statistics, target library and safeguards. Try a pilot question below."; } },
-      { keys: ["start pipeline", "start the pipeline", "run pipeline", "begin pipeline"], ans: function () { return "Click 'Start Agro Chemical Discovery Pipeline' on Home — or I can open it for you: it walks AgroDataHub → AgroPhytoX → AgroTargetX → AgroSiteMap → AgroDockX → AgroDoseX → AgroQML → AgroMD → AgroResistanceScan → AgroSelect → AgroEcoRisk → AgroSynergyX → AgroOptimize → AgroReport."; } },
+      { keys: ["hello", "hi ", "hey", "whats up"], ans: function () { return "Hello — I'm the Quantum_AgroX assistant. I cover the 15 modules, the benchmark statistics, target library and safeguards. Try a pilot question below."; } },
+      { keys: ["start pipeline", "start the pipeline", "run pipeline", "begin pipeline"], ans: function () { return "Click 'Start Agro Chemical Discovery Pipeline' on Home — or I can open it for you: it walks AgroDataHub → AgroPhytoX → AgroSyntheticX → AgroTargetX → AgroSiteMap → AgroDockX → AgroDoseX → AgroQML → AgroMD → AgroResistanceScan → AgroSelect → AgroEcoRisk → AgroSynergyX → AgroOptimize → AgroReport."; } },
       { keys: ["best extract", "most effective", "top extract"], ans: function () { var top = (D.extracts || [])[0]; return top ? "<b>" + esc(top.extract) + "</b> leads on reported mean mortality at " + top.mean_mortality + "% (peak " + top.max_mortality + "%, n=" + top.records + ")." : "No extract summary loaded."; } },
       { keys: ["top docking", "best docking", "binding affinity", "docking hit"], ans: function () { var d0 = (D.docking || [])[0]; if (!d0) return "No docking rows loaded."; var best = D.docking.slice().sort(function (a, b) { return num(a.affinity) - num(b.affinity); })[0]; return "Strongest reported re-docking: <b>" + esc(best.compound) + "</b> in " + esc(best.extract) + " vs " + esc(best.species) + " at " + round(best.affinity, 2) + " kcal/mol. Interactions: " + esc(best.interactions || "n/a") + "."; } },
       { keys: ["lc50", "lethal concentration"], ans: function () { var lc = D.lc50 || []; var min = lc.slice().sort(function (a, b) { return num(a.lc50) - num(b.lc50); })[0]; return min ? "Lowest reported LC50: " + round(min.lc50, 2) + " mg/mL for " + esc(min.extract) + " (" + esc(min.assay) + ", " + esc(min.species) + "); LC90 " + round(min.lc90, 2) + " mg/mL." : "No LC50 rows loaded."; } },
@@ -1090,7 +1133,7 @@
       });
       wrap.appendChild(c);
     });
-    var welcome = el("div", "msg bot", "Hi — Quantum_AgroX assistant here. Ask about the 14 modules, benchmark stats, targets, or safeguards.");
+    var welcome = el("div", "msg bot", "Hi — Quantum_AgroX assistant here. Ask about the 15 modules, benchmark stats, targets, or safeguards.");
     $("#chat-msgs").appendChild(welcome);
   }
 

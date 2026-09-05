@@ -1655,6 +1655,13 @@ window.AGROX.MODEL = {
    "icon": "M12 3c1 3 3 4 3 7a3 3 0 0 1-6 0c0-3 2-4 3-7ZM12 13v8M8 21l4-4M16 21l-4-4"
   },
   {
+   "id": "syntheticx",
+   "name": "AgroSyntheticX",
+   "func": "Draw → SMILES",
+   "desc": "Sketch a synthetic candidate on the in-dashboard editor; export a canonical, RDKit-validated SMILES into the Molecule Lab and AgroDockX pair.",
+   "icon": "M12 19l7-7a4.95 4.95 0 0 0-7-7l-7 7v7h7ZM14 6l4 4M16 3h5v5"
+  },
+  {
    "id": "targetx",
    "name": "AgroTargetX",
    "func": "Target discovery",
