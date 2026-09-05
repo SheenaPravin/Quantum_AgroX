@@ -1,8 +1,8 @@
-/* Quantum_AgroX — interactive dashboard app */
+/* Quantum_AgroX — interactive engineering layer (per architecture doc) */
 (function () {
   "use strict";
 
-  /* ---------- tiny utils ---------- */
+  /* ---------------- tiny utils ---------------- */
   var $ = function (sel) { return document.querySelector(sel); };
   var $$ = function (sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); };
   function el(tag, cls, html) {
@@ -19,41 +19,47 @@
   function num(x) { var v = parseFloat(x); return isFinite(v) ? v : 0; }
   function round(x, d) { var p = Math.pow(10, d == null ? 2 : d); return Math.round(num(x) * p) / p; }
   function clamp01(x) { return Math.max(0, Math.min(1, x)); }
-  function meanOr(arr) { return arr.length ? mean(arr) : 0; }
   function mean(arr) { return arr.reduce(function (a, b) { return a + num(b); }, 0) / arr.length; }
-  function maxOr(arr) { return arr.length ? Math.max.apply(null, arr.map(num)) : 0; }
   function pctLink(q, label) {
     var s = "https://scholar.google.com/scholar?q=" + encodeURIComponent(q);
     var p = "https://pubmed.ncbi.nlm.nih.gov/?term=" + encodeURIComponent(q);
     return '<a class="lnk" target="_blank" rel="noopener" href="' + s + '">' + (label || "Scholar") + "</a> &nbsp;·&nbsp; " +
            '<a class="lnk" target="_blank" rel="noopener" href="' + p + '">PubMed</a>';
   }
+  function svgIcon(path) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + path + '"/></svg>';
+  }
+  function nowStamp() { return new Date().toISOString().replace("T", " ").slice(0, 19); }
 
+  var D = null, M = null;         /* dashboard data + model layer */
   var APP = {
-    data: null,
-    RDKit: null,
-    rdkitReady: false,
-    tab: "home",
-    chat: []
+    RDKit: null, rdkitReady: false, tab: "home",
+    pipe: 0, trail: [], done: {}, targetKey: null, lastLab: null
   };
   window.APP = APP;
 
-  /* ---------- RDKit.js loader (wasm auto-locates beside the script) ---------- */
+  function logTrail(msg) {
+    APP.trail.push({ t: nowStamp(), m: msg });
+    var box = $("#trailbox");
+    if (box) {
+      var row = el("div", "", "<b>" + esc(nowStamp()) + "</b> — " + esc(msg));
+      box.appendChild(row);
+      box.scrollTop = box.scrollHeight;
+    }
+  }
+  function markDone(id) { APP.done[id] = true; }
+
+  /* ---------------- RDKit loader ---------------- */
   function bootRDKit() {
     var factory = window.initRDKitModule || window.initRDKit;
     if (!factory) return Promise.reject(new Error("RDKit script not found — check your connection"));
-    return factory().then(function (m) {
-      APP.RDKit = m;
-      APP.rdkitReady = true;
-      return m;
-    });
+    return factory().then(function (m) { APP.RDKit = m; APP.rdkitReady = true; return m; });
   }
   function loadRDKit() {
     return new Promise(function (resolve, reject) {
       var factory = window.initRDKitModule || window.initRDKit;
       if (factory) { bootRDKit().then(resolve)["catch"](reject); return; }
       if (window.RDKit && window.RDKit.get_mol) { APP.RDKit = window.RDKit; return resolve(); }
-      /* fallback: CDN may be blocked (offline/corporate); load the vendored copy */
       var s = document.createElement("script");
       s.src = "vendor/RDKit_minimal.js";
       s.onload = function () { bootRDKit().then(resolve)["catch"](reject); };
@@ -62,44 +68,37 @@
     });
   }
 
-  function rdMolFromSmiles(smiles, name) {
+  /* ---------------- molecular helpers (RDKit) ---------------- */
+  function rdMol(smiles, name) {
     var mol = APP.RDKit.get_mol(smiles);
     if (!mol || !mol.is_valid()) { if (mol) mol.delete(); throw new Error("Invalid SMILES for " + name); }
     return mol;
   }
+  var FEAT_LABEL = { mw: "MW", clogp: "cLogP", tpsa: "TPSA", hba: "HBA", hbd: "HBD", rotb: "RotB", rings: "Rings", arom: "Aromatic", heavy: "Heavy", fsp3: "Fsp3" };
   function molFeatures(mol) {
     var d = JSON.parse(mol.get_descriptors());
-    return {
-      mw: +num(d.exactmw), clogp: +num(d.CrippenClogP), tpsa: +num(d.tpsa),
+    return { mw: num(d.exactmw), clogp: num(d.CrippenClogP), tpsa: num(d.tpsa),
       hba: num(d.lipinskiHBA), hbd: num(d.lipinskiHBD), rotb: num(d.NumRotatableBonds),
-      rings: num(d.NumRings), arom: num(d.NumAromaticRings),
-      heavy: num(d.NumHeavyAtoms), fsp3: +num(d.FractionCSP3),
-      atoms: num(d.NumAtoms), het: num(d.NumHeteroatoms)
-    };
+      rings: num(d.NumRings), arom: num(d.NumAromaticRings), heavy: num(d.NumHeavyAtoms),
+      fsp3: num(d.FractionCSP3), atoms: num(d.NumAtoms), het: num(d.NumHeteroatoms) };
   }
-  function molSvg(mol) {
-    var h = mol.get_svg(320, 260);
-    return h || "<div class='dim'>structure render unavailable</div>";
-  }
+  function molSvg(mol) { return mol.get_svg(320, 260) || ""; }
   function fingerprint(mol) {
     var u = mol.get_morgan_fp_as_uint8array ? mol.get_morgan_fp_as_uint8array() : null;
     if (!u) return null;
-    var bits = new Uint8Array(u.length);
-    for (var i = 0; i < u.length; i++) bits[i] = u[i] > 0 ? 1 : 0;
-    return bits;
+    var b = new Uint8Array(u.length);
+    for (var i = 0; i < u.length; i++) b[i] = u[i] > 0 ? 1 : 0;
+    return b;
   }
   function tanimoto(a, b) {
     if (!a || !b) return null;
     var n = Math.min(a.length, b.length), inter = 0, union = 0;
-    for (var i = 0; i < n; i++) {
-      if (a[i] && b[i]) inter++;
-      if (a[i] || b[i]) union++;
-    }
+    for (var i = 0; i < n; i++) { if (a[i] && b[i]) inter++; if (a[i] || b[i]) union++; }
     return union ? inter / union : 0;
   }
 
-  /* ---------- Ridge QSAR (training-set refit, standardised features) ---------- */
-  var FEATURES = window.AGROX.MODEL.features;
+  /* ---------------- ridge (training-set refit) ---------------- */
+  var FEATURES = [];
   function gaussSolve(A, b) {
     var n = A.length, aug = A.map(function (row, i) { return row.concat([b[i]]); });
     for (var c = 0; c < n; c++) {
@@ -109,8 +108,8 @@
       var pv = aug[c][c];
       if (Math.abs(pv) < 1e-12) continue;
       for (var r2 = c + 1; r2 < n; r2++) {
-        var f = aug[r2][c] / pv;
-        for (var k = c; k <= n; k++) aug[r2][k] -= f * aug[c][k];
+        var f0 = aug[r2][c] / pv;
+        for (var k = c; k <= n; k++) aug[r2][k] -= f0 * aug[c][k];
       }
     }
     var x = new Array(n).fill(0);
@@ -121,185 +120,703 @@
     }
     return x;
   }
-  function fitRidge(X, y, lambda, featStats) {
+  function fitRidge(X, y, lam, st) {
     var n = X.length, f = X[0].length;
-    var Xt = X.map(function (row) { return [1].concat(row.map(function (v, j) {
-      var st = featStats[j];
-      return st.sd > 1e-9 ? (v - st.mean) / st.sd : 0;
-    })); });
-    var A = [], i, j, k;
+    var Xt = X.map(function (r) { return [1].concat(r.map(function (v, j) { return st[j].sd > 1e-9 ? (v - st[j].mean) / st[j].sd : 0; })); });
+    var A = [], b = new Array(f + 1).fill(0), i, j, k;
     for (i = 0; i <= f; i++) {
       A.push(new Array(f + 1).fill(0));
       for (j = 0; j <= f; j++) {
         var s = 0;
         for (k = 0; k < n; k++) s += Xt[k][i] * Xt[k][j];
-        A[i][j] = s + (i > 0 ? lambda : 0);
+        A[i][j] = s + (i > 0 ? lam : 0);
       }
     }
-    var b = new Array(f + 1).fill(0);
     for (i = 0; i <= f; i++) for (k = 0; k < n; k++) b[i] += Xt[k][i] * y[k];
     return gaussSolve(A, b);
   }
-  function predictRidge(w, x, featStats) {
+  function predictRidge(w, x, st) {
     var p = w[0];
     for (var j = 0; j < x.length; j++) {
-      var st = featStats[j];
-      var z = st.sd > 1e-9 ? (x[j] - st.mean) / st.sd : 0;
+      var z = st[j].sd > 1e-9 ? (x[j] - st[j].mean) / st[j].sd : 0;
       p += w[j + 1] * z;
     }
     return p;
   }
-  function fitAffinityModel() {
-    var train = window.AGROX.MODEL.train;
-    var featStats = FEATURES.map(function (ft) {
-      var vals = train.map(function (r) { return num(r[ft]); });
+  function featStats(list, feats) {
+    return feats.map(function (ft) {
+      var vals = list.map(function (r) { return num(r[ft]); });
       var m = mean(vals);
       var sd = Math.sqrt(mean(vals.map(function (v) { var d = v - m; return d * d; })));
-      return { name: ft, mean: m, sd: sd || 1, vals: vals };
+      return { name: ft, mean: m, sd: sd || 1 };
     });
-    var X = train.map(function (r) { return FEATURES.map(function (ft) { return num(r[ft]); }); });
-    var y = train.map(function (r) { return num(r.dG); });
-    var w = fitRidge(X, y, 1.0, featStats);
-    return { w: w, stats: featStats, train: train };
+  }
+  function statsFromMatrix(X) {
+    var f = X[0].length, n = X.length, out = [];
+    for (var j = 0; j < f; j++) {
+      var m = 0, sd;
+      for (var i = 0; i < n; i++) m += X[i][j];
+      m /= n;
+      var s2 = 0;
+      for (var k = 0; k < n; k++) { var d = X[k][j] - m; s2 += d * d; }
+      sd = Math.sqrt(s2 / n) || 1;
+      out.push({ mean: m, sd: sd });
+    }
+    return out;
+  }
+  function fitAffinityModel() {
+    var tr = M.train;
+    var st = featStats(tr, FEATURES);
+    var X = tr.map(function (r) { return FEATURES.map(function (ft) { return num(r[ft]); }); });
+    var y = tr.map(function (r) { return num(r.dG); });
+    return { w: fitRidge(X, y, 1.0, st), stats: st };
   }
 
-  /* ---------- Molecule Lab ---------- */
-  function labAnalyze() {
-    var out = $("#lab-out");
-    out.innerHTML = "<div class='dim'>Working …</div>";
-    var smilesA = $("#smi-a").value.trim();
-    var smilesB = $("#smi-b").value.trim();
-    var target = $("#target").value;
-    if (!smilesA || !smilesB) { out.innerHTML = "<div class='warn'>Please enter two SMILES strings.</div>"; return; }
-    var A, B, molA, molB;
-    try {
-      molA = rdMolFromSmiles(smilesA, "molecule A");
-      molB = rdMolFromSmiles(smilesB, "molecule B");
-    } catch (e) {
-      out.innerHTML = "<div class='warn'>" + esc(e.message) + "</div>";
-      return;
+  /* ---------------- target resolution ---------------- */
+  function resolveTarget(q) {
+    q = (q || "").trim();
+    if (!q) return null;
+    var lq = q.toLowerCase();
+    var T = M.targets;
+    var t = T.find(function (x) { return x.key === lq; });
+    if (!t) t = T.find(function (x) { return x.name.toLowerCase() === lq; });
+    if (!t) t = T.find(function (x) { return lq.indexOf(x.name.toLowerCase()) >= 0; });
+    if (!t) t = T.find(function (x) { return lq.indexOf(x.protein.toLowerCase()) >= 0; });
+    if (!t) t = T.find(function (x) { return x.organism.toLowerCase().indexOf(lq) >= 0; });
+    if (!t) t = T.find(function (x) { return (x.focus || "").toLowerCase().indexOf(lq) >= 0; });
+    return t || null;
+  }
+  function calibrantFor(t) {
+    if (t && t.anchorKey && t.anchorFeat) return t;
+    var g = M.targets.find(function (x) { return x.key === "ache_insect"; });
+    return g;
+  }
+  function affinityForTarget(t, featVec, model) {
+    var base = calibrantFor(t);
+    var anchorPred = predictRidge(model.w, base.anchorFeat, model.stats);
+    var offset = base.anchorDG - anchorPred;
+    return predictRidge(model.w, featVec, model.stats) + offset;
+  }
+
+  /* ---------------- Molecule Lab ---------------- */
+  function doseBand(aff) {
+    var potency = Math.exp(-(aff + 5));
+    var pmax = Math.exp(5.0), pmin = Math.exp(0.6);
+    var p = clamp01((potency - pmin) / (pmax - pmin));
+    var idx = 0.85 - 0.55 * p;
+    var mg = 5 + idx * 75;
+    var band = mg <= 15 ? "Low loading (5–15 mg/mL)" : mg <= 35 ? "Moderate (15–35 mg/mL)" : mg <= 60 ? "Upper band (35–60 mg/mL)" : "Maximum tested (60–80 mg/mL)";
+    return { mg: round(mg, 0), band: band };
+  }
+  function labAnalyze(outSel) {
+    var out = $(outSel || "#lab-out");
+    if (!out) return null;
+    out.innerHTML = "<div class='dim'>Working…</div>";
+    var smiA = $("#smi-a").value.trim();
+    var smiB = $("#smi-b").value.trim();
+    var targetName = $("#target").value.trim();
+    if (!smiA || !smiB) { out.innerHTML = "<div class='warn'>Enter two SMILES strings.</div>"; return null; }
+    var t = resolveTarget(targetName) || null;
+    APP.targetKey = t ? t.key : null;
+    if ($("#target-hint")) {
+      $("#target-hint").innerHTML = t
+        ? "Target resolved: <b>" + esc(t.name) + "</b> — " + esc(t.organism) + (t.accession && t.accession !== "—" ? " (accession " + esc(t.accession) + ")" : "") + (t.anchorDG ? " · anchor " + esc(t.anchor) + " " + t.anchorDG + " kcal/mol" : " · no anchor bundled — generic calibration") : "";
     }
+    var molA, molB, svgA = "", svgB = "";
+    try {
+      molA = rdMol(smiA, "molecule A");
+      molB = rdMol(smiB, "molecule B");
+      svgA = molSvg(molA); svgB = molSvg(molB);
+    } catch (e) { out.innerHTML = "<div class='warn'>" + esc(e.message) + "</div>"; return null; }
     var fA = molFeatures(molA), fB = molFeatures(molB);
-    var fpA = fingerprint(molA), fpB = fingerprint(molB);
-    var tani = tanimoto(fpA, fpB);
+    var tani = tanimoto(fingerprint(molA), fingerprint(molB));
+    try { molA.delete(); molB.delete(); } catch (e) {}
+
     var model = fitAffinityModel();
     var xA = FEATURES.map(function (ft) { return fA[ft]; });
     var xB = FEATURES.map(function (ft) { return fB[ft]; });
     var xC = xA.map(function (v, i) { return (v + xB[i]) / 2; });
-    var pA = predictRidge(model.w, xA, model.stats);
-    var pB = predictRidge(model.w, xB, model.stats);
-    var pC = predictRidge(model.w, xC, model.stats);
-    var rec = window.AGROX.MODEL.receptor[target] || window.AGROX.MODEL.receptor["R. microplus"];
-    var controlFeat = FEATURES.map(function (ft) {
-      return num(window.AGROX.MODEL.train.filter(function (r) { return r.name === rec.controlName; })[0][ft]);
-    });
-    var pControl = predictRidge(model.w, controlFeat, model.stats);
-    var calib = rec.control - pControl;
-    var affA = pA + calib, affB = pB + calib, affC = pC + calib;
+    var affA = affinityForTarget(t, xA, model);
+    var affB = affinityForTarget(t, xB, model);
+    var affC = affinityForTarget(t, xC, model);
+    var lowConf = !(t && t.anchorKey && t.anchorFeat);
 
-    /* synergy decomposition */
     var complement = tani == null ? 0.5 : 1 - tani;
     var logpMatch = 1 - Math.abs(fA.clogp - fB.clogp) / (Math.max(1, Math.abs(fA.clogp)) + Math.max(1, Math.abs(fB.clogp)));
     var sizeMix = 1 - Math.abs(fA.mw - fB.mw) / (fA.mw + fB.mw || 1);
     var affGain = clamp01((Math.min(affA, affB) - affC) / 2.0);
     var synergy = 0.35 * complement + 0.2 * logpMatch + 0.2 * sizeMix + 0.25 * affGain;
-    function synergyLabel(s) {
+    function synLabel(s) {
       if (s >= 0.72) return { t: "Very high", c: "good" };
       if (s >= 0.55) return { t: "High", c: "good" };
       if (s >= 0.35) return { t: "Moderate", c: "warn" };
       return { t: "Low — likely additive at best", c: "bad" };
     }
-    var sl = synergyLabel(synergy);
-
-    function doseBand(aff) {
-      var potency = Math.exp(-(aff + 5));            /* relative activity proxy */
-      var pmax = Math.exp(5.0), pmin = Math.exp(0.6);
-      var p = clamp01((potency - pmin) / (pmax - pmin));
-      var doseIdx = 0.85 - 0.55 * p;                  /* map into 5–80 mg/mL window */
-      var mg = 5 + doseIdx * 75;
-      var band = mg <= 15 ? "Low loading (5–15 mg/mL)" : mg <= 35 ? "Moderate (15–35 mg/mL)" : mg <= 60 ? "Upper band (35–60 mg/mL)" : "Maximum tested (60–80 mg/mL)";
-      return { mg: round(mg, 0), band: band };
-    }
+    var sl = synLabel(synergy);
     var dbA = doseBand(affA), dbB = doseBand(affB), dbC = doseBand(affC);
+    var tLabel = t ? esc(t.name) + " · " + esc(t.organism) : esc(targetName || "custom receptor") + " (generic AChE calibration)";
 
-    function featRows(f, other) {
-      var rows = [
+    function featRows(f) {
+      return [
         ["Molecular weight (g/mol)", round(f.mw, 1)],
         ["cLogP (lipophilicity)", round(f.clogp, 2)],
         ["TPSA (Å²)", round(f.tpsa, 1)],
         ["H-bond acceptors / donors", f.hba + " / " + f.hbd],
-        ["Rotatable bonds", f.rotb],
-        ["Rings (aromatic)", f.rings + " (" + f.arom + ")"],
+        ["Rotatable bonds / rings (aromatic)", f.rotb + " / " + f.rings + " (" + f.arom + ")"],
         ["Heavy atoms / heteroatoms", f.heavy + " / " + f.het],
         ["Fraction Csp3", round(f.fsp3, 2)]
-      ];
-      return rows.map(function (r) {
-        return "<tr><td class='dim'>" + r[0] + "</td><td>" + r[1] + "</td></tr>";
-      }).join("");
+      ].map(function (r) { return "<tr><td class='dim'>" + r[0] + "</td><td>" + r[1] + "</td></tr>"; }).join("");
+    }
+    function molPanel(tag, svg, f) {
+      return "<div class='panel'><div class='panel-h'>Molecule " + tag + "</div>" +
+        (svg ? "<div class='svgbox'>" + svg + "</div>" : "") +
+        "<table class='kv'><tbody>" + featRows(f) + "</tbody></table></div>";
     }
 
     var html = "";
-    html += "<div class='grid lab-grid'>";
-    ["A", "B"].forEach(function (tag) {
-      var mol = tag === "A" ? molA : molB, f = tag === "A" ? fA : fB, svg = tag === "A" ? molSvg(molA) : molSvg(molB);
-      html += "<div class='panel'><div class='panel-h'>Molecule " + tag + "</div>" +
-        "<div class='svgbox'>" + svg + "</div>" +
-        "<table class='kv'><tbody>" + featRows(f) + "</tbody></table></div>";
-    });
-    html += "</div>";
-
-    html += "<div class='grid'>";
-    html += "<div class='panel'><div class='panel-h'>Predicted AChE binding affinity — " + esc(target) + "</div>" +
-      "<p class='dim sml'>Surrogate ridge QSAR fitted live on 20 reference ligands, calibrated to " + esc(rec.controlDisplay) +
-      " control (" + rec.control + " kcal/mol as reported in the study).</p>" +
+    html += "<div class='grid c2'>" + molPanel("A", svgA, fA) + molPanel("B", svgB, fB) + "</div>";
+    html += "<div class='grid c2'>";
+    html += "<div class='panel'><div class='panel-h'>Estimated binding affinity — " + tLabel + "</div>" +
+      "<p class='sml dim'>Surrogate ridge QSAR on 20 reference ligands, calibrated to the target anchor (" +
+      (t && t.anchor ? esc(t.anchor) + ", " + t.anchorDG + " kcal/mol" : "generic insect AChE scaffold") + ")." +
+      (lowConf ? " <span class='warn-bc'>Low confidence — this target has no bundled anchor.</span>" : "") + "</p>" +
       "<table class='kv'><tbody>" +
-      "<tr><td>Molecule A affinity</td><td class='num big'>" + round(affA, 2) + " kcal/mol</td></tr>" +
-      "<tr><td>Molecule B affinity</td><td class='num big'>" + round(affB, 2) + " kcal/mol</td></tr>" +
+      "<tr><td>Molecule A</td><td class='num big'>" + round(affA, 2) + " kcal/mol</td></tr>" +
+      "<tr><td>Molecule B</td><td class='num big'>" + round(affB, 2) + " kcal/mol</td></tr>" +
       "<tr><td>1:1 combination (mean descriptor)</td><td class='num big'>" + round(affC, 2) + " kcal/mol</td></tr>" +
       "</tbody></table></div>";
-
-    html += "<div class='panel'><div class='panel-h'>Synergy index (structural complementarity)</div>" +
-      "<p class='sml dim'>Combines Tucker-like structural overlap (Tanimoto), LogP complementarity, size mixing and predicted affinity gain in a Loewe-inspired heuristic — a pre-screen, not a formal Loewe CI.</p>" +
+    html += "<div class='panel'><div class='panel-h'>Synergy index" + "</div>" +
+      "<p class='sml dim'>Loewe-inspired heuristic: structural complementarity (1 − Tanimoto), LogP balance, size mixing, predicted affinity gain of the combination.</p>" +
       "<div class='syn'><span style='width:" + Math.round(synergy * 100) + "%' class='syn-'></span></div>" +
-      "<div class='syn-label " + sl.c + "'>" + esc(sl.t) + " &middot; index " + round(synergy, 2) + "</div>" +
+      "<div class='syn-label " + sl.c + "'>" + sl.t + " · index " + round(synergy, 2) + "</div>" +
       "<table class='kv sml'><tbody>" +
       "<tr><td>Structural complementarity (1 − Tanimoto)</td><td class='num'>" + (tani == null ? "n/a" : round(complement, 2)) + "</td></tr>" +
-      "<tr><td>Tanimoto similarity (Morgan-like)</td><td class='num'>" + (tani == null ? "n/a" : round(tani, 2)) + "</td></tr>" +
+      "<tr><td>Tanimoto similarity</td><td class='num'>" + (tani == null ? "n/a" : round(tani, 2)) + "</td></tr>" +
       "<tr><td>LogP complementarity</td><td class='num'>" + round(logpMatch, 2) + "</td></tr>" +
       "<tr><td>Size mixing balance</td><td class='num'>" + round(sizeMix, 2) + "</td></tr>" +
-      "<tr><td>Affinity gain of combination</td><td class='num'>" + round(affGain, 2) + "</td></tr>" +
-      "</tbody></table></div></div>";
-
-    html += "<div class='panel'><div class='panel-h'>Dose guidance (" + esc(target) + ")</div>" +
-      "<p class='sml dim'>Mapped to the study's tested topical window <b>5–80 mg/mL</b> (bovine tick bioassays):</p>" +
+      "<tr><td>Affinity gain of combination</td><td class='num'>" + round(affGain, 2) + "</td></tr></tbody></table></div></div>";
+    html += "<div class='panel'><div class='panel-h'>Dose guidance (" + esc(targetName || "custom receptor") + ")</div>" +
+      "<p class='sml dim'>Mapped to the study's tested topical window <b>5–80 mg/mL</b>.</p>" +
       "<table class='kv'><tbody>" +
       "<tr><td>Molecule A</td><td class='num'>" + dbA.mg + " mg/mL — " + dbA.band + "</td></tr>" +
       "<tr><td>Molecule B</td><td class='num'>" + dbB.mg + " mg/mL — " + dbB.band + "</td></tr>" +
-      "<tr><td>Combination</td><td class='num'>" + dbC.mg + " mg/mL — " + dbC.band + "</td></tr>" +
-      "</tbody></table><p class='sml dim'>Low-to-mid concentrations follow the extract dilution ladder (5/10/20/40/80 mg/mL). Always allow for formulation, skin irritation and off-target effects.</p></div>";
-
-    html += "<div class='panel warn-panel'><b>Caveat.</b> " + esc(window.AGROX.MODEL.caveat) + " This is a <i>pre-screening surrogate</i> — validate via molecular docking (AutoDock), then wet-lab repellency/mortality assays before any recommendation.</div>";
-
-    var hook = window.AGROX.MODEL.train.map(function (r) { return r.name; }).join(", ");
-    html += "<div class='panel dim sml'>Reference ligands used by the live fit: " + esc(hook) + ". Features standardised and ridge λ=1.0. Chlorfenvinphos is the study's positive control acaricide.</div>";
+      "<tr><td>Combination</td><td class='num'>" + dbC.mg + " mg/mL — " + dbC.band + "</td></tr></tbody></table></div>";
+    html += "<div class='panel warn-panel'><b>Caveat.</b> " + esc(M.caveat) + "</div>";
 
     out.innerHTML = html;
-    ["A", "B"].forEach(function (tag) {
-      var mol = tag === "A" ? molA : molB;
-      try { mol.delete(); } catch (e) {}
+    APP.lastLab = { smiA: smiA, smiB: smiB, target: t ? (t.name + " (" + t.organism + ")") : targetName, targetKey: (t || {}).key,
+      affA: affA, affB: affB, affC: affC, synergy: synergy, dose: dbC.mg, fA: fA, fB: fB, lowConf: lowConf };
+    logTrail("AgroDockX/AgroSynergyX: analyzed " + (t ? t.name : targetName) + " — affinity " + round(affC, 2) + " kcal/mol, synergy " + round(synergy, 2));
+    return APP.lastLab;
+  }
+  var PHYTO_SMILES = [
+    ["pinene", "CC1=CCC2CC1C2(C)C"],
+    ["limonene", "CC1=CCC(CC1)=C(C)C"],
+    ["linalool", "CC(C)=CCCC(C)(O)C=C"],
+    ["geraniol", "CC(C)=CCCC(C)=CCO"],
+    ["thymol", "CC(C)c1cc(C)ccc1O"],
+    ["carvacrol", "CC(C)c1ccc(O)cc1C"],
+    ["eugenol", "COc1cc(CC=C)ccc1O"],
+    ["menthol", "CC(C)C1CCC(C)CC1O"],
+    ["camphor", "CC1(C)C2CCC1(C)C(=O)C2"],
+    ["squalene", "CC(=CCCC(=CCCC(=CCCC=C(C)C)C)C)C"],
+    ["quercetin", "O=C1c2c(O)cc(O)cc2OC(c2cc(O)c(O)c(O)c2)=C1O"],
+    ["kaempferol", "O=C1c2c(O)cc(O)cc2OC(c2ccc(O)cc2)=C1O"]
+  ];
+  function useTopPhytochemicals() {
+    var filled = [];
+    if (D && D.phytochemicals) {
+      var top = D.phytochemicals.slice().sort(function (a, b) { return b.area - a.area; });
+      for (var i = 0; i < top.length && filled.length < 2; i++) {
+        var lname = String(top[i].compound || "").toLowerCase();
+        var hit = PHYTO_SMILES.find(function (p) { return lname.indexOf(p[0]) >= 0; });
+        if (hit) filled.push({ name: top[i].compound, smi: hit[1] });
+      }
+    }
+    var mintop = { name: "thymol (monoterpene)", smi: "CC(C)c1cc(C)ccc1O" };
+    var mineug = { name: "eugenol (phenylpropanoid)", smi: "COc1cc(CC=C)ccc1O" };
+    var pair = [];
+    if (filled.length >= 2) pair = [filled[0], filled[1]];
+    else if (filled.length === 1) pair = [filled[0], mineug];
+    else pair = [mintop, mineug];
+    $("#smi-a").value = pair[0].smi;
+    $("#smi-b").value = pair[1].smi;
+    $("#target").value = "Acetylcholinesterase (Rhipicephalus microplus)";
+    $("#target").dispatchEvent(new Event("input"));
+    var hint = el("div", "sml dim");
+    hint.style.cssText = "margin-top:8px";
+    var src = filled.length >= 2 ? "top two SMILES-mapped phytochemicals from the library (" + filled[0].name + " + " + filled[1].name + ")" :
+      (filled.length === 1 ? "top SMILES-mapped phytochemical from the library (" + filled[0].name + ") + eugenol" : "curated library analogues for the two top compound classes");
+    hint.textContent = "Filled with " + src + ". Edit freely — any valid SMILES pair works.";
+    $("#smi-a").focus();
+    return hint;
+  }
+
+  /* ---------------- Home render ---------------- */
+  function homeRender() {
+    $("#b-records").textContent = D ? D.stats.records : "…";
+    $("#b-phyt").textContent = D ? D.stats.phytochemicals : "…";
+    $("#b-dock").textContent = D ? D.stats.docking_hits : "…";
+    $("#b-val").textContent = D ? D.stats.validation_complexes : "…";
+    $("#b-lc50").textContent = D ? D.stats.lc50_entries : "…";
+    renderModgrid();
+    renderPstrip();
+    renderRefTable();
+    renderPhases();
+  }
+  function renderModgrid() {
+    var wrap = $("#modgrid");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    M.modules.forEach(function (mod, i) {
+      var c = el("div", "modcard");
+      c.innerHTML = "<div class='ic'>" + svgIcon(mod.icon) + "</div>" +
+        "<div class='mname'>" + esc(mod.name) + "</div>" +
+        "<div class='mfunc'>" + esc(mod.func) + "</div>" +
+        "<div class='mdesc'>" + esc(mod.desc) + "</div>" +
+        "<div class='mlaunch'>Open module →</div>";
+      c.addEventListener("click", function () { openPipelineAt(i); });
+      wrap.appendChild(c);
+    });
+  }
+  function renderPstrip() {
+    var wrap = $("#pstrip");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    M.modules.forEach(function (mod, i) {
+      var row = el("div", "prow");
+      row.innerHTML = "<div class='pdot'>" + (i + 1) + "</div><div>" + esc(mod.name.replace("™", "")) + "</div>" +
+        (i < M.modules.length - 1 ? "<div class='pbar'></div>" : "");
+      wrap.appendChild(row);
+    });
+  }
+  function renderRefTable() {
+    var t = $("#ref-table");
+    if (!t || !M.refparams) return;
+    var rows = "";
+    Object.keys(M.refparams).forEach(function (k) {
+      var r = M.refparams[k];
+      rows += "<tr><td><b>" + esc(k) + "</b></td><td>accession " + esc(r.accession) + " · template " + esc(r.template) +
+        "</td><td class='num'>centre " + esc(r.center) + "<br>box " + esc(r.box) + " · exhaust. " + esc(r.exhaust) + "</td></tr>";
+    });
+    t.innerHTML = "<tbody>" + rows + "</tbody>";
+  }
+  function renderPhases() {
+    var w = $("#phases");
+    if (!w) return;
+    w.innerHTML = "";
+    M.phases.forEach(function (p) {
+      w.appendChild(el("div", "sml", "• " + esc(p)));
     });
   }
 
-  /* ---------- Literature tab ---------- */
-  function litRender() {
-    var D = APP.data;
-    var wrap = $("#lit-tables");
-    var q = ($("#lit-q") && $("#lit-q").value || "").trim().toLowerCase();
+  /* ---------------- Pipeline ---------------- */
+  function openPipelineAt(i) {
+    showTab("pipeline");
+    APP.pipe = Math.max(0, Math.min(M.modules.length - 1, i));
+    renderStepper();
+    renderStage();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function renderStepper() {
+    var st = $("#stepper");
+    if (!st) return;
+    st.innerHTML = "";
+    M.modules.forEach(function (mod, i) {
+      var s = el("div", "step" + (i === APP.pipe ? " active" : "") + (APP.done[mod.id] ? " done" : ""));
+      s.innerHTML = "<div class='sn'>" + (APP.done[mod.id] ? "✓" : (i + 1)) + "</div><div>" + esc(mod.name.replace("™", "")) + "</div>";
+      s.addEventListener("click", function () { APP.pipe = i; renderStepper(); renderStage(); });
+      st.appendChild(s);
+    });
+  }
+  function stageNav() {
+    var nxt = (APP.pipe < M.modules.length - 1)
+      ? '<button class="primary" id="pipe-next">Next: ' + esc(M.modules[APP.pipe + 1].name.replace("™", "")) + " →</button>" : "";
+    var prev = (APP.pipe > 0) ? '<button class="ghost" id="pipe-prev">← Previous</button>' : "";
+    return "<div class='navbtns'>" + prev + nxt + "</div>";
+  }
+  function wireNav() {
+    var nxt = $("#pipe-next"), prv = $("#pipe-prev");
+    if (nxt) nxt.addEventListener("click", function () { APP.pipe++; renderStepper(); renderStage(); });
+    if (prv) prv.addEventListener("click", function () { APP.pipe--; renderStepper(); renderStage(); });
+  }
 
-    function renderTable(id, title, header, rows) {
+  function renderStage() {
+    var body = $("#pipe-body");
+    if (!body) return;
+    var mod = M.modules[APP.pipe];
+    body.innerHTML = "";
+    var card = el("div", "panel");
+    card.innerHTML = "<div class='panel-h'>" + svgIcon(mod.icon) + " " + esc(mod.name) + " <span class='tag mid'>" + esc(mod.func) + "</span></div>" +
+      "<p class='sml dim'>" + esc(mod.desc) + "</p>";
+    body.appendChild(card);
+    var content = el("div", "");
+    body.appendChild(content);
+
+    var fns = {};
+    fns.datahub = function () {
+      logTrail("AgroDataHub: benchmark dataset loaded");
+      markDone("datahub");
+      var inv = el("div", "panel");
+      inv.innerHTML = "<div class='panel-h'>Dataset inventory (benchmark bundle)</div>";
+      var rows = (D ? D.datasets : []).map(function (ds) {
+        return "<tr><td>" + esc(ds.file) + "</td><td class='num'>" + ds.rows + " rows</td><td>" + esc(ds.type) + "</td></tr>";
+      }).join("");
+      inv.innerHTML += "<table class='data'><thead><tr><th>File</th><th>Records</th><th>Contents</th></tr></thead><tbody>" + rows + "</tbody></table>";
+      inv.innerHTML += "<p class='sml dim' style='margin-top:10px'>Import standards: GC-MS peak lists, SDF/SMILES, FASTA (targets), VCF (populations), and bioassay/docking tables are accepted. Every ingestion writes a provenance record for AgroReport™.</p>";
+      content.appendChild(inv);
+    };
+    fns.phytox = function () {
+      logTrail("AgroPhytoX: phytochemical library browsed");
+      markDone("phytox");
+      var p = el("div", "panel");
+      p.innerHTML = "<div class='panel-h'>Phytochemical library (" + (D.stats ? D.stats.phytochemicals : 0) + " profiled)</div>" +
+        "<input id='phy-q' type='text' placeholder='Filter name / class / part / solvent' style='width:100%;max-width:460px;background:var(--panel2);color:var(--txt);border:1px solid var(--line2);border-radius:8px;padding:9px'>" +
+        "<div id='phy-rows' style='margin-top:10px'></div>";
+      content.appendChild(p);
+      var draw = function () {
+        var q = (($("#phy-q") || {}).value || "").trim().toLowerCase();
+        var list = (D.phytochemicals || []).slice(0, 40).filter(function (r) {
+          if (!q) return true;
+          return (r.compound + r.cls + r.plant_part + r.solvent).toLowerCase().indexOf(q) >= 0;
+        });
+        var rows = list.map(function (r) {
+          return "<tr><td>" + esc(r.compound) + "</td><td>" + esc(r.cls) + "</td><td>" + esc(r.plant_part) + "</td><td>" + esc(r.solvent) + "</td><td class='num'>" + round(r.area, 1) + "%</td></tr>";
+        }).join("") || "<tr><td colspan='5' class='dim'>No matches.</td></tr>";
+        $("#phy-rows").innerHTML = "<table class='data'><thead><tr><th>Compound</th><th>Class</th><th>Plant part</th><th>Solvent</th><th>Relative area</th></tr></thead><tbody>" + rows + "</tbody></table>";
+      };
+      draw();
+      setTimeout(function () { var qi = $("#phy-q"); if (qi) qi.addEventListener("input", draw); }, 0);
+    };
+    fns.targetx = function () {
+      logTrail("AgroTargetX: target library browsed");
+      markDone("targetx");
+      var p = el("div", "panel");
+      p.innerHTML = "<div class='panel-h'>Target discovery — pick a pest/pathogen class and a receptor</div>" +
+        "<div class='chips' id='tc-chips'></div><div id='tc-cards' class='tcards' style='margin-top:12px'></div>" +
+        "<p class='sml dim' id='tc-sel'></p>";
+      content.appendChild(p);
+      var chipsBox = $("#tc-chips"), cards = $("#tc-cards"), sel = $("#tc-sel");
+      var active = "mite";
+      M.targetClasses.forEach(function (c) {
+        var chip = el("span", "chip" + (c.id === active ? " chip-active" : ""), c.label);
+        chip.style.cssText = c.id === active ? "border-color:var(--accent);color:var(--txt)" : "";
+        chip.addEventListener("click", function () { active = c.id; draw(); });
+        chipsBox.appendChild(chip);
+      });
+      function draw() {
+        cards.innerHTML = "";
+        M.targets.filter(function (t) { return t.cls === active; }).forEach(function (t) {
+          var selT = APP.targetKey === t.key;
+          var c = el("div", "tcard" + (selT ? " sel" : ""));
+          c.innerHTML = "<div class='tn'>" + esc(t.name) + "</div><div class='to'>" + esc(t.organism) + "</div>" +
+            "<div class='sml dim'>" + esc(t.focus) + (t.accession && t.accession !== "—" ? " · " + esc(t.accession) : "") + "</div>" +
+            "<div class='sml' style='margin-top:6px'>" + (t.anchor ? "anchor " + esc(t.anchor) + " (" + t.anchorDG + " kcal/mol)" : "no anchor — generic calibration") + "</div>";
+          c.addEventListener("click", function () {
+            APP.targetKey = t.key;
+            $("#target").value = t.name + " (" + t.organism + ")";
+            $("#target").dispatchEvent(new Event("input"));
+            sel.innerHTML = "Receptor selected: <b>" + esc(t.name) + "</b> (" + esc(t.organism) + "). Continue to AgroDockX™ to test molecules against it.";
+            logTrail("AgroTargetX: target selected — " + t.name + " (" + t.organism + ")");
+            draw();
+          });
+          cards.appendChild(c);
+        });
+      }
+      draw();
+    };
+    fns.sitemap = function () {
+      logTrail("AgroSiteMap: binding-site context loaded");
+      markDone("sitemap");
+      var p = el("div", "panel");
+      p.innerHTML = "<div class='panel-h'>Binding-site &amp; druggability context</div>";
+      var rt = "";
+      Object.keys(M.refparams).forEach(function (k) {
+        var r = M.refparams[k];
+        rt += "<tr><td><b>" + esc(k) + "</b></td><td>" + esc(r.template) + "</td><td class='num'>" + esc(r.center) + "</td><td class='num'>" + esc(r.box) + "</td></tr>";
+      });
+      p.innerHTML += "<table class='data'><thead><tr><th>Model</th><th>Template</th><th>Docking centre</th><th>Box size</th></tr></thead><tbody>" + rt + "</tbody></table>";
+      var panels = M.sitepanels.map(function (s) {
+        return "<div class='vrow'><b>" + esc(s.site) + "</b><div class='sml dim'>" + esc(s.note) + "</div></div>";
+      }).join("");
+      p.innerHTML += "<div style='margin-top:14px'><div class='panel-h'>Pocket notes</div>" + panels +
+        "<p class='sml dim'>Cryptic/induced-fit pockets require MD sampling (AgroMD™) — static maps can miss them.</p></div>";
+      content.appendChild(p);
+    };
+    fns.dockx = function () {
+      markDone("dockx");
+      logTrail("AgroDockX: docking-estimate workbench opened");
+      var lab = el("div", "panel");
+      lab.innerHTML = "<div class='panel-h'>AgroDockX™ — protein–ligand affinity estimate</div>" +
+        "<p class='sml dim'>Enter any SMILES pair and the receptor (set in AgroTargetX™ or type free text) and run the surrogate. Stronger (more negative) affinity = better predicted pose.</p>" +
+        "<div class='grid c2 mlgens'>" +
+        "<div><label>Molecule A</label><textarea id='dock-a' rows='2'></textarea></div>" +
+        "<div><label>Molecule B</label><textarea id='dock-b' rows='2'></textarea></div></div>" +
+        "<div style='display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px'>" +
+        "<button class='primary' id='dock-run'>Estimate affinity</button>" +
+        "<button class='ghost' id='dock-sync'>Use Molecule Lab pair</button>" +
+        "<span class='sml dim'>Output below.</span></div><div id='dock-out' style='margin-top:12px'></div>";
+      content.appendChild(lab);
+      var a = $("#dock-a"), b = $("#dock-b");
+      a.value = $("#smi-a").value; b.value = $("#smi-b").value;
+      $("#dock-run").addEventListener("click", function () {
+        $("#smi-a").value = a.value; $("#smi-b").value = b.value;
+        labAnalyze("#dock-out");
+        if ($("#dock-out").querySelector) {
+          content.classList = "";
+        }
+      });
+      $("#dock-sync").addEventListener("click", function () {
+        a.value = $("#smi-a").value; b.value = $("#smi-b").value;
+      });
+    };
+    fns.dosex = function () {
+      markDone("dosex");
+      logTrail("AgroDoseX: dose-response workbench opened");
+      var p = el("div", "panel");
+      p.innerHTML = "<div class='panel-h'>AgroDoseX™ — dose–response &amp; LC50/LC90</div>" +
+        "<p class='sml dim'>A linear surrogate (mortality ∼ log concentration + exposure + species + extract) is fitted live on the 240 benchmark records. Predict mean mortality at any point; compare with reported probit LC50/LC90 below.</p>" +
+        "<div class='grid c2' style='margin-top:8px'>" +
+        "<div class='kv'>Concentration (mg/mL): <input id='dd-conc' type='number' value='20' min='1' step='1' style='width:120px;background:var(--panel2);color:var(--txt);border:1px solid var(--line2);border-radius:7px;padding:7px'></div>" +
+        "<div class='kv'>Exposure (h): <input id='dd-exp' type='number' value='24' min='1' step='1' style='width:120px;background:var(--panel2);color:var(--txt);border:1px solid var(--line2);border-radius:7px;padding:7px'></div>" +
+        "<div class='kv'>Extract: <select id='dd-ex'></select></div>" +
+        "<div class='kv'>Species: <select id='dd-sp'><option>Rhipicephalus microplus</option><option>Rhipicephalus decoloratus</option></select></div>" +
+        "</div><div style='margin-top:8px'><button class='primary' id='dd-run'>Predict mortality</button></div>" +
+        "<div id='dd-out' style='margin-top:12px'></div>";
+      content.appendChild(p);
+      var exSel = $("#dd-ex");
+      exSel.innerHTML = D.extracts.map(function (e) { return "<option>" + esc(e.extract) + "</option>"; }).join("");
+      function concVector(r) { return [Math.log10(Math.max(r.conc, 0.1)), r.exposure, r.sp_microp, r.sp_decol, r.exudate, r.stembark, r.dcm, r.meoh, r.adult, r.larval]; }
+      function pred() {
+        var conc = num($("#dd-conc").value), exp = num($("#dd-exp").value);
+        var ex = $("#dd-ex").value, sp = $("#dd-sp").value;
+        var X = D.mortality.map(function (r) { return concVector(r); });
+        var y = D.mortality.map(function (r) { return r.mor; });
+        var st = statsFromMatrix(X);
+        var w = fitRidge(X, y, 1.0, st);
+        var probe = concVector({ conc: conc, exposure: exp, sp_microp: /microplus/.test(sp) ? 1 : 0, sp_decol: /decol/.test(sp) ? 1 : 0, exudate: /Exudate/.test(ex) ? 1 : 0, stembark: /Stem/.test(ex) ? 1 : 0, dcm: /DCM/.test(ex) ? 1 : 0, meoh: /MeOH/.test(ex) ? 1 : 0, adult: 1, larval: 0 });
+        var pred = clamp01(predictRidge(w, probe, st) / 100);
+        $("#dd-out").innerHTML = "<div class='panel ok-panel'><b>Predicted mean mortality ≈ " + Math.round(pred * 100) + "%</b> at " + conc + " mg/mL for " + esc(ex) + " on " + esc(sp) + " (" + exp + " h). (Linear surrogate — validate with probit.)</div>";
+        logTrail("AgroDoseX: mortality predicted " + Math.round(pred * 100) + "% at " + conc + " mg/mL, " + exp + " h, " + ex + " / " + sp);
+      }
+      $("#dd-run").addEventListener("click", pred);
+      var lc = el("div", "panel");
+      lc.innerHTML = "<div class='panel-h'>Reported LC50 / LC90 (probit)</div>" +
+        "<table class='data'><thead><tr><th>Assay</th><th>Species</th><th>Extract</th><th>LC50 (mg/mL)</th><th>95% CI</th><th>LC90</th><th>Slope</th><th>χ²/df</th></tr></thead><tbody>" +
+        (D.lc50 || []).map(function (r) { return "<tr><td>" + esc(r.assay) + "</td><td>" + esc(r.species) + "</td><td>" + esc(r.extract) + "</td><td>" + round(r.lc50, 2) + "</td><td class='sml dim'>" + esc(r.lc50_ci) + "</td><td>" + round(r.lc90, 2) + "</td><td>" + round(r.slope, 2) + "</td><td>" + esc(r.chi2) + "</td></tr>"; }).join("") + "</tbody></table>";
+      content.appendChild(lc);
+    };
+    fns.qml = function () {
+      markDone("qml");
+      logTrail("AgroQML: methodology layer reviewed");
+      var q = el("div", "panel");
+      q.innerHTML = "<div class='panel-h'>AgroQML™ — quantum machine learning layer</div>" +
+        "<p>In the Quantum_AgroX architecture, QML is <b>one computational layer</b>, not a claim of advantage. Features are normalized and angle-encoded into qubits; a feature-map circuit builds a Hilbert-space representation; then a quantum fidelity kernel, QSVM-style classifier, variational circuit (VQC) or hybrid regression learns the mapping. Classical baselines remain the reference and every comparison uses identical splits, preprocessing and leakage controls.</p>" +
+        "<table class='kv sml'><tbody>" +
+        "<tr><td>Qubits</td><td class='num'>8</td></tr>" +
+        "<tr><td>Feature-map depth (re-uploading)</td><td class='num'>2</td></tr>" +
+        "<tr><td>Variational layers</td><td class='num'>3</td></tr>" +
+        "<tr><td>Shots per circuit</td><td class='num'>1024</td></tr>" +
+        "<tr><td>Models in scope</td><td class='num'>QKernel · QSVM-style · VQC · QNN (next) · QGNN (future) · QBayesOpt (future)</td></tr>" +
+        "<tr><td>Model comparison / audit</td><td class='num'>offline backend audit trail (not shown in this UI)</td></tr>" +
+        "</tbody></table>";
+      var ph = M.phases.map(function (p) { return "<div class='sml'>• " + esc(p) + "</div>"; }).join("");
+      q.innerHTML += "<div style='margin-top:12px'><div class='panel-h sml'>Roadmap</div>" + ph + "</div>";
+      content.appendChild(q);
+    };
+    fns.md = function () {
+      markDone("md");
+      logTrail("AgroMD: dynamics pipeline described");
+      var m = el("div", "panel");
+      m.innerHTML = "<div class='panel-h'>AgroMD™ — molecular dynamics</div>" +
+        "<p>Workflow: parametrize complex (GROMACS), solvate, equilibrate, run production (tens to hundreds of ns), then compute <b>RMSD</b> (complex stability), <b>RMSF</b> (residue flexibility), <b>interaction persistence</b> (H-bonds/salt bridges/π-stacking lifetimes) and <b>MM/PBSA</b> binding free energies. These confirm or interrogate the static docking poses and surface cryptic pockets.</p>" +
+        "<table class='kv sml'><tbody>" +
+        "<tr><td>Engine</td><td class='num'>GROMACS (backend, not bundled in this demo UI)</td></tr>" +
+        "<tr><td>Inputs</td><td class='num'>Docked complex · force field · protonation state</td></tr>" +
+        "<tr><td>Outputs</td><td class='num'>RMSD/RMSF traces · interaction occupancy · ΔG<sub>bind</sub> (MM/PBSA)</td></tr>" +
+        "<tr><td>Status</td><td class='num'>schema + parameters ready — backend to attach in Phase 3/4</td></tr></tbody></table>";
+      content.appendChild(m);
+    };
+    fns.resistance = function () {
+      var p = el("div", "panel");
+      p.innerHTML = "<div class='panel-h'>AgroResistanceScan™ — mutation → structure → affinity</div>" +
+        "<p class='sml dim'>Pick a known resistance mutation. The scan reports the structural hypothesis, the expected affinity change on the selected receptor, and the literature cue. <b>Hypothesis-generation only.</b></p>" +
+        "<div class='mlgens'><label>Mutation</label><select id='mut-sel'></select></div>" +
+        "<div id='mut-out' style='margin-top:10px'></div>";
+      content.appendChild(p);
+      var sel = $("#mut-sel");
+      var applicable = M.mutations.filter(function (m) { return !m.target || m.target.indexOf(APP.targetKey) >= 0; });
+      sel.innerHTML = applicable.map(function (m) { return "<option>" + esc(m.name) + "</option>"; }).join("");
+      function draw() {
+        var name = sel.value;
+        var m = M.mutations.find(function (x) { return x.name === name; });
+        if (!m) return;
+        var t = M.targets.find(function (x) { return x.key === APP.targetKey; });
+        var aff = APP.lastLab && APP.lastLab.targetKey === APP.targetKey ? APP.lastLab.affC : null;
+        markDone("resistance");
+        logTrail("AgroResistanceScan: mutation " + name + " evaluated" + (t ? " on " + t.name : ""));
+        var d = null;
+        if (m.delta != null) d = m.delta;
+        var before = aff;
+        var after = (aff != null && d != null) ? aff + d : null;
+        $("#mut-out").innerHTML =
+          "<table class='kv sml'><tbody>" +
+          "<tr><td>Mutation / event</td><td><b>" + esc(m.name) + "</b></td></tr>" +
+          "<tr><td>Gene / target</td><td>" + esc(m.gene) + (t ? " · " + esc(t.name) : "") + "</td></tr>" +
+          "<tr><td>Expected effect</td><td>" + esc(m.effect) + "</td></tr>" +
+          "<tr><td>Predicted affinity change</td><td class='num'>" + (d != null ? "+" + d.toFixed(1) + " kcal/mol (weaker binding → resistance)" : "metabolic — not structural") + "</td></tr>" +
+          (before != null && after != null ? "<tr><td>Affinity before → after (last lab combo)</td><td class='num'>" + round(before, 2) + " → " + round(after, 2) + " kcal/mol</td></tr>" : "") +
+          "<tr><td>Context</td><td>" + esc(m.note) + "</td></tr>" +
+          "<tr><td>Lit. cue</td><td>" + esc(m.lit) + "</td></tr></tbody></table>" +
+          "<p class='sml warn-bc'>Structural hypothesis only — confirm with molecular dynamics and bioassay under selection pressure.</p>";
+      }
+      draw();
+      sel.addEventListener("change", draw);
+    };
+    fns.select = function () {
+      markDone("select");
+      logTrail("AgroSelect: selectivity rules reviewed");
+      var s = el("div", "panel");
+      s.innerHTML = "<div class='panel-h'>AgroSelect™ — pest vs beneficial selectivity</div>";
+      var rows = M.selectivity.map(function (r) {
+        var flag = r.flag === "HIGH" ? "tag bad" : r.flag === "MOD" ? "tag mid" : "tag ok";
+        return "<tr><td>" + esc(r.family) + "</td><td class='sml dim'>" + esc(r.chemistry) + "</td><td>" + esc(r.beneficial) + "</td><td><span class='" + flag + "'>" + esc(r.flag) + "</span></td><td class='sml dim'>" + esc(r.note) + "</td></tr>";
+      }).join("");
+      s.innerHTML += "<table class='data'><thead><tr><th>Family</th><th>Chemistry cue</th><th>Beneficial impact</th><th>Flag</th><th>Note</th></tr></thead><tbody>" + rows + "</tbody></table>" +
+        "<p class='sml dim' style='margin-top:10px'>Pair this with the Molecule Lab hit: compute chemistry cues (logP/HBA/volatility) and read the appropriate row above. A positive pest-vs-beneficial margin means the candidate controls the pest at doses that spare key pollinators/parasitoids.</p>";
+      content.appendChild(s);
+    };
+    fns.ecorisk = function () {
+      markDone("ecorisk");
+      logTrail("AgroEcoRisk: environmental flags reviewed");
+      var e = el("div", "panel");
+      e.innerHTML = "<div class='panel-h'>AgroEcoRisk™ — non-target risk prioritization</div>";
+      var rows = M.ecorisk.map(function (r) {
+        var lv = r.level === "HIGH" ? "tag bad" : r.level === "MOD" ? "tag mid" : "tag ok";
+        return "<tr><td>" + esc(r.rule) + "</td><td>" + esc(r.flag) + "</td><td><span class='" + lv + "'>" + esc(r.level) + "</span></td></tr>";
+      }).join("");
+      e.innerHTML += "<table class='data'><thead><tr><th>Property cue</th><th>Risk flag</th><th>Level</th></tr></thead><tbody>" + rows + "</tbody></table>";
+      var lab = APP.lastLab;
+      if (lab) {
+        var flags = [];
+        [lab.fA, lab.fB].forEach(function (f) {
+          if (f.clogp >= 4) flags.push("logP ≥ 4 (“" + round(f.clogp, 1) + "”) — bioconcentration");
+          if (f.clogp <= 2) flags.push("soluble low-logP (“" + round(f.clogp, 1) + "”) — aquatic mobility");
+        });
+        e.innerHTML += "<div style='margin-top:12px'><div class='panel-h sml'>Applied to last Molecule Lab pair</div>" +
+          (flags.length ? "<div>" + flags.map(function (f0) { return "<div class='sml'>• " + esc(f0) + "</div>"; }).join("") + "</div>" : "<div class='sml dim'>No strong physical-chemical flags from that pair.</div>") + "</div>";
+      }
+      e.innerHTML += "<p class='sml dim' style='margin-top:10px'>Risk flags prioritize follow-up (residue, bee, aquatic) studies — they are not regulatory assessments.</p>";
+      content.appendChild(e);
+    };
+    fns.synergyx = function () {
+      markDone("synergyx");
+      logTrail("AgroSynergyX: synergy workbench opened");
+      var s = el("div", "panel");
+      s.innerHTML = "<div class='panel-h'>AgroSynergyX™ — combination / synergy</div>" +
+        "<p class='sml dim'>Uses the same pair plus receptor as the Molecule Lab. Run to refresh the synergy index into this stage.</p>" +
+        "<div style='display:flex;gap:10px;flex-wrap:wrap;margin:8px 0'>" +
+        "<button class='primary' id='syn-run'>Run synergy now</button>" +
+        "<button class='ghost' id='syn-to-lab'>Open in Molecule Lab</button></div><div id='syn-out'></div>";
+      content.appendChild(s);
+      $("#syn-run").addEventListener("click", function () { labAnalyze("#syn-out"); });
+      $("#syn-to-lab").addEventListener("click", function () { showTab("lab"); });
+    };
+    fns.optimize = function () {
+      markDone("optimize");
+      logTrail("AgroOptimize: multi-objective ranking computed");
+      var o = el("div", "panel");
+      o.innerHTML = "<div class='panel-h'>AgroOptimize™ — multi-objective ranking</div>" +
+        "<p class='sml dim'>Composite = 0.55 × normalized efficacy + 0.30 × inverse LC50 + 0.15 × evidence completeness (demo weights — tunable per project).</p>" +
+        "<table class='data' id='opt-t'><thead><tr><th>Extract</th><th>Records</th><th>Mean mortality</th><th>Best LC50 (mg/mL)</th><th>Composite</th></tr></thead><tbody id='opt-b'></tbody></table>" +
+        "<p class='sml dim' style='margin-top:10px'>Lab hits, selectivity flags and eco-risk flags join this matrix in the full engine (Phase 7 AgroX decision score).</p>";
+      content.appendChild(o);
+      var effs = D.extracts.map(function (e) { return e.mean_mortality / 100; });
+      var effMin = mean(effs) - 0 * mean(effs); 
+      var emax = Math.max.apply(null, effs), emin = Math.min.apply(null, effs);
+      var lcRows = D.lc50 || [];
+      var invLc = D.extracts.map(function (e) {
+        var matches = lcRows.filter(function (r) { return r.extract === e.extract; });
+        if (!matches.length) return 0.5;
+        var vals = matches.map(function (r) { return r.lc50 > 0 ? r.lc50 : 40; });
+        var best = Math.min.apply(null, vals);
+        return 1 / (1 + best / 10);
+      });
+      var lmax = Math.max.apply(null, invLc), lmin = Math.min.apply(null, invLc);
+      var body = D.extracts.map(function (e, i) {
+        var effN = (emax > emin) ? (effs[i] - emin) / (emax - emin) : 0.5;
+        var lcN = (lmax > lmin) ? (invLc[i] - lmin) / (lmax - lmin) : 0.5;
+        var comp = 0.55 * effN + 0.30 * lcN + 0.15 * 0.5;
+        var match = lcRows.filter(function (r) { return r.extract === e.extract; });
+        var bestLc = match.length ? Math.min.apply(null, match.map(function (r) { return r.lc50 > 0 ? r.lc50 : 40; })) : null;
+        return { e: e, comp: comp, bestLc: bestLc };
+      }).sort(function (a, b) { return b.comp - a.comp; });
+      $("#opt-b").innerHTML = body.map(function (x) {
+        return "<tr><td><b>" + esc(x.e.extract) + "</b></td><td>" + x.e.records + "</td><td>" + round(x.e.mean_mortality, 1) + "%</td><td>" + (x.bestLc != null ? round(x.bestLc, 2) : "—") + "</td><td><b>" + round(x.comp, 3) + "</b></td></tr>";
+      }).join("");
+    };
+    fns.report = function () {
+      markDone("report");
+      logTrail("AgroReport: reproducible report generated");
+      var r = el("div", "panel report");
+      r.innerHTML = "<div class='panel-h'>AgroReport™ — reproducible summary</div>" +
+        "<p class='sml dim'>Audit-trail snapshot, dataset coverage, pipeline completion and active session credentials. Printable — use your browser's Print → Save as PDF.</p>" +
+        "<button class='primary' id='rep-print' style='margin-bottom:12px'>Print / Save as PDF</button>" +
+        "<div id='rep-body'></div>";
+      content.appendChild(r);
+      var b = $("#rep-body");
+      function txt() {
+        var lab = APP.lastLab;
+        var html = "";
+        html += "<h3>Project</h3><p><b>Quantum_AgroX™</b> — Quantum Machine Learning based Agro-Chemical Discovery. MEDxAI; benchmark: <i>Commiphora swynnertonii</i> vs <i>R. microplus</i> &amp; <i>R. decoloratus</i>.</p>";
+        html += "<h3>Dataset coverage</h3><table class='kv sml'><tbody>" +
+          "<tr><td>Bioassay records</td><td class='num'>" + (D ? D.stats.records : "—") + "</td></tr>" +
+          "<tr><td>Phytochemicals / docking hits / LC50 entries</td><td class='num'>" + (D ? D.stats.phytochemicals + " / " + D.stats.docking_hits + " / " + D.stats.lc50_entries : "—") + "</td></tr>" +
+          "<tr><td>Selected target</td><td class='num'>" + (APP.targetKey ? esc((M.targets.find(function (t) { return t.key === APP.targetKey; }) || {}).name || APP.targetKey) : "—") + "</td></tr></tbody></table>";
+        if (lab) {
+          html += "<h3>Last Molecule Lab run</h3><table class='kv sml'><tbody>" +
+            "<tr><td>Pair</td><td class='num kbd'>" + esc(lab.smiA) + "</td></tr>" +
+            "<tr><td></td><td class='num kbd'>" + esc(lab.smiB) + "</td></tr>" +
+            "<tr><td>Receptor</td><td class='num'>" + esc(lab.target) + (lab.lowConf ? " (generic calibration)" : "") + "</td></tr>" +
+            "<tr><td>Affinity (combo)</td><td class='num'>" + round(lab.affC, 2) + " kcal/mol</td></tr>" +
+            "<tr><td>Synergy index</td><td class='num'>" + round(lab.synergy, 2) + "</td></tr>" +
+            "<tr><td>Dose (combo)</td><td class='num'>" + lab.dose + " mg/mL</td></tr></tbody></table>";
+        }
+        html += "<h3>Pipeline completion</h3><div>" + M.modules.map(function (m) {
+          return (APP.done[m.id] ? "☑" : "☐") + " " + esc(m.name);
+        }).join("<br>") + "</div>";
+        html += "<h3>Audit trail</h3><div class='trailbox'>" +
+          (APP.trail.length ? APP.trail.map(function (t0) { return "<div>" + esc(t0.t) + " — " + esc(t0.m) + "</div>"; }).join("") : "<div class='dim'>No session actions yet.</div>") +
+          "</div>";
+        html += "<h3>Safeguards</h3><ul class='sml'>" +
+          "<li>Aggregate paper-derived benchmark — pipeline development, not advantage claims.</li>" +
+          "<li>Docking scores are NOT proof of AChE inhibition (paper's own limitation).</li>" +
+          "<li>No field efficacy / livestock / environmental safety inferred from docking alone.</li>" +
+          "<li>No mixing of experimental and model-generated labels as equivalents.</li></ul>";
+        html += "<p class='sml dim'>Generated " + esc(nowStamp()) + " · Quantum_AgroX interactive layer (demo).</p>";
+        return html;
+      }
+      b.innerHTML = txt();
+      $("#rep-print").addEventListener("click", function () { window.print(); });
+    };
+
+    var fn = fns[mod.id];
+    if (fn) { fn(); } else {
+      content.innerHTML = "<div class='panel'><p class='dim'>Module staged — schema ready for backend.</p></div>";
+    }
+    body.appendChild(el("div", "panel", stageNav()));
+    wireNav();
+  }
+
+  /* ---------------- Evidence ---------------- */
+  function litRender() {
+    var wrap = $("#lit-tables");
+    var q = (($("#lit-q") || {}).value || "").trim().toLowerCase();
+    if (!D) return;
+    function renderTable(title, header, rows) {
       var flt = rows.filter(function (r) {
         if (!q) return true;
-        return header.map(function (h, i) { return String(r[i] || r[h] || "").toLowerCase(); })
+        return header.map(function (h, i) { return String(r[i] != null ? r[i] : r[h] || "").toLowerCase(); })
           .some(function (v) { return v.indexOf(q) >= 0; });
       });
       var box = el("div", "panel");
@@ -312,13 +829,10 @@
             return "<td>" + esc(v) + "</td>";
           }).join("") + "</tr>";
         }).join("") + "</tbody>";
-      if (!flt.length) tbl.querySelector("tbody").innerHTML = "<tr><td colspan='" + header.length + "' class='dim'>No rows match your filter.</td></tr>";
+      if (!flt.length) tbl.querySelector("tbody").innerHTML = "<tr><td colspan='" + header.length + "' class='dim'>No rows match.</td></tr>";
       box.appendChild(tbl);
       wrap.appendChild(box);
     }
-
-    wrap.innerHTML = "<div class='dim'>Loading tables…</div>";
-
     var dock = (D.docking || []).map(function (r) {
       return [r.species, r.extract, r.compound, round(r.affinity, 2) + " kcal/mol", pctLink(r.compound + " AChE binding", "verify"), r.interactions];
     });
@@ -334,176 +848,67 @@
     var phyt = (D.phytochemicals || []).slice(0, 30).map(function (r) {
       return [r.compound, r.cls, r.plant_part, r.solvent, round(r.area, 2) + "%", pctLink(r.compound + " acaricide", "verify")];
     });
-
     wrap.innerHTML = "";
-    renderTable("dock", "Top docking candidates — reported re-docking (per extract × species)", ["Species", "Extract", "Compound", "Affinity", "External check", "Reported interactions"], dock);
-    renderTable("lc50", "LC50 / LC90 probit output — reported", ["Assay", "Species", "Extract", "LC50 (mg/mL)", "95% CI", "LC90", "Slope", "χ²/df"], lc);
-    renderTable("val", "Docking validation (PDB complexes)", ["PDB", "Calc. ΔG (kJ/mol)", "Exp. ΔG (kJ/mol)", "Abs. error", "RMSD check", "Notes"], val);
-    renderTable("ach", "AChE homology model QA — reported", ["Species", "Generator", "Verify3D", "ERRAT", "ProSA Z", "Ramachandran", "Disallowed"], ach);
-    renderTable("phyt", "Major phytochemicals (GC-MS) — 30 shown", ["Compound", "Class", "Plant part", "Solvent", "Area %", "External check"], phyt);
+    renderTable("Top docking candidates — reported re-docking", ["Species", "Extract", "Compound", "Affinity", "External check", "Interactions"], dock);
+    renderTable("LC50 / LC90 probit — reported", ["Assay", "Species", "Extract", "LC50 (mg/mL)", "95% CI", "LC90", "Slope", "χ²/df"], lc);
+    renderTable("Docking validation (PDB complexes)", ["PDB", "Calc ΔG kJ/mol", "Exp ΔG kJ/mol", "Abs. error", "RMSD check", "Notes"], val);
+    renderTable("AChE homology model QA — reported", ["Species", "Generator", "Verify3D", "ERRAT", "ProSA Z", "Ramachandran", "Disallowed"], ach);
+    renderTable("Major phytochemicals — 30 shown", ["Compound", "Class", "Plant part", "Solvent", "Area %", "External check"], phyt);
   }
-
   function litVerificationPanel() {
     var wrap = $("#lit-verify");
     var rows = (window.AGROX.LIT || []).map(function (l) {
-      var k = l.detail.indexOf(" ") >= 0 ? l.detail.slice(0, 60) : "";
-      return "<div class='panel vrow'><div><b>" + esc(l.focus) + "</b> <span class='" + (l.status.indexOf("Reported") === 0 ? "tag ok" : "tag bad") + "'>" + esc(l.status) + "</span></div>" +
+      var k = l.status && l.status.indexOf("Reported") === 0;
+      return "<div class='panel vrow'><div><b>" + esc(l.focus) + "</b> <span class='" + (k ? "tag ok" : "tag bad") + "'>" + esc(l.status) + "</span></div>" +
         "<div class='sml dim'>" + esc(l.detail) + "</div><div class='sml'><i>" + esc(l.verify) + "</i></div></div>";
     }).join("");
-    wrap.innerHTML = rows;
+    if (wrap) wrap.innerHTML = rows;
   }
 
-  /* ---------- Home ---------- */
-  function homeRender() {
-    var D = APP.data;
-    $("#stat-records").textContent = D.stats.records;
-    $("#stat-phyt").textContent = D.stats.phytochemicals;
-    $("#stat-dock").textContent = D.stats.docking_hits;
-    $("#stat-val").textContent = D.stats.validation_complexes;
-
-    var ext = el("div", "bars");
-    (D.extracts || []).forEach(function (e) {
-      var b = el("div", "bar-row");
-      b.innerHTML = "<div class='bar-lbl'>" + esc(e.extract) + "</div>" +
-        "<div class='bar-track'><div class='bar' style='width:" + Math.round(e.mean_mortality) + "%'></div></div>" +
-        "<div class='bar-val'>" + round(e.mean_mortality, 1) + "%</div>";
-      ext.appendChild(b);
-    });
-    $("#ext-chart").innerHTML = "";
-    $("#ext-chart").appendChild(ext);
-
-    var spec = el("div", "grid c3");
-    (D.species || []).forEach(function (s) {
-      var c = el("div", "panel card");
-      c.innerHTML = "<div class='num-lg'>" + s.count + "</div><div class='dim'>" + esc(s.species) + " bioassay records</div>";
-      spec.appendChild(c);
-    });
-    $("#spec-cards").innerHTML = "";
-    $("#spec-cards").appendChild(spec);
-
-    var cls = el("div", "chips");
-    (D.phytochemical_classes || []).forEach(function (c) {
-      cls.appendChild(el("span", "chip", esc(c.cls) + " × " + c.count));
-    });
-    $("#cls-chips").innerHTML = "";
-    $("#cls-chips").appendChild(cls);
-  }
-
-  /* ---------- Chatbot ---------- */
+  /* ---------------- Chat ---------------- */
   var CHAT = {
     replies: [
-      {
-        keys: ["hello", "hi ", "hey", "whats up", "hiya"],
-        ans: function () {
-          return "Hello! I can explain the quantum methodology, or answer statistics about the dataset. Try: “what is the best extract?”, “average mortality”, “best docking hit”, “what is QML?”, or “how do I run the pipeline?”.";
-        }
-      },
-      {
-        keys: ["average mortality", "mean mortality", "average kill", "mean kill"],
-        ans: function () {
-          var D = APP.data, ex = D.extracts[0];
-          var tot = 0, cnt = 0;
-          (D.extracts || []).forEach(function (e) { tot += e.mean_mortality * e.records; cnt += e.records; });
-          var over = cnt ? (tot / cnt) : 0;
-          return "Across " + D.stats.records + " aggregate bioassay records the mean mortality is about " +
-            round(over, 1) + "%. The strongest extract by mean mortality is <b>" + esc(ex.extract) + "</b> at " + ex.mean_mortality + "%.";
-        }
-      },
-      {
-        keys: ["best extract", "most effective extract", "top extract", "best performing"],
-        ans: function () {
-          if (!APP.data.extracts) return "No extract summary loaded yet.";
-          var top = APP.data.extracts[0];
-          return "By reported mean mortality, <b>" + esc(top.extract) + "</b> leads with " + top.mean_mortality +
-            "% mean (peak " + top.max_mortality + "%, n=" + top.records + "). Exudate-DCM and Stem bark-DCM are the front-running fractions in the paper.";
-        }
-      },
-      {
-        keys: ["best docking", "top docking", "docking hit", "affinity", "binding"],
-        ans: function () {
-          var dock = APP.data.docking || [];
-          if (!dock.length) return "No docking rows loaded.";
-          var best = dock.slice().sort(function (a, b) { return num(a.affinity) - num(b.affinity); })[0];
-          return "Strongest reported re-docking hit: <b>" + esc(best.compound) + "</b> in " + esc(best.extract) +
-            " against " + esc(best.species) + " with " + round(best.affinity, 2) + " kcal/mol. Reported interactions: " + esc(best.interactions || "n/a") + ".";
-        }
-      },
-      {
-        keys: ["lc50", "lethal concentration", "potency"],
-        ans: function () {
-          var lc = APP.data.lc50 || [];
-          if (!lc.length) return "LC50 table not loaded.";
-          var min = lc.slice().sort(function (a, b) { return num(a.lc50) - num(b.lc50); })[0];
-          return "Lowest reported LC50 is " + round(min.lc50, 2) + " mg/mL for " + esc(min.extract) + " (" + esc(min.assay) + ", " + esc(min.species) + "); LC90 " + round(min.lc90, 2) + " mg/mL.";
-        }
-      },
-      {
-        keys: ["qml", "quantum machine learning", "what is quantum", "quantum method", "circuit", "qubit"],
-        ans: function () {
-          return "Quantum Machine Learning (QML) here = encoding molecular/assay features into qubits (feature map) and learning with a parameterised quantum circuit (VQC or quantum kernel). We use 8 qubits, depth 2 data re-uploading and 3 variational layers. It is a research-grade proof of concept — classical baselines still beat it for small tabular data, and the dashboard runs transparent classical surrogates in-browser.";
-        }
-      },
-      {
-        keys: ["run pipeline", "run the pipeline", "reproduce", "how to run", "install", "execute"],
-        ans: function () {
-          return "Clone git@github.com:SheenaPravin/Quantum_AgroX.git (branch Feat/Sheena), then pip install -r Quantum_AgroX_QML_Project/requirements.txt and run 'python main.py' — it prepares data (01), classical baselines (02), then the quantum kernel regressor/classifier (03–04) and VQC (05). Pennylane is required.";
-        }
-      },
-      {
-        keys: ["baseline", "classical", "accuracy", "r2", "mae", "rmse", "score"],
-        ans: function () {
-          var b = APP.data.baseline_ridge || {};
-          return "Classical ridge-baseline on this benchmark: MAE " + (b.MAE_mean || "—") + " ± " + (b.MAE_std || 0) +
-            ", RMSE " + (b.RMSE_mean || "—") + ", R² " + (b.R2_mean || "—") + " (5-fold shuffle CV on " + (b.n_samples || 240) + " records). Quantum results are the research goal.";
-        }
-      },
-      {
-        keys: ["synergy", "combination", "mix two", "additive", "loewe"],
-        ans: function () {
-          return "Synergy here is a Loewe-inspired heuristic: structural complementarity (1 − Tanimoto), LogP balance, size mixing and predicted affinity gain of the 1:1 combination vs its components. High index = candidates worth a proper isobologram / Combination Index study. See the Molecule Lab tab — it computes this live for any two SMILES.";
-        }
-      },
-      {
-        keys: ["dosage", "dose", "concentration", "mg/ml", "apply how much"],
-        ans: function () {
-          return "Dosing is mapped to the study's tested topical ladder 5–80 mg/mL. The Molecule Lab estimates a working band from predicted potency; low bands suit repellency screens, upper bands suit mortality assays. Confirm with probit before field use.";
-        }
-      },
-      {
-        keys: ["caveat", "limitation", "reliable", "trust", "risk", "hazard", "toxic"],
-        ans: function () {
-          return "Honest caveats: (1) reported values are paper-derived aggregate means — replicate counts pending; (2) docking/affinity here are lightweight surrogates, not validated AutoDock runs; (3) QML is proof-of-concept; (4) botanical extracts can irritate skin — wear PPE; (5) always cross-check pesticide legality in your jurisdiction.";
-        }
-      },
-      {
-        keys: ["source", "dataset", "where does the data", "provenance", "cake"],
-        ans: function () {
-          return "Data come from the study's benchmark CSVs (12 tables: phytochemistry, larval/adult mortality, LC50/LC90, docking, AChE QA, validation) + the Quantum_AgroX architecture doc. See the Literature tab for the verification ledger and external citation links.";
-        }
-      },
-      {
-        keys: ["who", "team", "author", "medxai", "project"],
-        ans: function () {
-          return "Quantum_AgroX is a MEDxAI innovation project applying quantum machine learning to botanical acaricide discovery, benchmarked on Commiphora swynnertonii against Rhipicephalus microplus and R. decoloratus (cattle ticks).";
-        }
-      }
+      { keys: ["hello", "hi ", "hey", "whats up"], ans: function () { return "Hello — I'm the Quantum_AgroX assistant. I cover the 14 modules, the benchmark statistics, target library and safeguards. Try a pilot question below."; } },
+      { keys: ["start pipeline", "start the pipeline", "run pipeline", "begin pipeline"], ans: function () { return "Click 'Start Agro Chemical Discovery Pipeline' on Home — or I can open it for you: it walks AgroDataHub → AgroPhytoX → AgroTargetX → AgroSiteMap → AgroDockX → AgroDoseX → AgroQML → AgroMD → AgroResistanceScan → AgroSelect → AgroEcoRisk → AgroSynergyX → AgroOptimize → AgroReport."; } },
+      { keys: ["best extract", "most effective", "top extract"], ans: function () { var top = (D.extracts || [])[0]; return top ? "<b>" + esc(top.extract) + "</b> leads on reported mean mortality at " + top.mean_mortality + "% (peak " + top.max_mortality + "%, n=" + top.records + ")." : "No extract summary loaded."; } },
+      { keys: ["top docking", "best docking", "binding affinity", "docking hit"], ans: function () { var d0 = (D.docking || [])[0]; if (!d0) return "No docking rows loaded."; var best = D.docking.slice().sort(function (a, b) { return num(a.affinity) - num(b.affinity); })[0]; return "Strongest reported re-docking: <b>" + esc(best.compound) + "</b> in " + esc(best.extract) + " vs " + esc(best.species) + " at " + round(best.affinity, 2) + " kcal/mol. Interactions: " + esc(best.interactions || "n/a") + "."; } },
+      { keys: ["lc50", "lethal concentration"], ans: function () { var lc = D.lc50 || []; var min = lc.slice().sort(function (a, b) { return num(a.lc50) - num(b.lc50); })[0]; return min ? "Lowest reported LC50: " + round(min.lc50, 2) + " mg/mL for " + esc(min.extract) + " (" + esc(min.assay) + ", " + esc(min.species) + "); LC90 " + round(min.lc90, 2) + " mg/mL." : "No LC50 rows loaded."; } },
+      { keys: ["average mortality", "mean mortality"], ans: function () { var tot = 0, cnt = 0; (D.extracts || []).forEach(function (e) { tot += e.mean_mortality * e.records; cnt += e.records; }); return cnt ? "Across " + D.stats.records + " records the overall mean mortality is about " + round(tot / cnt, 1) + "%. See the dose-response stage for per-point predictions." : "No data loaded."; } },
+      { keys: ["synergy", "combination", "additive", "loewe"], ans: function () { return "AgroSynergyX uses a Loewe-inspired heuristic — structural complementarity (1 − Tanimoto), LogP balance, size mixing and affinity gain of a 1:1 mix. High index = pair worth an isobologram study. Run it in the Molecule Lab or Pipeline → AgroSynergyX."; } },
+      { keys: ["dosage", "dose", "concentration"], ans: function () { return "Dosing is guided by the study's tested topical window (5–80 mg/mL). The Molecule Lab returns banded guidance per candidate; AgroDoseX predicts mortality at chosen concentration × exposure."; } },
+      { keys: ["caveat", "limitation", "reliable", "risk", "hazard", "safeguard"], ans: function () { return "Safeguards: (1) paper-derived aggregate means pending replicate release; (2) docking/surrogates are hypotheses, not AChE-inhibition proof; (3) no field efficacy or environmental safety from docking alone; (4) QML is one layer, never a superiority claim; (5) wear PPE with botanical extracts; (6) check local pesticide law."; } },
+      { keys: ["source", "where does the data", "provenance", "dataset"], ans: function () { return "The Evidence tab exposes the provenance ledger. Data: 12 benchmark CSVs + the Quantum_AgroX architecture document. External-verification links (Scholar/PubMed) are embedded per row."; } },
+      { keys: ["qml", "quantum", "qubit", "kernel"], ans: function () { return "AgroQML angle-encodes features into 8 qubits (re-uploading depth 2, variational layers 3, 1024 shots) and learns with quantum fidelity kernels, QSVM-style classifiers, VQC and (next) QNN/QGNN. It is one computational layer with classical baselines as reference; comparisons live in the offline audit trail — deliberately not marketed as accuracy in this UI."; } },
+      { keys: ["accuracy", "performance", "score", "f1", "roc", "rmse", "mae", "r2"], ans: function () { return "This UI deliberately does not parade model accuracy: the architecture guidance says a quantum model is not superior just because it scores well. Reproducible comparisons (same splits/preprocessing/leakage controls) are tracked in the backend audit trail and AgroReport."; } },
+      { keys: ["resistance", "mutation"], ans: function () { return "AgroResistanceScan works mutation → structure → affinity. Try Pipeline → AgroResistanceScan: pick e.g. AChE G119S (OP/carbamate) or VGSC kdr T929I+L1014F (pyrethroid) and see the predicted binding change on the selected receptor."; } },
+      { keys: ["md ", "dynamics", "mmpbsa", "rmsd", "rmsf"], ans: function () { return "AgroMD runs the GROMACS backend (not bundled in the demo UI): solvate, equilibrate, produce RMSD/RMSF traces, interaction persistence and MM/PBSA ΔG for docked poses — this is what interrogates cryptic pockets."; } },
+      { keys: ["selectivity", "bee", "pollinator", "beneficial"], ans: function () { return "AgroSelect scores pest-vs-beneficial margin. High-flag families: OP/carbamate- and neonicotinoid-type actives (pollinator caution). Lower: terpenoid and phenolic botanicals (short residual, repellent). See Pipeline → AgroSelect."; } },
+      { keys: ["ecorisk", "ecotoxic", "ecology", "environment"], ans: function () { return "AgroEcoRisk prioritizes non-target flags: logP≥4 (bioconcentration), soluble-low-logP (aquatic mobility), neuroactive pharmacophores (non-target neurotoxicity), residue persistence. Flags drive study priorities, not verdicts."; } },
+      { keys: ["optimize", "multi-objective", "ranking", "candidate"], ans: function () { return "AgroOptimize composes efficacy, inverse-LC50, selectivity and eco-risk into a weighted candidate ranking. Demo weights in Pipeline → AgroOptimize; the production engine (Phase 7) makes the AgroX decision score fully auditable."; } },
+      { keys: ["report", "audit", "print"], ans: function () { return "AgroReport assembles dataset coverage, chosen target, last lab run, pipeline completion, the full audit trail and safeguards — then Print → Save as PDF. Run it at Pipeline → AgroReport."; } },
+      { keys: ["target", "receptor"], ans: function () { return "The target library now includes mites/ticks, insects, nematodes, fungi, weeds and detox enzymes — e.g. AChE (CAA06980/6ARX or CAA11702/5YDH), VGSC, nAChR, CYP51, SDH, β-tubulin, PSII-D1, EPSPS, levamisole-site AChR. Type any name in the Molecule Lab; if unknown, it falls back to generic AChE calibration with a warning."; } },
+      { keys: ["reproduce", "how to run", "install", "pipeline locally"], ans: function () { return "Clone git@github.com:SheenaPravin/Quantum_AgroX.git (branch Feat/Sheena), pip install -r Quantum_AgroX_QML_Project/requirements.txt, python main.py. Scripts 01–05 mirror the pipeline's classical + QML stages."; } },
+      { keys: ["medxai", "who", "project", "team"], ans: function () { return "Quantum_AgroX is a MEDxAI innovation project: an evidence-integrating agrochemical intelligence platform, first benchmarked on Commiphora swynnertonii botanical acaricide discovery against cattle ticks."; } }
     ],
-    fallback: function (text) {
-      var words = text.toLowerCase();
-      if (/\d/.test(words)) return "I don't see a matching question — try asking about mortality, docking, LC50, synergy, dosage, or how to run the pipeline. (I reason over the loaded benchmark tables, not free text from the web.)";
-      return "I can help with statistics on this dataset and explain the QML methodology. Try: “best extract”, “top docking hit”, “average mortality”, “synergy meaning”, or “caveats”.";
+    fallback: function (w) {
+      if (/\d/.test(w)) return "I don't see a matching question — try 'best extract', 'top docking hit', 'LC50', 'synergy', 'resistance', 'optimize', or 'how to start the pipeline'.";
+      for (var i = 0; i < M.modules.length; i++) {
+        var m = M.modules[i];
+        var stem = m.name.replace("™", "").replace(/Agro/, "").toLowerCase();
+        if (w.indexOf(stem) >= 0) return m.name + " — " + m.func + ". " + m.desc + " Open it in the Pipeline to run the live demo of this stage.";
+      }
+      return "I can help with module guidance, benchmark statistics, the target library and safeguards. Try: 'best extract', 'top docking hit', 'LC50', 'QML', 'resistance', or the pilots above.";
     }
   };
   function chatReply(text) {
-    var words = text.toLowerCase();
+    var w = text.toLowerCase();
     var hits = CHAT.replies.filter(function (r) {
-      var score = 0;
-      r.keys.forEach(function (k) { if (words.indexOf(k) >= 0) score += 1; });
-      return score > 0 && (!r.when || r.when(words));
+      return r.keys.some(function (k) { return w.indexOf(k) >= 0; });
     });
-    hits.sort(function (a, b) { return b.keys.filter(function (k) { return words.indexOf(k) >= 0; }).length -
-      a.keys.filter(function (k) { return words.indexOf(k) >= 0; }).length; });
-    return hits.length ? hits[0].ans() : CHAT.fallback(words);
+    hits.sort(function (a, b) {
+      return b.keys.filter(function (k) { return w.indexOf(k) >= 0; }).length - a.keys.filter(function (k) { return w.indexOf(k) >= 0; }).length;
+    });
+    return hits.length ? hits[0].ans() : CHAT.fallback(w);
   }
   function chatSend() {
     var inp = $("#chat-in");
@@ -511,35 +916,13 @@
     if (!text) return;
     inp.value = "";
     var box = $("#chat-msgs");
-    var u = el("div", "msg user", esc(text));
-    box.appendChild(u);
-    var r = el("div", "msg bot", chatReply(text));
-    box.appendChild(r);
+    box.appendChild(el("div", "msg user", esc(text)));
+    box.appendChild(el("div", "msg bot", chatReply(text)));
     box.scrollTop = box.scrollHeight;
   }
-
-  /* ---------- Navigation & init ---------- */
-  function showTab(name) {
-    APP.tab = name;
-    $$(".tablink").forEach(function (b) { b.classList.toggle("active", b.dataset.tab === name); });
-    $$(".tabpane").forEach(function (p) { p.classList.toggle("active", p.id === "pane-" + name); });
-    if (name === "lit") { litRender(); litVerificationPanel(); }
-    if (name === "doc") { goQml(); }
-  }
-  function goQml() {
-    var b = APP.data && APP.data.baseline_ridge;
-    if (b) {
-      $("#b-mae").textContent = round(b.MAE_mean, 3) + " ± " + round(b.MAE_std, 3);
-      $("#b-rmse").textContent = round(b.RMSE_mean, 3) + " ± " + round(b.RMSE_std, 3);
-      $("#b-r2").textContent = round(b.R2_mean, 3) + " ± " + round(b.R2_std, 3);
-      $("#b-n").textContent = b.n_samples;
-    } else {
-      ["#b-mae", "#b-rmse", "#b-r2", "#b-n"].forEach(function (s) { $(s).textContent = "—"; });
-    }
-  }
   function buildPilots() {
-    var list = ["Best extract", "Top docking hit", "Average mortality", "LC50", "What is QML?", "Synergy meaning", "How to run pipeline", "Caveats"];
     var wrap = $("#pilots");
+    var list = ["Start the pipeline", "Best extract", "Top docking hit", "What is AgroQML?", "Resistance", "AgroSelect", "Caveats"];
     list.forEach(function (p) {
       var c = el("span", "pilot", p);
       c.addEventListener("click", function () {
@@ -548,69 +931,119 @@
       });
       wrap.appendChild(c);
     });
-    var box = $("#chat-msgs");
-    var welcome = el("div", "msg bot", "Hi — I'm the Quantum_AgroX reasoning assistant. Ask me for statistics on the benchmark tables or about the QML methodology. Try a pilot question above.");
-    box.appendChild(welcome);
+    var welcome = el("div", "msg bot", "Hi — Quantum_AgroX assistant here. Ask about the 14 modules, benchmark stats, targets, or safeguards.");
+    $("#chat-msgs").appendChild(welcome);
+  }
+
+  /* ---------------- Tabs / init ---------------- */
+  var TAB_HASH = { home: "#home", pipeline: "#pipeline", lab: "#lab", evid: "#evid", chat: "#chat" };
+  function showTab(name) {
+    APP.tab = name;
+    $$(".tablink").forEach(function (b) { b.classList.toggle("active", b.dataset.tab === name); });
+    $$(".tabpane").forEach(function (p) { p.classList.toggle("active", p.id === "pane-" + name); });
+    if (name === "evid") { litRender(); litVerificationPanel(); }
+    if (name === "pipeline") { renderStepper(); renderStage(); }
+    try { history.replaceState(null, "", TAB_HASH[name] || "#home"); } catch (e) {}
   }
   function initTabs() {
     $$(".tablink").forEach(function (b) {
-      b.addEventListener("click", function () {
-        showTab(b.dataset.tab);
-        var h = { home: "#home", lab: "#lab", lit: "#lit", doc: "#doc", chat: "#chat" }[b.dataset.tab];
-        try { history.replaceState(null, "", h); } catch (e) {}
-      });
+      b.addEventListener("click", function () { showTab(b.dataset.tab); });
     });
   }
   function deepLinkInit() {
-    if (typeof location === "undefined" || typeof URLSearchParams === "undefined") return;
-    /* share/deep-link: #lab + ?s1=&s2= auto-runs a pair */
+    if (typeof location === "undefined") return;
     var h = (location.hash || "#home").replace(/^#/, "");
-    if (h === "lab" || h === "lit" || h === "doc" || h === "chat") { showTab(h); } else { showTab("home"); }
-    var params = new URLSearchParams(location.search);
-    var s1 = params.get("s1"), s2 = params.get("s2");
+    var names = { pipeline: "pipeline", lab: "lab", evid: "evid", chat: "chat" };
+    if (names[h]) showTab(names[h]); else showTab("home");
+    var pipeParam = (typeof URLSearchParams !== "undefined" && location.search) ? new URLSearchParams(location.search).get("pipe") : null;
+    if (pipeParam) {
+      var mi = M.modules.findIndex(function (m) { return m.id === pipeParam; });
+      if (mi >= 0) openPipelineAt(mi);
+    }
+    var s1 = (typeof URLSearchParams !== "undefined" && location.search) ? new URLSearchParams(location.search).get("s1") : null;
+    var s2 = (typeof URLSearchParams !== "undefined" && location.search) ? new URLSearchParams(location.search).get("s2") : null;
     if (s1) $("#smi-a").value = s1;
     if (s2) $("#smi-b").value = s2;
     if (s1 && s2) {
-      loadRDKit().then(function () {
-        labAnalyze();
-      })["catch"](function (e) { $("#lab-out").innerHTML = "<div class='warn'>" + esc(e.message) + "</div>"; });
+      loadRDKit().then(function () { labAnalyze(); })["catch"](function (e) { $("#lab-out").innerHTML = "<div class='warn'>" + esc(e.message) + "</div>"; });
     }
   }
-
   function register() {
     initTabs();
     buildPilots();
-    $("#analyze-btn").addEventListener("click", function () { labAnalyze(); });
+    $("#start-pipe").addEventListener("click", function () { openPipelineAt(0); logTrail("Pipeline started from Home"); });
+    $("#browse-modules").addEventListener("click", function () { showTab("home"); var g = $("#modgrid"); if (g) g.scrollIntoView({ behavior: "smooth", block: "start" }); });
+    $("#analyze-btn").addEventListener("click", function () { labAnalyze("#lab-out"); });
+    $("#lab-use-phyto").addEventListener("click", function () {
+      var hint = useTopPhytochemicals();
+      if (hint) {
+        var hc = $("#target-hint");
+        if (hc && hc.parentNode) hc.parentNode.insertBefore(hint, hc.parentNode.children[0]);
+      }
+    });
+    $("#smi-a").addEventListener("keydown", function (e) { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") labAnalyze("#lab-out"); });
+    $("#smi-b").addEventListener("keydown", function (e) { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") labAnalyze("#lab-out"); });
+    $("#target").addEventListener("input", function () { updateTargetHint(); });
     $("#lit-q").addEventListener("input", function () { litRender(); });
-    $("#smi-a").addEventListener("keydown", function (e) { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") labAnalyze(); });
-    $("#smi-b").addEventListener("keydown", function (e) { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") labAnalyze(); });
     $("#chat-send").addEventListener("click", chatSend);
     $("#chat-in").addEventListener("keydown", function (e) { if (e.key === "Enter") chatSend(); });
+    /* defaults */
     $("#smi-a").value = "CC1=CCC2CC1C2(C)C";   /* alpha-pinene */
     $("#smi-b").value = "COc1cc(CC=C)ccc1O";   /* eugenol */
+    $("#target").value = "Acetylcholinesterase (Rhipicephalus microplus)";
+    renderTargetDatalist();
+    updateTargetHint();
+  }
+  function updateTargetHint() {
+    var v = $("#target").value.trim();
+    var h = $("#target-hint");
+    if (!M || !h) return;
+    var t = resolveTarget(v);
+    if (!v) h.innerHTML = "";
+    else if (t) h.innerHTML = "Matched: <b>" + esc(t.name) + "</b> — " + esc(t.organism) + (t.anchorDG ? " · anchor " + esc(t.anchor) + " (" + t.anchorDG + " kcal/mol)" : "");
+    else h.innerHTML = "<span class='warn-bc'>Not in the bundled library — will use generic insect-AChE calibration.</span>";
+  }
+  function renderTargetDatalist() {
+    var dl = $("#targets");
+    if (!dl || !M) return;
+    var seen = {};
+    (M.targets || []).forEach(function (t) {
+      [t.name + " (" + t.organism + ")", t.name, t.organism, t.protein].forEach(function (opt) {
+        if (!seen[opt] && opt && opt !== "—") { seen[opt] = 1; dl.appendChild(el("option", "", esc(""))); }
+      });
+    });
+    /* datalist option text via attribute */
+    dl.innerHTML = "";
+    Object.keys(seen).filter(function (k) { return k; }).forEach(function (k) {
+      var o = el("option", "", "");
+      o.value = k;
+      dl.appendChild(o);
+    });
   }
 
   function loadData() {
     return fetch("assets/dashboard_data.json").then(function (r) { return r.json(); }).then(function (d) {
-      APP.data = d;
+      D = d;
+      M = window.AGROX.MODEL;
+      FEATURES.length = 0; M.features.forEach(function (f0) { FEATURES.push(f0); });
       homeRender();
-      if (APP.tab === "lit") { litRender(); litVerificationPanel(); }
-      if (APP.tab === "doc") { goQml(); }
+      if (APP.tab === "evid") { litRender(); litVerificationPanel(); }
+      if (APP.tab === "pipeline") { renderStepper(); renderStage(); }
     });
   }
 
   function init() {
-    loadData().catch(function (e) { console.error("data load failed", e); $("#stat-records").textContent = "—"; });
+    loadData()["catch"](function (e) { console.error("data load failed", e); });
     register();
     deepLinkInit();
-    var rdEl = document.getElementById("rdkit-status");
+    var rdEl = $("#rdkit-status");
     loadRDKit().then(function () {
-      rdEl.textContent = "RDKit core ready — molecules will render as 2D structures.";
-      rdEl.classList.add("ok");
+      sd(rdEl).textContent = "RDKit core ready — structures render in-browser.";
     })["catch"](function (e) {
-      rdEl.textContent = "RDKit core failed to load (" + e.message + ") — structure rendering disabled.";
+      rdEl.textContent = "RDKit core failed (" + e.message + ") — descriptors/affinity disabled.";
     });
   }
+  function sd(x){ return x; }
 
   document.addEventListener("DOMContentLoaded", init);
 })();
