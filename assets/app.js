@@ -990,104 +990,61 @@
       var b = $("#rep-body");
       function txt() {
         var html = "";
-        /* Snapshot — the bottom line first, details grouped below. */
-        var bestSnap = null;
-        if (APP.ledger.length) bestSnap = APP.ledger.slice().sort(function (a, b) { return a.affC - b.affC; })[0];
-        html += "<h3>Snapshot — the bottom line</h3><div class='grid c2'>" +
-          "<div class='bc'><b>" + esc(APP.phytoA && APP.phytoB ? APP.phytoA + " + " + APP.phytoB : "—") + "</b><span class='dim sml'>AgroPhytoX pair</span></div>" +
-          "<div class='bc'><b class='kbd'>" + esc((APP.synthA || "—") + " / " + (APP.synthB || "—")) + "</b><span class='dim sml'>AgroSyntheticX A / B</span></div>" +
-          "<div class='bc'><b>" + (bestSnap ? bestSnap.affC + " kcal/mol · synergy " + bestSnap.synergy + " (" + esc(bestSnap.syn) + ")" : "—") + "</b><span class='dim sml'>best combo" + (bestSnap ? " · " + esc(bestSnap.target) : " · run the Molecule Lab") + "</span></div>" +
-          "<div class='bc'><b>" + (bestSnap ? esc(bestSnap.dose) : "—") + "</b><span class='dim sml'>dose guidance</span></div></div>";
+        var runs = APP.ledger.length;
+        var best = runs ? APP.ledger.slice().sort(function (a, b) { return a.affC - b.affC; })[0] : null;
+        var phytoUsed = !!(APP.phytoA || APP.phytoB);
+        var synthUsed = !!(APP.synthA || APP.synthB);
+        var n = 0;
+        function h(title) { n++; return "<h3>" + n + " · " + title + "</h3>"; }
 
-        html += "<h3>1 · AgroPhytoX — phytochemical pair</h3>";
-        if (APP.phytoA || APP.phytoB) {
-          html += "<table class='kv sml'><tbody>" +
+        /* Brief summary */
+        html += "<h3>Summary</h3><table class='kv sml'><tbody>" +
+          "<tr><td>Pair</td><td class='num'>" + (best ? esc(best.smiA) + " + " + esc(best.smiB) : esc((APP.phytoA || "—") + " + " + (APP.phytoB || "—"))) + "</td></tr>" +
+          (best ? "<tr><td>Best affinity / synergy / dose</td><td class='num'>" + best.affC + " kcal/mol · " + best.synergy + " (" + esc(best.syn) + ") · " + esc(best.dose) + " · " + esc(best.target) + "</td></tr>" : "") +
+          "<tr><td>Caveat</td><td class='num'>Pre-screening hypotheses — docking scores are not proof of inhibition.</td></tr>" +
+          "</tbody></table>";
+
+        if (!phytoUsed && !synthUsed && !runs) {
+          html += "<div class='dim'>Nothing used yet — start at AgroPhytoX, AgroSyntheticX or the Molecule Lab.</div>";
+        }
+
+        if (phytoUsed) {
+          html += h("AgroPhytoX — phytochemical pair") + "<table class='kv sml'><tbody>" +
             [["Phytochemical A", APP.phytoA], ["Phytochemical B", APP.phytoB]].map(function (row) {
               var hit = phytoSmilesFor(row[1]);
               return "<tr><td>" + row[0] + "</td><td class='num'>" + esc(row[1] || "—") +
                 (hit ? "<br><span class='kbd'>" + esc(hit.smi) + "</span>" : "<br>no curated SMILES") + "</td></tr>";
             }).join("") + "</tbody></table>";
-        } else {
-          html += "<div class='dim'>No phytochemical pair chosen yet. Open Pipeline → AgroPhytoX and pick two names.</div>";
         }
 
-        html += "<h3>2 · AgroSyntheticX — drawn molecules</h3>";
-        if (APP.synthA || APP.synthB) {
-          function featRowsFor(f) {
+        if (synthUsed) {
+          function featRow(f) {
             if (!f) return "";
-            return "<tr><td>MW / cLogP / TPSA</td><td class='num'>" + round(f.mw, 1) + " / " + round(f.clogp, 2) + " / " + round(f.tpsa, 1) + "</td></tr>" +
-              "<tr><td>HBA / HBD / RotB / Rings</td><td class='num'>" + f.hba + " / " + f.hbd + " / " + f.rotb + " / " + f.rings + "</td></tr>";
+            return "<tr><td>MW / cLogP</td><td class='num'>" + round(f.mw, 1) + " / " + round(f.clogp, 2) + "</td></tr>";
           }
-          html += "<table class='kv sml'><tbody>" +
-            "<tr><td>Synthetic A</td><td class='num kbd'>" + esc(APP.synthA || "—") + "</td></tr>" +
-            featRowsFor(APP.synthFeatA) +
-            "<tr><td>Synthetic B</td><td class='num kbd'>" + esc(APP.synthB || "—") + "</td></tr>" +
-            featRowsFor(APP.synthFeatB) +
-            "<tr><td>Handoff</td><td class='num'>Take Synthetic A / B into AgroDockX, or via Molecule Lab pair</td></tr></tbody></table>";
-        } else {
-          html += "<div class='dim'>No synthetic molecules drawn yet. Open Pipeline → AgroSyntheticX and store A and B.</div>";
+          html += h("AgroSyntheticX — drawn molecules") + "<table class='kv sml'><tbody>" +
+            (APP.synthA ? "<tr><td>Synthetic A</td><td class='num kbd'>" + esc(APP.synthA) + "</td></tr>" + featRow(APP.synthFeatA) : "") +
+            (APP.synthB ? "<tr><td>Synthetic B</td><td class='num kbd'>" + esc(APP.synthB) + "</td></tr>" + featRow(APP.synthFeatB) : "") +
+            "</tbody></table>";
         }
 
-        html += "<h3>3 · AgroTargetX / AgroSiteMap — receptor target</h3>";
-        if (APP.ledger.length) {
-          var byT = {};
-          APP.ledger.forEach(function (L) { byT[L.target] = (byT[L.target] || 0) + 1; });
-          html += "<table class='data'><thead><tr><th>Receptor target</th><th>Runs</th><th>Calibration</th></tr></thead><tbody>" +
-            Object.keys(byT).map(function (k) {
-              var anchored = APP.ledger.some(function (L) { return L.target === k && !L.lowConf; });
-              return "<tr><td>" + esc(k) + "</td><td class='num'>" + byT[k] + "</td><td>" + (anchored ? "bundled anchor ligand" : "generic calibration") + "</td></tr>";
-            }).join("") + "</tbody></table>";
-        } else {
-          html += "<div class='dim'>None yet.</div>";
-        }
-
-        html += "<h3>4 · AgroDockX / AgroSynergyX — molecules & inference</h3>";
-        if (APP.ledger.length) {
-          var bySmi = {};
-          APP.ledger.forEach(function (L) { [L.smiA, L.smiB].forEach(function (s) { bySmi[s] = (bySmi[s] || 0) + 1; }); });
-          var smiKeys = Object.keys(bySmi).slice(-8);
-          html += "<table class='data'><thead><tr><th>SMILES</th><th>Runs</th><th>Receptor target(s)</th></tr></thead><tbody>" +
-            smiKeys.map(function (s) {
-              var tgAll = [];
-              APP.ledger.forEach(function (L) { if (L.smiA === s || L.smiB === s) tgAll.push(L.target); });
-              var tg = [];
-              tgAll.forEach(function (x) { if (tg.indexOf(x) < 0) tg.push(x); });
-              return "<tr><td class='kbd'>" + esc(s) + "</td><td class='num'>" + bySmi[s] + "</td><td>" + (tg.length ? esc(tg.join(", ")) : "—") + "</td></tr>";
-            }).join("") + "</tbody></table>" +
-            (Object.keys(bySmi).length > 8 ? "<p class='sml dim'>Last 8 of " + Object.keys(bySmi).length + " molecules shown.</p>" : "");
-          var best = APP.ledger.slice().sort(function (a, b) { return a.affC - b.affC; })[0];
-          html += "<table class='kv sml'><tbody>" +
+        if (runs) {
+          var anchored = !best.lowConf;
+          html += h("AgroTargetX / AgroDockX — target & best run") + "<table class='kv sml'><tbody>" +
+            "<tr><td>Receptor target</td><td class='num'>" + esc(best.target) + " (" + (anchored ? "bundled anchor" : "generic calibration") + ")</td></tr>" +
             "<tr><td>Best combo</td><td class='num kbd'>" + esc(best.smiA) + " + " + esc(best.smiB) + "</td></tr>" +
             "<tr><td>Affinity / synergy / dose</td><td class='num'>" + best.affC + " kcal/mol · " + best.synergy + " (" + esc(best.syn) + ") · " + esc(best.dose) + "</td></tr></tbody></table>";
-        } else {
-          html += "<div class='dim'>No molecule was submitted yet in this session. Open the Molecule Lab and run a pair.</div>";
+          html += h("AgroDoseX / AgroQML — model parameters") + "<table class='kv sml'><tbody>" +
+            "<tr><td>Affinity surrogate</td><td class='num'>Ridge QSAR, " + (M.trainligands ? M.trainligands.length : 20) + " reference ligands</td></tr>" +
+            "<tr><td>Synergy heuristic</td><td class='num'>0.35 · (1 − Tanimoto) + 0.20 · LogP balance + 0.20 · size mixing + 0.25 · affinity gain</td></tr>" +
+            "<tr><td>Dose window</td><td class='num'>5–80 mg/mL topical (study-tested range)</td></tr>" +
+            "</tbody></table>";
         }
-
-        html += "<h3>5 · AgroDoseX / AgroQML — model parameters</h3><table class='kv sml'><tbody>" +
-          "<tr><td>Affinity surrogate</td><td class='num'>Ridge QSAR, " + (M.trainligands ? M.trainligands.length : 20) + " reference ligands</td></tr>" +
-          "<tr><td>Synergy heuristic</td><td class='num'>0.35 · (1 − Tanimoto) + 0.20 · LogP balance + 0.20 · size mixing + 0.25 · affinity gain</td></tr>" +
-          "<tr><td>Dose window</td><td class='num'>5–80 mg/mL topical (study-tested range)</td></tr>" +
-          "</tbody></table>";
-
-        html += "<h3>6 · AgroDataHub — dataset coverage</h3><table class='kv sml'><tbody>" +
-          "<tr><td>Bioassay records</td><td class='num'>" + (D ? D.stats.records : "—") + "</td></tr>" +
-          "<tr><td>Phytochemicals / docking hits / LC50 entries</td><td class='num'>" + (D ? D.stats.phytochemicals + " / " + D.stats.docking_hits + " / " + D.stats.lc50_entries : "—") + "</td></tr></tbody></table>";
-
-        html += "<h3>7 · Pipeline completion & audit trail</h3>";
-        var pendingMods = M.modules.filter(function (m) { return !APP.done[m.id]; });
-        var doneCount = M.modules.length - pendingMods.length;
-        html += "<div>" + doneCount + "/" + M.modules.length + " stages complete" +
-          (pendingMods.length ? " — pending: " + esc(pendingMods.map(function (m) { return m.name.replace("™", ""); }).join(", ")) : " — all done ✓") + "</div>";
 
         html += "<div style='margin-top:8px'><details><summary class='sml dim'>Audit trail (" + APP.trail.length + " events — click to expand)</summary><div class='trailbox' style='margin-top:8px'>" +
           (APP.trail.length ? APP.trail.map(function (t0) { return "<div>" + esc(t0.t) + " — " + esc(t0.m) + "</div>"; }).join("") : "<div class='dim'>No session actions yet.</div>") +
           "</div></details></div>";
 
-        html += "<h3>8 · Safeguards</h3><ul class='sml'>" +
-          "<li>Aggregate paper-derived benchmark — pipeline development, not advantage claims.</li>" +
-          "<li>Docking scores are NOT proof of AChE inhibition (paper's own limitation).</li>" +
-          "<li>No field efficacy / livestock / environmental safety inferred from docking alone.</li>" +
-          "<li>No mixing of experimental and model-generated labels as equivalents.</li></ul>";
         html += "<p class='sml dim'>Generated " + esc(nowStamp()) + " · Quantum_AgroX interactive layer (demo).</p>";
         html += "<div style='margin-top:10px'><button class='ghost' id='rep-print'>Print / Save as PDF</button></div>";
         return html;
@@ -1181,7 +1138,7 @@
       { keys: ["selectivity", "bee", "pollinator", "beneficial"], ans: function () { return "AgroSelect scores pest-vs-beneficial margin. High-flag families: OP/carbamate- and neonicotinoid-type actives (pollinator caution). Lower: terpenoid and phenolic botanicals (short residual, repellent). See Pipeline → AgroSelect."; } },
       { keys: ["ecorisk", "ecotoxic", "ecology", "environment"], ans: function () { return "AgroEcoRisk prioritizes non-target flags: logP≥4 (bioconcentration), soluble-low-logP (aquatic mobility), neuroactive pharmacophores (non-target neurotoxicity), residue persistence. Flags drive study priorities, not verdicts."; } },
       { keys: ["optimize", "multi-objective", "ranking", "candidate"], ans: function () { return "AgroOptimize composes efficacy, inverse-LC50, selectivity and eco-risk into a weighted candidate ranking. Demo weights in Pipeline → AgroOptimize; the production engine (Phase 7) makes the AgroX decision score fully auditable."; } },
-      { keys: ["report", "audit", "print"], ans: function () { return "AgroReport assembles dataset coverage, chosen target, last lab run, pipeline completion, the full audit trail and safeguards — then Print → Save as PDF. Run it at Pipeline → AgroReport."; } },
+      { keys: ["report", "audit", "print"], ans: function () { return "AgroReport gives a brief summary plus parameters for only the sub-modules used in the session — then Print → Save as PDF. Run it at Pipeline → AgroReport."; } },
       { keys: ["target", "receptor"], ans: function () { return "The target library now includes mites/ticks, insects, nematodes, fungi, weeds and detox enzymes — e.g. AChE (CAA06980/6ARX or CAA11702/5YDH), VGSC, nAChR, CYP51, SDH, β-tubulin, PSII-D1, EPSPS, levamisole-site AChR. Type any name in the Molecule Lab; if unknown, it falls back to generic AChE calibration with a warning."; } },
       { keys: ["reproduce", "how to run", "install", "pipeline locally"], ans: function () { return "Clone git@github.com:SheenaPravin/Quantum_AgroX.git (branch Feat/Sheena), pip install -r Quantum_AgroX_QML_Project/requirements.txt, python main.py. Scripts 01–05 mirror the pipeline's classical + QML stages."; } },
       { keys: ["medxai", "who", "project", "team"], ans: function () { return "Quantum_AgroX is a MEDxAI innovation project: an evidence-integrating agrochemical intelligence platform, first benchmarked on Commiphora swynnertonii botanical acaricide discovery against cattle ticks."; } }
