@@ -1046,7 +1046,8 @@
           "</div></details></div>";
 
         html += "<p class='sml dim'>Generated " + esc(nowStamp()) + " · Quantum_AgroX interactive layer (demo).</p>";
-        html += "<div style='margin-top:10px'><button class='ghost' id='rep-print'>Print / Save as PDF</button></div>";
+        html += "<div style='margin-top:10px;display:flex;gap:10px;flex-wrap:wrap'><button class='ghost' id='rep-print'>Print / Save as PDF</button>" +
+          "<a class='ghost' href='assets/AgroReport.docx' download='AgroReport.docx' style='display:inline-block;padding:13px 18px'>Download full AgroReport (.docx)</a></div>";
         return html;
       }
       b.innerHTML = txt();
