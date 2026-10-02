@@ -1,0 +1,19 @@
+# Render Blueprint for Quantum AgroX — Option A (Streamlit)
+# Repo: https://github.com/SheenaPravin/Quantum_AgroX
+# Branch: Feat/Sheena
+
+services:
+  - type: web
+    name: quantum-agrox-streamlit
+    runtime: python
+    rootDir: Quantum_AgroX_QML_Project
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt"
+    startCommand: "streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true"
+    plan: standard
+    autoDeploy: true
+    healthCheckPath: /_stcore/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: STREAMLIT_BROWSER_GATHER_USAGE_STATS
+        value: "false"
